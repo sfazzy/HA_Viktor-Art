@@ -1,0 +1,140 @@
+{
+    "title": "Email Notifier",
+    "config": {
+        "step": {
+            "user": {
+                "title": "E-Mail Konto Konfiguration",
+                "description": "Bitte geben Sie die SMTP-Server-Details ein",
+                "data": {
+                    "server": "SMTP-Server",
+                    "port": "Port",
+                    "username": "Benutzername",
+                    "password": "Passwort",
+                    "sender": "Absender-E-Mail",
+                    "recipients": "Empfänger-E-Mail(s)",
+                    "sender_name": "Absender-Name",
+                    "encryption": "Verschlüsselung",
+                    "timeout": "Timeout (Sekunden)",
+                    "test_connection": "Verbindung testen"
+                }
+            }
+        },
+        "error": {
+            "connection_failed": "Verbindung zum SMTP-Server fehlgeschlagen. Bitte überprüfen Sie die Einstellungen."
+        },
+        "abort": {
+            "already_configured": "Dieses E-Mail Konto ist bereits konfiguriert."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "E-Mail Konto bearbeiten",
+                "description": "E-Mail Konto Einstellungen anpassen",
+                "data": {
+                    "server": "SMTP-Server",
+                    "port": "Port",
+                    "username": "Benutzername",
+                    "password": "Passwort",
+                    "sender": "Absender-E-Mail",
+                    "recipients": "Empfänger-E-Mail(s)",
+                    "sender_name": "Absender-Name",
+                    "encryption": "Verschlüsselung",
+                    "timeout": "Timeout (Sekunden)",
+                    "test_connection": "Verbindung testen"
+                }
+            }
+        },
+        "error": {
+            "connection_failed": "Verbindung zum SMTP-Server fehlgeschlagen. Bitte überprüfen Sie die Einstellungen."
+        }
+    },
+    "entity": {
+        "notify": {
+            "entity_name": {
+                "name": "Absender E-Mail Konto: {sender}"
+            }
+        },
+        "state": {
+            "ready": {
+                "name": "Bereit"
+            },
+            "sending": {
+                "name": "Sende..."
+            }
+        }
+    },
+    "selector": 
+    {
+        "encryption": 
+        {
+            "options": 
+            {
+                "none": "Keine",
+                "starttls": "STARTTLS",
+                "tls": "TLS"
+            }
+        }
+    },
+    "services": 
+    {
+        "send": 
+        {
+            "name": "E-Mail versenden",
+            "description": "Eine E-Mail Nachricht an einen oder mehrere Empfänger versenden.",
+            "fields": 
+            {
+                "account": 
+                {
+                    "name": "Absender-E-Mail Konto",
+                    "description": "Das E-Mail Konto des Absenders"
+                },
+                "recipients": 
+                {
+                    "name": "Empfänger-E-Mail(s)",
+                    "description": "Mehrere Empfänger durch Komma trennen"
+                },
+                "title": 
+                {
+                    "name": "Betreff",
+                    "description": "Betreff der E-Mail"
+                },
+                "message": 
+                {
+                    "name": "Nachricht",
+                    "description": "Einfacher Textinhalt. Optional, wenn HTML verwendet wird"
+                },
+                "html": 
+                {
+                    "name": "HTML-Inhalt",
+                    "description": "HTML-Version des E-Mail-Körpers für erweiterte Formatierung"
+                },
+                "images": 
+                {
+                    "name": "Bilder",
+                    "description": "Bild-Dateipfade oder URLs zum Einbetten in HTML-E-Mails (einen pro Zeile)"
+                },
+                "attachments": 
+                {
+                    "name": "Anhänge",
+                    "description": "Dateipfade oder URLs zum Anhängen (einen pro Zeile)"
+                },
+                "from_address": 
+                {
+                    "name": "Absender-Adresse",
+                    "description": "Benutzerdefinierte Absender-E-Mail-Adresse"
+                },
+                "sender_name": 
+                {
+                    "name": "Absender-Name",
+                    "description": "Benutzerdefinierter Anzeigename des Absenders"
+                },
+                "reply_to": 
+                {
+                    "name": "Antwort-an Adresse",
+                    "description": "E-Mail-Adresse für Antworten"
+                }
+            }
+        }
+    }
+}

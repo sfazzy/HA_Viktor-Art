@@ -1,0 +1,450 @@
+# Auto-generated Zigbee2MQTT groups
+# Source: .storage/core.entity_registry (unique_id suffix matches base_topic)
+# - *_sensors groups: all sensor.* entities for that base_topic
+# - *_devices groups: one representative entity per Zigbee device (prefer linkquality)
+# Regenerate by re-running the generator script (ask if needed).
+
+z2m_g01_devices:
+  name: "Z2M G01 devices"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x54ef4410012949d0_linkquality
+    - sensor.c1_w5_brama_linkquality
+    - sensor.t3_w5_linkquality
+
+z2m_g01_sensors:
+  name: "Z2M G01 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x00158d008b7cd65c_last_seen
+    - sensor.0x54ef4410012949d0_linkquality
+    - sensor.c1_w5_brama_battery
+    - sensor.c1_w5_brama_device_temperature
+    - sensor.c1_w5_brama_last_seen
+    - sensor.c1_w5_brama_linkquality
+    - sensor.c1_w5_brama_power_outage_count
+    - sensor.c1_w5_brama_trigger_count
+    - sensor.c1_w5_brama_voltage
+    - sensor.t3_w5_laser_battery
+    - sensor.t3_w5_laser_humidity
+    - sensor.t3_w5_laser_pressure
+    - sensor.t3_w5_laser_temperature
+    - sensor.t3_w5_laser_voltage
+    - sensor.t3_w5_linkquality
+    - sensor.zigbee2mqtt_bridge_coordinator_version_5
+    - sensor.zigbee2mqtt_bridge_network_map_5
+    - sensor.zigbee2mqtt_bridge_version_3
+
+z2m_g02_devices:
+  name: "Z2M G02 devices"
+  icon: mdi:zigbee
+  entities:
+    - binary_sensor.0x54ef441000d9b1c8_buzzer_manual_alarm_4
+    - sensor.0x00158d008b77dcee_linkquality
+    - sensor.0x54ef441001243bcf_linkquality_4
+    - sensor.0x54ef44100129504f_linkquality
+    - sensor.0xa4c138bed62ce9bb_linkquality
+    - sensor.s1_patryk_biuro_x_linkquality
+    - sensor.t4_patryk_biuro_linkquality
+
+z2m_g02_sensors:
+  name: "Z2M G02 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x00158d008b77dcee_linkquality
+    - sensor.0x54ef441000d9b1c8_battery_4
+    - sensor.0x54ef441000d9b1c8_linkquality_5
+    - sensor.0x54ef441000d9b1c8_power_outage_count_3
+    - sensor.0x54ef441000d9b1c8_smoke_density_4
+    - sensor.0x54ef441000d9b1c8_smoke_density_dbm_4
+    - sensor.0x54ef441000d9b1c8_voltage_4
+    - sensor.0x54ef441001243bcf_linkquality_4
+    - sensor.0x54ef441001243bcf_power_outage_count_2
+    - sensor.0x54ef44100129504f_linkquality
+    - sensor.0x54ef44100129504f_power_outage_count
+    - sensor.0xa4c138bed62ce9bb_linkquality
+    - sensor.s1_patryk_biuro_battery
+    - sensor.s1_patryk_biuro_x_linkquality
+    - sensor.s9_rodzice_gora_battery
+    - sensor.s9_rodzice_gora_smoke_density
+    - sensor.s9_rodzice_gora_smoke_density_dbm
+    - sensor.s9_rodzice_gora_voltage
+    - sensor.t18_gora_rodzice_battery
+    - sensor.t18_gora_rodzice_humidity
+    - sensor.t18_gora_rodzice_pressure
+    - sensor.t18_gora_rodzice_temperature
+    - sensor.t18_gora_rodzice_voltage
+    - sensor.t4_patryk_biuro_battery
+    - sensor.t4_patryk_biuro_humidity
+    - sensor.t4_patryk_biuro_linkquality
+    - sensor.t4_patryk_biuro_pressure
+    - sensor.t4_patryk_biuro_temperature
+    - sensor.t4_patryk_biuro_voltage
+    - sensor.zigbee2mqtt_bridge_coordinator_version_6
+    - sensor.zigbee2mqtt_bridge_network_map_6
+    - sensor.zigbee2mqtt_bridge_version_4
+
+z2m_g03_devices:
+  name: "Z2M G03 devices"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x54ef441000d9b1c8_linkquality_3
+    - sensor.b1_korytarz_warsztat_linkquality
+    - sensor.f1_pompownia_linkquality
+    - sensor.p1_pompownia_linkquality
+    - sensor.s6_korytarz_warsztat_linkquality
+    - sensor.t1_korytarz_warszt_linkquality
+    - sensor.t6_pompownia_linkquality
+
+z2m_g03_sensors:
+  name: "Z2M G03 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x54ef441000d9b1c8_linkquality_3
+    - sensor.0x54ef441000d9b1c8_power_outage_count_6
+    - sensor.b1_korytarz_warsztat_battery
+    - sensor.b1_korytarz_warsztat_device_temperature
+    - sensor.b1_korytarz_warsztat_linkquality
+    - sensor.b1_korytarz_warsztat_power_outage_count
+    - sensor.b1_korytarz_warsztat_voltage
+    - sensor.f1_pompownia_battery
+    - sensor.f1_pompownia_linkquality
+    - sensor.p1_pompownia_current
+    - sensor.p1_pompownia_energy
+    - sensor.p1_pompownia_linkquality
+    - sensor.p1_pompownia_power
+    - sensor.p1_pompownia_voltage
+    - sensor.s6_korytarz_warsztat_battery
+    - sensor.s6_korytarz_warsztat_linkquality
+    - sensor.s6_korytarz_warsztat_power_outage_count
+    - sensor.s6_korytarz_warsztat_smoke_density
+    - sensor.s6_korytarz_warsztat_smoke_density_dbm
+    - sensor.s6_korytarz_warsztat_voltage
+    - sensor.t1_korytarz_warszt_battery
+    - sensor.t1_korytarz_warszt_humidity
+    - sensor.t1_korytarz_warszt_linkquality
+    - sensor.t1_korytarz_warszt_pressure
+    - sensor.t1_korytarz_warszt_temperature
+    - sensor.t1_korytarz_warszt_voltage
+    - sensor.t6_pompownia_battery
+    - sensor.t6_pompownia_humidity
+    - sensor.t6_pompownia_linkquality
+    - sensor.t6_pompownia_pressure
+    - sensor.t6_pompownia_temperature
+    - sensor.t6_pompownia_voltage
+    - sensor.zigbee2mqtt_bridge_coordinator_version_4
+    - sensor.zigbee2mqtt_bridge_coordinator_version_7
+    - sensor.zigbee2mqtt_bridge_network_map_4
+    - sensor.zigbee2mqtt_bridge_network_map_7
+    - sensor.zigbee2mqtt_bridge_version_2
+
+z2m_g04_devices:
+  name: "Z2M G04 devices"
+  icon: mdi:zigbee
+  entities:
+    - binary_sensor.0x54ef441000d9b1c8_buzzer_manual_alarm_3
+    - sensor.0x00158d008b7cd622_linkquality
+    - sensor.0xa4c13822b76ad085_linkquality_3
+
+z2m_g04_sensors:
+  name: "Z2M G04 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x00158d008b7cd622_linkquality
+    - sensor.0x54ef441000d9b1c8_battery_3
+    - sensor.0x54ef441000d9b1c8_linkquality_4
+    - sensor.0x54ef441000d9b1c8_power_outage_count
+    - sensor.0x54ef441000d9b1c8_smoke_density_3
+    - sensor.0x54ef441000d9b1c8_smoke_density_dbm_3
+    - sensor.0x54ef441000d9b1c8_voltage_3
+    - sensor.0xa4c13822b76ad085_linkquality_3
+    - sensor.zigbee2mqtt_bridge_coordinator_version_11
+    - sensor.zigbee2mqtt_bridge_network_map_11
+    - sensor.zigbee2mqtt_bridge_version_8
+
+z2m_g05_devices:
+  name: "Z2M G05 devices"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x54ef441000d99f19_linkquality
+    - sensor.0x54ef441000d9b1c8_linkquality_7
+    - sensor.0xa4c13822b76ad085_linkquality
+    - sensor.c2_w4_brama_linkquality
+    - sensor.m4_galeria_linkquality
+    - sensor.t2_w4_linkquality
+
+z2m_g05_sensors:
+  name: "Z2M G05 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x54ef441000d99f19_linkquality
+    - sensor.0x54ef441000d9b1c8_linkquality_7
+    - sensor.0xa4c13822b76ad085_linkquality
+    - sensor.c2_w4_brama_battery
+    - sensor.c2_w4_brama_device_temperature
+    - sensor.c2_w4_brama_linkquality
+    - sensor.c2_w4_brama_power_outage_count
+    - sensor.c2_w4_brama_trigger_count
+    - sensor.c2_w4_brama_voltage
+    - sensor.m4_galeria_battery
+    - sensor.m4_galeria_device_temperature
+    - sensor.m4_galeria_illuminance
+    - sensor.m4_galeria_linkquality
+    - sensor.m4_galeria_power_outage_count
+    - sensor.m4_galeria_voltage
+    - sensor.t2_w4_battery
+    - sensor.t2_w4_humidity
+    - sensor.t2_w4_linkquality
+    - sensor.t2_w4_pressure
+    - sensor.t2_w4_temperature
+    - sensor.t2_w4_voltage
+    - sensor.zigbee2mqtt_bridge_coordinator_version_12
+    - sensor.zigbee2mqtt_bridge_network_map_12
+    - sensor.zigbee2mqtt_bridge_version_9
+
+z2m_g06_devices:
+  name: "Z2M G06 devices"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x00158d008b7cd5bd_linkquality
+    - sensor.0x00158d008b7cd622_linkquality_2
+    - sensor.0x54ef441000d9b1c8_linkquality
+    - sensor.0x54ef441001243bcf_linkquality_2
+    - sensor.0xa4c13822b76ad085_linkquality_6
+    - sensor.b2_malarnia_linkquality
+    - sensor.s4_malarnia_smoke_linkquality
+    - sensor.s5_warsztat_schody_gora_linkquality
+    - sensor.t15_malarnia_linkquality
+
+z2m_g06_sensors:
+  name: "Z2M G06 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x00158d008b7cd5bd_linkquality
+    - sensor.0x00158d008b7cd622_linkquality_2
+    - sensor.0x54ef441000d9b1c8_linkquality
+    - sensor.0x54ef441000d9b1c8_power_outage_count_4
+    - sensor.0x54ef441001243bcf_linkquality_2
+    - sensor.0xa4c13822b76ad085_linkquality_6
+    - sensor.b2_malarnia_battery
+    - sensor.b2_malarnia_device_temperature
+    - sensor.b2_malarnia_last_seen
+    - sensor.b2_malarnia_linkquality
+    - sensor.b2_malarnia_power_outage_count
+    - sensor.b2_malarnia_voltage
+    - sensor.s4_malarnia_smoke_battery
+    - sensor.s4_malarnia_smoke_last_seen
+    - sensor.s4_malarnia_smoke_linkquality
+    - sensor.s4_malarnia_smoke_power_outage_count
+    - sensor.s4_malarnia_smoke_smoke_density
+    - sensor.s4_malarnia_smoke_smoke_density_dbm
+    - sensor.s4_malarnia_smoke_voltage
+    - sensor.s5_warsztat_schody_ga3ra_battery
+    - sensor.s5_warsztat_schody_ga3ra_last_seen
+    - sensor.s5_warsztat_schody_ga3ra_smoke_density
+    - sensor.s5_warsztat_schody_ga3ra_smoke_density_dbm
+    - sensor.s5_warsztat_schody_ga3ra_voltage
+    - sensor.s5_warsztat_schody_gora_linkquality
+    - sensor.s5_warsztat_schody_gora_power_outage_count
+    - sensor.t15_malarnia_battery
+    - sensor.t15_malarnia_humidity
+    - sensor.t15_malarnia_last_seen
+    - sensor.t15_malarnia_linkquality
+    - sensor.t15_malarnia_pressure
+    - sensor.t15_malarnia_temperature
+    - sensor.t15_malarnia_voltage
+    - sensor.zigbee2mqtt_bridge_coordinator_version_9
+    - sensor.zigbee2mqtt_bridge_network_map_9
+    - sensor.zigbee2mqtt_bridge_version_6
+
+z2m_g07_devices:
+  name: "Z2M G07 devices"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x54ef441000d9b1c8_linkquality_6
+    - sensor.0xa4c13822b76ad085_linkquality_5
+    - sensor.m2_garaz_linkquality
+    - sensor.s3_garaz_linkquality
+    - sensor.t12_garaz_linkquality
+
+z2m_g07_sensors:
+  name: "Z2M G07 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x54ef441000d9b1c8_linkquality_6
+    - sensor.0x54ef441000d9b1c8_power_outage_count_5
+    - sensor.0xa4c13822b76ad085_linkquality_5
+    - sensor.m2_garaz_battery
+    - sensor.m2_garaz_device_temperature
+    - sensor.m2_garaz_illuminance
+    - sensor.m2_garaz_last_seen
+    - sensor.m2_garaz_linkquality
+    - sensor.m2_garaz_power_outage_count
+    - sensor.m2_garaz_voltage
+    - sensor.s3_garaz_battery
+    - sensor.s3_garaz_last_seen
+    - sensor.s3_garaz_linkquality
+    - sensor.s3_garaz_power_outage_count
+    - sensor.s3_garaz_smoke_density
+    - sensor.s3_garaz_smoke_density_dbm
+    - sensor.s3_garaz_voltage
+    - sensor.t12_garaa1_4_last_seen
+    - sensor.t12_garaz_battery
+    - sensor.t12_garaz_humidity
+    - sensor.t12_garaz_linkquality
+    - sensor.t12_garaz_pressure
+    - sensor.t12_garaz_temperature
+    - sensor.t12_garaz_voltage
+    - sensor.zigbee2mqtt_bridge_coordinator_version_10
+    - sensor.zigbee2mqtt_bridge_network_map_10
+    - sensor.zigbee2mqtt_bridge_version_7
+
+z2m_g08_devices:
+  name: "Z2M G08 devices"
+  icon: mdi:zigbee
+  entities:
+    # No Zigbee device entities matched (unique_id starting with 0x...)
+
+z2m_g08_sensors:
+  name: "Z2M G08 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.zigbee2mqtt_bridge_coordinator_version_8
+    - sensor.zigbee2mqtt_bridge_network_map_8
+    - sensor.zigbee2mqtt_bridge_version_5
+
+z2m_g09_devices:
+  name: "Z2M G09 devices"
+  icon: mdi:zigbee
+  entities:
+    - binary_sensor.0xa4c13822b76ad085_battery_low_2
+    - sensor.0x00158d008b7cd622_linkquality_3
+    - sensor.0x54ef441001243bcf_linkquality
+    - sensor.m2_salon_patryk_linkquality
+    - sensor.s2_patryk_dom_korytarz_linkquality
+    - sensor.t15_salon_patryk_linkquality
+    - sensor.t9_patryk_hall_linkquality
+
+z2m_g09_sensors:
+  name: "Z2M G09 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x00158d008b7cd622_linkquality_3
+    - sensor.0x54ef441001243bcf_battery
+    - sensor.0x54ef441001243bcf_linkquality
+    - sensor.0x54ef441001243bcf_power_outage_count
+    - sensor.0x54ef441001243bcf_smoke_density
+    - sensor.0x54ef441001243bcf_smoke_density_dbm
+    - sensor.0x54ef441001243bcf_voltage
+    - sensor.0xa4c13822b76ad085_battery_2
+    - sensor.0xa4c13822b76ad085_linkquality_4
+    - sensor.m2_salon_patryk_battery
+    - sensor.m2_salon_patryk_device_temperature
+    - sensor.m2_salon_patryk_illuminance
+    - sensor.m2_salon_patryk_last_seen
+    - sensor.m2_salon_patryk_linkquality
+    - sensor.m2_salon_patryk_power_outage_count
+    - sensor.m2_salon_patryk_voltage
+    - sensor.s2_patryk_dom_korytarz_battery
+    - sensor.s2_patryk_dom_korytarz_last_seen
+    - sensor.s2_patryk_dom_korytarz_linkquality
+    - sensor.s2_patryk_dom_korytarz_power_outage_count
+    - sensor.s2_patryk_dom_korytarz_smoke_density
+    - sensor.s2_patryk_dom_korytarz_smoke_density_dbm
+    - sensor.s2_patryk_dom_korytarz_voltage
+    - sensor.t15_salon_patryk_battery
+    - sensor.t15_salon_patryk_humidity
+    - sensor.t15_salon_patryk_last_seen
+    - sensor.t15_salon_patryk_linkquality
+    - sensor.t15_salon_patryk_pressure
+    - sensor.t15_salon_patryk_temperature
+    - sensor.t15_salon_patryk_voltage
+    - sensor.t9_patryk_hall_battery
+    - sensor.t9_patryk_hall_humidity
+    - sensor.t9_patryk_hall_last_seen
+    - sensor.t9_patryk_hall_linkquality
+    - sensor.t9_patryk_hall_pressure
+    - sensor.t9_patryk_hall_temperature
+    - sensor.t9_patryk_hall_voltage
+    - sensor.zigbee2mqtt_bridge_coordinator_version_13
+    - sensor.zigbee2mqtt_bridge_network_map_13
+    - sensor.zigbee2mqtt_bridge_version_10
+
+z2m_g10_devices:
+  name: "Z2M G10 devices"
+  icon: mdi:zigbee
+  entities:
+    - binary_sensor.0x54ef441000d9b1c8_buzzer_manual_alarm_2
+    - binary_sensor.0xa4c13822b76ad085_battery_low_3
+    - sensor.0x00158d008b7cd622_linkquality_4
+    - sensor.c4_dostawka_linkquality
+    - sensor.m5_bartek_linkquality
+    - sensor.s8_bartek_linkquality
+    - sensor.t5_bartek_linkquality
+
+z2m_g10_sensors:
+  name: "Z2M G10 sensors"
+  icon: mdi:zigbee
+  entities:
+    - sensor.0x00158d008b7cd622_linkquality_4
+    - sensor.0x54ef441000d9b1c8_battery_2
+    - sensor.0x54ef441000d9b1c8_linkquality_2
+    - sensor.0x54ef441000d9b1c8_power_outage_count_2
+    - sensor.0x54ef441000d9b1c8_smoke_density_2
+    - sensor.0x54ef441000d9b1c8_smoke_density_dbm_2
+    - sensor.0x54ef441000d9b1c8_voltage_2
+    - sensor.0xa4c13822b76ad085_battery_3
+    - sensor.0xa4c13822b76ad085_linkquality_2
+    - sensor.c4_dostawka_battery
+    - sensor.c4_dostawka_device_temperature
+    - sensor.c4_dostawka_last_seen
+    - sensor.c4_dostawka_linkquality
+    - sensor.c4_dostawka_power_outage_count
+    - sensor.c4_dostawka_trigger_count
+    - sensor.c4_dostawka_voltage
+    - sensor.m5_bartek_battery
+    - sensor.m5_bartek_device_temperature
+    - sensor.m5_bartek_illuminance
+    - sensor.m5_bartek_last_seen
+    - sensor.m5_bartek_linkquality
+    - sensor.m5_bartek_power_outage_count
+    - sensor.m5_bartek_voltage
+    - sensor.s8_bartek_battery
+    - sensor.s8_bartek_last_seen
+    - sensor.s8_bartek_linkquality
+    - sensor.s8_bartek_power_outage_count
+    - sensor.s8_bartek_smoke_density
+    - sensor.s8_bartek_smoke_density_dbm
+    - sensor.s8_bartek_voltage
+    - sensor.t5_bartek_battery
+    - sensor.t5_bartek_humidity
+    - sensor.t5_bartek_last_seen
+    - sensor.t5_bartek_linkquality
+    - sensor.t5_bartek_pressure
+    - sensor.t5_bartek_temperature
+    - sensor.t5_bartek_voltage
+    - sensor.zigbee2mqtt_bridge_coordinator_version_14
+    - sensor.zigbee2mqtt_bridge_network_map_14
+    - sensor.zigbee2mqtt_bridge_version_11
+
+z2m_g11_devices:
+  name: "Z2M G11 devices"
+  icon: mdi:zigbee
+  entities:
+    # No Zigbee device entities matched (unique_id starting with 0x...)
+
+z2m_g11_sensors:
+  name: "Z2M G11 sensors"
+  icon: mdi:zigbee
+  entities:
+    # No sensor.* entities found for this base_topic yet
+
+z2m_g12_devices:
+  name: "Z2M G12 devices"
+  icon: mdi:zigbee
+  entities: []
+
+z2m_g12_sensors:
+  name: "Z2M G12 sensors"
+  icon: mdi:zigbee
+  entities: []

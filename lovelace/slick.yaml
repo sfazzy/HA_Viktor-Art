@@ -1,0 +1,700 @@
+title: Viktor • Control Center
+views:
+  - title: Overview
+    path: overview
+    icon: mdi:view-dashboard
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Home
+              A clean, high-signal overview: **alerts**, **power**, **climate**, **presence**.
+
+          - type: weather-forecast
+            entity: weather.forecast_home
+            show_current: true
+            show_forecast: true
+
+          - type: tile
+            entity: sensor.shellypro3em63_a4f00fcbc1b8_total_active_power
+            name: Total Power
+            icon: mdi:home-lightning-bolt
+
+          - type: tile
+            entity: sensor.shellypro3em63_a4f00fcbc1b8_total_current
+            name: Total Current
+            icon: mdi:current-ac
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entity-filter
+            title: Alerts (Safety)
+            show_empty: false
+            state_filter:
+              - "on"
+            entities:
+              - binary_sensor.nest_protect_kitchen_smoke_status
+              - binary_sensor.nest_protect_kitchen_co_status
+              - binary_sensor.nest_protect_kitchen_heat_status
+              - binary_sensor.nest_protect_upstairs_smoke_status
+              - binary_sensor.nest_protect_upstairs_co_status
+              - binary_sensor.nest_protect_upstairs_heat_status
+              - binary_sensor.f1_pompownia_water_leak
+              - binary_sensor.f1_kotlownia_water_leak
+              - binary_sensor.s2_patryk_dom_korytarz_smoke
+              - binary_sensor.s3_garaz_smoke
+              - binary_sensor.s5_warsztat_schody_gora_smoke
+              - binary_sensor.s8_bartek_smoke
+              - binary_sensor.s9_rodzice_gora_smoke_smoke
+
+          - type: entity-filter
+            title: Alerts (Zigbee Bridges Offline)
+            show_empty: false
+            state_filter:
+              - "off"
+            entities:
+              - binary_sensor.zigbee2mqtt_bridge_connection_state
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_2
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_3
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_4
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_5
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_6
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_7
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_8
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_9
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_10
+              - binary_sensor.zigbee2mqtt_bridge_connection_state_11
+
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              ## Climate (Quick)
+          - type: tile
+            entity: sensor.t15_salon_patryk_temperature
+            name: Salon Patryk
+            icon: mdi:sofa
+          - type: tile
+            entity: sensor.t4_patryk_biuro_temperature
+            name: Biuro Patryk
+            icon: mdi:desk
+          - type: tile
+            entity: sensor.t7_kotlownia_temperature
+            name: Kotłownia
+            icon: mdi:fire
+          - type: tile
+            entity: sensor.unknown_70_ee_50_06_9b_08_carbon_dioxide
+            name: CO₂ (Netatmo)
+            icon: mdi:molecule-co2
+
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              ## Presence
+          - type: tile
+            entity: person.patryk
+            name: Patryk
+            icon: mdi:account
+          - type: tile
+            entity: person.mateusz
+            name: Mateusz
+            icon: mdi:account
+
+  - title: Safety
+    path: safety
+    icon: mdi:shield-check
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Safety
+              **If something is wrong, it should be obvious here.**
+          - type: entity-filter
+            title: Active alarms / issues
+            show_empty: false
+            state_filter:
+              - "on"
+            entities:
+              - binary_sensor.nest_protect_kitchen_smoke_status
+              - binary_sensor.nest_protect_kitchen_co_status
+              - binary_sensor.nest_protect_kitchen_heat_status
+              - binary_sensor.nest_protect_kitchen_removed_from_base
+              - binary_sensor.nest_protect_upstairs_smoke_status
+              - binary_sensor.nest_protect_upstairs_co_status
+              - binary_sensor.nest_protect_upstairs_heat_status
+              - binary_sensor.nest_protect_upstairs_removed_from_base
+              - binary_sensor.f1_pompownia_water_leak
+              - binary_sensor.f1_kotlownia_water_leak
+              - binary_sensor.0xa4c13822b76ad085_water_leak_2
+              - binary_sensor.0xa4c13822b76ad085_water_leak_3
+              - binary_sensor.s2_patryk_dom_korytarz_smoke
+              - binary_sensor.s3_garaz_smoke
+              - binary_sensor.s5_warsztat_schody_gora_smoke
+              - binary_sensor.s8_bartek_smoke
+              - binary_sensor.s9_rodzice_gora_smoke_smoke
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entities
+            title: Nest Protect • Kitchen
+            entities:
+              - binary_sensor.nest_protect_kitchen_smoke_status
+              - binary_sensor.nest_protect_kitchen_co_status
+              - binary_sensor.nest_protect_kitchen_heat_status
+              - sensor.nest_protect_kitchen_battery_level
+              - binary_sensor.nest_protect_kitchen_battery_health
+              - binary_sensor.nest_protect_kitchen_wifi_test
+              - binary_sensor.nest_protect_kitchen_removed_from_base
+              - select.nest_protect_kitchen_brightness
+              - switch.nest_protect_kitchen_pathlight
+              - switch.nest_protect_kitchen_heads_up
+          - type: entities
+            title: Nest Protect • Upstairs
+            entities:
+              - binary_sensor.nest_protect_upstairs_smoke_status
+              - binary_sensor.nest_protect_upstairs_co_status
+              - binary_sensor.nest_protect_upstairs_heat_status
+              - sensor.nest_protect_upstairs_battery_level
+              - binary_sensor.nest_protect_upstairs_battery_health
+              - binary_sensor.nest_protect_upstairs_wifi_test
+              - binary_sensor.nest_protect_upstairs_removed_from_base
+              - select.nest_protect_upstairs_brightness
+              - switch.nest_protect_upstairs_pathlight
+              - switch.nest_protect_upstairs_heads_up
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entities
+            title: Smoke detectors (Zigbee)
+            entities:
+              - binary_sensor.s2_patryk_dom_korytarz_smoke
+              - binary_sensor.s3_garaz_smoke
+              - binary_sensor.s5_warsztat_schody_gora_smoke
+              - binary_sensor.s8_bartek_smoke
+              - binary_sensor.s9_rodzice_gora_smoke_smoke
+              - sensor.s9_rodzice_gora_smoke_battery
+              - sensor.s9_rodzice_gora_smoke_linkquality
+              - button.s9_rodzice_gora_smoke_selftest
+          - type: entities
+            title: Water leak sensors
+            entities:
+              - binary_sensor.f1_pompownia_water_leak
+              - binary_sensor.f1_kotlownia_water_leak
+              - binary_sensor.0xa4c13822b76ad085_water_leak_2
+              - binary_sensor.0xa4c13822b76ad085_water_leak_3
+
+  - title: Climate
+    path: climate
+    icon: mdi:thermometer
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Climate
+              Room temperatures & humidity in one place.
+
+          - type: tile
+            entity: sensor.unknown_70_ee_50_06_9b_08_temperature
+            name: Patryk Dom (Netatmo) Temp
+          - type: tile
+            entity: sensor.unknown_70_ee_50_06_9b_08_humidity
+            name: Patryk Dom (Netatmo) Humidity
+          - type: tile
+            entity: sensor.unknown_70_ee_50_06_9b_08_carbon_dioxide
+            name: Patryk Dom (Netatmo) CO₂
+          - type: tile
+            entity: sensor.unknown_70_ee_50_06_9b_08_atmospheric_pressure
+            name: Patryk Dom (Netatmo) Pressure
+
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.t15_salon_patryk_temperature
+            name: Salon Patryk • Temp
+          - type: tile
+            entity: sensor.t15_salon_patryk_humidity
+            name: Salon Patryk • Humidity
+          - type: tile
+            entity: sensor.t4_patryk_biuro_temperature
+            name: Biuro Patryk • Temp
+          - type: tile
+            entity: sensor.t4_patryk_biuro_humidity
+            name: Biuro Patryk • Humidity
+
+          - type: tile
+            entity: sensor.t10_rodzice_dol_temperature
+            name: Rodzice Dol • Temp
+          - type: tile
+            entity: sensor.t10_rodzice_dol_humidity
+            name: Rodzice Dol • Humidity
+          - type: tile
+            entity: sensor.t12_garaz_temperature
+            name: Garaż • Temp
+          - type: tile
+            entity: sensor.t12_garaz_humidity
+            name: Garaż • Humidity
+
+          - type: tile
+            entity: sensor.t6_pompownia_temperature
+            name: Pompownia • Temp
+          - type: tile
+            entity: sensor.t6_pompownia_humidity
+            name: Pompownia • Humidity
+          - type: tile
+            entity: sensor.t7_kotlownia_temperature
+            name: Kotłownia • Temp
+          - type: tile
+            entity: sensor.t7_kotlownia_humidity
+            name: Kotłownia • Humidity
+
+          - type: tile
+            entity: sensor.t1_korytarz_warszt_temperature
+            name: Korytarz Warsztat • Temp
+          - type: tile
+            entity: sensor.t1_korytarz_warszt_humidity
+            name: Korytarz Warsztat • Humidity
+          - type: tile
+            entity: sensor.t15_malarnia_temperature
+            name: Malarnia • Temp
+          - type: tile
+            entity: sensor.t15_malarnia_humidity
+            name: Malarnia • Humidity
+
+          - type: tile
+            entity: sensor.t2_w4_temperature
+            name: W4 • Temp
+          - type: tile
+            entity: sensor.t2_w4_humidity
+            name: W4 • Humidity
+          - type: tile
+            entity: sensor.t20_w3_temperature
+            name: W3 • Temp
+          - type: tile
+            entity: sensor.t20_w3_humidity
+            name: W3 • Humidity
+
+  - title: Power
+    path: power
+    icon: mdi:transmission-tower
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Power
+              Shelly Pro 3EM — totals + per-phase breakdown.
+              _Tip:_ If phases are assigned to “Dom/Firma”, rename the section titles below to match your wiring.
+
+          - type: tile
+            entity: sensor.shellypro3em63_a4f00fcbc1b8_total_active_power
+            name: Total Active Power
+
+          - type: tile
+            entity: sensor.shellypro3em63_a4f00fcbc1b8_total_active_energy
+            name: Total Active Energy
+
+          - type: tile
+            entity: sensor.shellypro3em63_a4f00fcbc1b8_total_active_returned_energy
+            name: Returned Energy
+
+          - type: tile
+            entity: sensor.shellypro3em63_a4f00fcbc1b8_temperature
+            name: Device Temp
+            icon: mdi:thermometer
+
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: entities
+            title: Phase A (L1)
+            entities:
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_a_active_power
+                name: Active power
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_a_voltage
+                name: Voltage
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_a_current
+                name: Current
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_a_power_factor
+                name: Power factor
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_a_total_active_energy
+                name: Energy
+          - type: entities
+            title: Phase B (L2)
+            entities:
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_b_active_power
+                name: Active power
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_b_voltage
+                name: Voltage
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_b_current
+                name: Current
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_b_power_factor
+                name: Power factor
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_b_total_active_energy
+                name: Energy
+          - type: entities
+            title: Phase C (L3)
+            entities:
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_c_active_power
+                name: Active power
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_c_voltage
+                name: Voltage
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_c_current
+                name: Current
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_c_power_factor
+                name: Power factor
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_c_total_active_energy
+                name: Energy
+
+      - type: grid
+        columns: 1
+        square: false
+        cards:
+          - type: history-graph
+            title: Power Trend (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_total_active_power
+                name: Total
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_a_active_power
+                name: L1
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_b_active_power
+                name: L2
+              - entity: sensor.shellypro3em63_a4f00fcbc1b8_phase_c_active_power
+                name: L3
+
+  - title: Entryways
+    path: entryways
+    icon: mdi:door
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Entryways
+              Gates/doors — quick state + battery.
+          - type: entities
+            title: Contacts
+            entities:
+              - binary_sensor.c1_w5_brama_contact
+              - binary_sensor.c2_w4_brama_contact
+              - binary_sensor.c2_garaz_brama_contact
+              - binary_sensor.c4_dostawka_contact
+              - sensor.c1_w5_brama_battery
+              - sensor.c2_w4_brama_battery
+              - sensor.c2_garaz_brama_battery
+              - sensor.c4_dostawka_battery
+
+  - title: Zigbee
+    path: zigbee
+    icon: mdi:zigbee
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Zigbee2MQTT health
+              Connection state + quick actions per instance.
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state
+            name: G01
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join
+            name: G01 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart
+            name: G01 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version
+            name: G01 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_2
+            name: G02
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_2
+            name: G02 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_2
+            name: G02 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_2
+            name: G02 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_3
+            name: G03
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_3
+            name: G03 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_3
+            name: G03 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_3
+            name: G03 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_4
+            name: G04
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_4
+            name: G04 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_4
+            name: G04 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_4
+            name: G04 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_5
+            name: G05
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_5
+            name: G05 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_5
+            name: G05 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_5
+            name: G05 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_6
+            name: G06
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_6
+            name: G06 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_6
+            name: G06 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_6
+            name: G06 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_7
+            name: G07
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_7
+            name: G07 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_7
+            name: G07 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_7
+            name: G07 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_8
+            name: G08
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_8
+            name: G08 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_8
+            name: G08 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_8
+            name: G08 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_9
+            name: G09
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_9
+            name: G09 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_9
+            name: G09 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_9
+            name: G09 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_10
+            name: G10
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_10
+            name: G10 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_10
+            name: G10 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_10
+            name: G10 Ver
+
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state_11
+            name: G11
+          - type: tile
+            entity: switch.zigbee2mqtt_bridge_permit_join_11
+            name: G11 Join
+          - type: tile
+            entity: button.zigbee2mqtt_bridge_restart_11
+            name: G11 Restart
+          - type: tile
+            entity: sensor.zigbee2mqtt_bridge_version_11
+            name: G11 Ver
+
+  - title: Z2M Insights
+    path: z2m_insights
+    icon: mdi:radar
+    type: sections
+    max_columns: 3
+    sections:
+      - type: markdown
+        content: |
+          ## Zigbee2MQTT ultimate
+          Temperatures, humidity, pressure, gates, and safety sensors grouped for rapid scanning.
+
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: history-graph
+            title: Temperatures (24h)
+            entities:
+              - sensor.t3_w5_laser_temperature
+              - sensor.t18_gora_rodzice_temperature
+              - sensor.t4_patryk_biuro_temperature
+              - sensor.t1_korytarz_warszt_temperature
+              - sensor.t6_pompownia_temperature
+              - sensor.t2_w4_temperature
+              - sensor.t15_malarnia_temperature
+              - sensor.t12_garaz_temperature
+              - sensor.t5_bartek_temperature
+              - sensor.t9_patryk_hall_temperature
+              - sensor.t15_salon_patryk_temperature
+            hours_to_show: 24
+            refresh_interval: 300
+
+          - type: history-graph
+            title: Humidity (24h)
+            entities:
+              - sensor.t3_w5_laser_humidity
+              - sensor.t18_gora_rodzice_humidity
+              - sensor.t4_patryk_biuro_humidity
+              - sensor.t1_korytarz_warszt_humidity
+              - sensor.t6_pompownia_humidity
+              - sensor.t2_w4_humidity
+              - sensor.t15_malarnia_humidity
+              - sensor.t12_garaz_humidity
+              - sensor.t5_bartek_humidity
+              - sensor.t9_patryk_hall_humidity
+              - sensor.t15_salon_patryk_humidity
+            hours_to_show: 24
+            refresh_interval: 300
+
+          - type: history-graph
+            title: Pressure (24h)
+            entities:
+              - sensor.t3_w5_laser_pressure
+              - sensor.t18_gora_rodzice_pressure
+              - sensor.t4_patryk_biuro_pressure
+              - sensor.t1_korytarz_warszt_pressure
+              - sensor.t6_pompownia_pressure
+              - sensor.t2_w4_pressure
+              - sensor.t15_malarnia_pressure
+              - sensor.t12_garaz_pressure
+              - sensor.t5_bartek_pressure
+              - sensor.t9_patryk_hall_pressure
+              - sensor.t15_salon_patryk_pressure
+            hours_to_show: 24
+            refresh_interval: 300
+
+      - type: entities
+        title: Gate metrics
+        show_header_toggle: false
+        entities:
+          - sensor.c1_w5_brama_battery
+          - sensor.c1_w5_brama_device_temperature
+          - sensor.c1_w5_brama_voltage
+          - sensor.c2_w4_brama_battery
+          - sensor.c2_w4_brama_device_temperature
+          - sensor.c2_w4_brama_voltage
+          - sensor.c2_garaz_brama_battery
+          - sensor.c2_garaz_brama_device_temperature
+          - sensor.c2_garaz_brama_voltage
+          - sensor.c4_dostawka_battery
+          - sensor.c4_dostawka_device_temperature
+          - sensor.c4_dostawka_voltage
+
+      - type: entities
+        title: Smoke detectors
+        show_header_toggle: false
+        entities:
+          - sensor.s3_garaz_smoke_density
+          - sensor.s5_warsztat_schody_ga3ra_smoke_density
+          - sensor.s9_rodzice_gora_smoke_density
+          - sensor.s2_patryk_dom_korytarz_smoke_density
+          - sensor.s8_bartek_smoke_density
+
+      - type: history-graph
+        title: Smoke density timelines
+        entities:
+          - sensor.s3_garaz_smoke_density
+          - sensor.s5_warsztat_schody_ga3ra_smoke_density
+          - sensor.s9_rodzice_gora_smoke_density
+          - sensor.s2_patryk_dom_korytarz_smoke_density
+          - sensor.s8_bartek_smoke_density
+        hours_to_show: 72
+        refresh_interval: 360
+
+  - title: Grafana
+    path: grafana
+    icon: mdi:chart-line
+    panel: true
+    cards:
+      - type: iframe
+        url: http://192.168.2.108:3001/d/viktor-shelly3em-company-home/e3700a9?orgId=1
+        aspect_ratio: 60%
+        card_mod:
+          style: |
+            ha-card {
+              border: 1px solid rgba(255, 255, 255, 0.12);
+              box-shadow: none;
+            }

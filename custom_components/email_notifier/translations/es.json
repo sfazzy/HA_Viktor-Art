@@ -1,0 +1,124 @@
+{
+    "title": "Email Notifier",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Configuración de la cuenta de correo",
+                "description": "Por favor, ingresa los detalles del servidor SMTP",
+                "data": {
+                    "server": "Servidor SMTP",
+                    "port": "Puerto",
+                    "username": "Nombre de usuario",
+                    "password": "Contraseña",
+                    "sender": "Correo del remitente",
+                    "recipients": "Correo(s) del destinatario",
+                    "sender_name": "Nombre del remitente",
+                    "encryption": "Cifrado",
+                    "timeout": "Tiempo de espera (segundos)",
+                    "test_connection": "Probar conexión"
+                }
+            }
+        },
+        "error": {
+            "connection_failed": "No se pudo conectar al servidor SMTP. Por favor, verifica la configuración."
+        },
+        "abort": {
+            "already_configured": "Esta cuenta de correo ya está configurada."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Editar cuenta de correo electrónico",
+                "description": "Editar la configuración de la cuenta de correo",
+                "data": {
+                    "server": "Servidor SMTP",
+                    "port": "Puerto",
+                    "username": "Nombre de usuario",
+                    "password": "Contraseña",
+                    "sender": "Correo del remitente",
+                    "recipients": "Correo(s) del destinatario",
+                    "sender_name": "Nombre del remitente",
+                    "encryption": "Cifrado",
+                    "timeout": "Tiempo de espera (segundos)",
+                    "test_connection": "Probar conexión"
+                }
+            }
+        },
+        "error": {
+            "connection_failed": "No se pudo conectar al servidor SMTP. Por favor, verifica la configuración."
+        }
+    },
+    "entity": {
+        "notify": {
+            "entity_name": {
+                "name": "Cuenta de correo remitente: {sender}"
+            }
+        },
+        "state": {
+            "ready": {
+                "name": "Listo"
+            },
+            "sending": {
+                "name": "Enviando..."
+            }
+        }
+    },
+    "selector": {
+        "encryption": {
+            "options": {
+                "none": "Ninguno",
+                "starttls": "STARTTLS",
+                "tls": "TLS"
+            }
+        }
+    },
+    "services": {
+        "send": {
+            "name": "Enviar correo",
+            "description": "Enviar un mensaje de correo a uno o más destinatarios.",
+            "fields": {
+                "account": {
+                    "name": "Cuenta de correo remitente",
+                    "description": "La cuenta de correo del remitente"
+                },
+                "recipients": {
+                    "name": "Correo(s) del destinatario",
+                    "description": "Separa múltiples destinatarios con comas"
+                },
+                "title": {
+                    "name": "Asunto",
+                    "description": "Asunto del correo electrónico"
+                },
+                "message": {
+                    "name": "Mensaje",
+                    "description": "Cuerpo del mensaje en texto plano. Opcional si se utiliza HTML"
+                },
+                "html": {
+                    "name": "Contenido HTML",
+                    "description": "Versión HTML del cuerpo del correo para formato enriquecido"
+                },
+                "images": {
+                    "name": "Imágenes",
+                    "description": "Rutas de archivos de imagen o URLs para incrustar en correos HTML (una por línea)"
+                },
+                "attachments": {
+                    "name": "Adjuntos",
+                    "description": "Rutas de archivos o URLs para adjuntar (una por línea)"
+                },
+                "from_address": {
+                    "name": "Dirección del remitente",
+                    "description": "Dirección de correo personalizada del remitente"
+                },
+                "sender_name": {
+                    "name": "Nombre del remitente",
+                    "description": "Nombre para mostrar personalizado del remitente"
+                },
+                "reply_to": {
+                    "name": "Dirección de respuesta (Reply-To)",
+                    "description": "Dirección de correo para respuestas"
+                }
+            }
+        }
+    }
+}

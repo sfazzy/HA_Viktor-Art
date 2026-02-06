@@ -1,0 +1,141 @@
+title: Viktor • Heating
+views:
+  - title: Boiler
+    path: boiler
+    icon: mdi:boiler
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Heating
+              Boiler overview + key temperatures. If something looks wrong, it should be visible here.
+
+          - type: tile
+            entity: sensor.panna_piec_temp
+            name: Boiler
+            icon: mdi:fire
+          - type: tile
+            entity: sensor.panna_spaliny_temp
+            name: Exhaust
+            icon: mdi:smoke
+          - type: tile
+            entity: sensor.panna_piec_moc
+            name: Boiler Power
+            icon: mdi:percent
+
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.panna_acc_temp_top
+            name: Acc Top
+            icon: mdi:thermometer
+          - type: tile
+            entity: sensor.panna_acc_temp_center
+            name: Acc Mid
+            icon: mdi:thermometer
+          - type: tile
+            entity: sensor.panna_acc_temp_bottom
+            name: Acc Bottom
+            icon: mdi:thermometer
+          - type: tile
+            entity: sensor.panna_bufor_napelnienie
+            name: Buffer %
+            icon: mdi:cup-water
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: history-graph
+            title: Boiler temperatures (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - sensor.panna_piec_temp
+              - sensor.panna_spaliny_temp
+              - sensor.panna_hwt
+          - type: history-graph
+            title: Accumulator tank (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - sensor.panna_acc_temp_top
+              - sensor.panna_acc_temp_center
+              - sensor.panna_acc_temp_bottom
+
+  - title: Temperatures
+    path: temperatures
+    icon: mdi:home-thermometer
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: markdown
+            content: |
+              # Temperatures
+              Room sensors (mostly Zigbee2MQTT) + a couple of device temperatures.
+
+          - type: tile
+            entity: sensor.t15_salon_patryk_temperature
+            name: Salon Patryk
+          - type: tile
+            entity: sensor.t4_patryk_biuro_temperature
+            name: Biuro Patryk
+          - type: tile
+            entity: sensor.t7_kotlownia_temperature
+            name: Kotłownia
+
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: entities
+            title: Home (°C)
+            show_header_toggle: false
+            entities:
+              - sensor.t15_salon_patryk_temperature
+              - sensor.t4_patryk_biuro_temperature
+              - sensor.t10_rodzice_dol_temperature
+              - sensor.t8_dostawka_temperature
+              - sensor.t12_garaz_temperature
+              - sensor.t5_bartek_temperature
+              - sensor.t2_w4_temperature
+              - sensor.m1_rodzice_dol_device_temperature
+              - sensor.m2_garaz_device_temperature
+              - sensor.m2_salon_patryk_device_temperature
+              - sensor.m5_bartek_device_temperature
+              - sensor.unknown_70_ee_50_06_9b_08_temperature
+
+          - type: entities
+            title: Company (°C)
+            show_header_toggle: false
+            entities:
+              - sensor.t6_pompownia_temperature
+              - sensor.t20_w3_temperature
+              - sensor.t15_malarnia_temperature
+              - sensor.b1_korytarz_warsztat_device_temperature
+              - sensor.b2_malarnia_device_temperature
+              - sensor.c1_w5_brama_device_temperature
+              - sensor.c2_w4_brama_device_temperature
+              - sensor.c2_garaz_brama_device_temperature
+              - sensor.c4_dostawka_device_temperature
+
+          - type: history-graph
+            title: Rooms (12h)
+            hours_to_show: 12
+            refresh_interval: 60
+            entities:
+              - sensor.t15_salon_patryk_temperature
+              - sensor.t4_patryk_biuro_temperature
+              - sensor.t7_kotlownia_temperature
+              - sensor.t6_pompownia_temperature

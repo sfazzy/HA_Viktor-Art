@@ -1,0 +1,515 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 0, 0, 0)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "B1 Korytarz warsztat",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'b1_korytarz_warsztat_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A"
+        },
+        {
+          "alias": "B2 Malarnia",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'b2_malarnia_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B"
+        },
+        {
+          "alias": "C1 - W5 brama",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'c1_w5_brama_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C"
+        },
+        {
+          "alias": "C2 W4 brama",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'c2_w4_brama_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D"
+        },
+        {
+          "alias": "C4 Dostawka",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'c4_dostawka_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E"
+        },
+        {
+          "alias": "M1 Rodzice Dol",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'm1_rodzice_dol_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F"
+        },
+        {
+          "alias": "M2 Garaz",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'm2_garaz_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G"
+        },
+        {
+          "alias": "M2 Salon Patryk",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'm2_salon_patryk_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "H"
+        },
+        {
+          "alias": "M4 - Galeria 2",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'm4_galeria_2_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "I"
+        },
+        {
+          "alias": "M5 Bartek",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'm5_bartek_device_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "J"
+        },
+        {
+          "alias": "Shelly Pro 3EM63 (Home)",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'shellypro3em63_a4f00fcbc1b8_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "K"
+        },
+        {
+          "alias": "Shelly Pro 3EM (Company)",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'shellypro3em_e08cfe971b1c_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "L"
+        },
+        {
+          "alias": "T1 Korytarz Warszt",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't1_korytarz_warszt_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "M"
+        },
+        {
+          "alias": "T2 W4",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't2_w4_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "N"
+        },
+        {
+          "alias": "T3 W5 Laser",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't3_w5_laser_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "O"
+        },
+        {
+          "alias": "T4 Patryk Biuro",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't4_patryk_biuro_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "P"
+        },
+        {
+          "alias": "T5 Bartek",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't5_bartek_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "Q"
+        },
+        {
+          "alias": "T6 Pompownia",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't6_pompownia_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "R"
+        },
+        {
+          "alias": "T7 Kotlownia",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't7_kotlownia_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "S"
+        },
+        {
+          "alias": "T8 Dostawka",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't8_dostawka_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "T"
+        },
+        {
+          "alias": "T9 Patryk Hall",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't9_patryk_hall_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "U"
+        },
+        {
+          "alias": "T10 Rodzice Dol",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't10_rodzice_dol_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "V"
+        },
+        {
+          "alias": "T12 Garaz",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't12_garaz_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "W"
+        },
+        {
+          "alias": "T14 Suszarnia Konwencjonalna",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't14_suszarnia_konwencjonalna_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "X"
+        },
+        {
+          "alias": "T15 Malarnia",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't15_malarnia_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "Y"
+        },
+        {
+          "alias": "T15 Salon Patryk",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't15_salon_patryk_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "Z"
+        },
+        {
+          "alias": "T18 Gora Rodzice",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't18_gora_rodzice_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "AA"
+        },
+        {
+          "alias": "T20 W3",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 't20_w3_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "AB"
+        },
+        {
+          "alias": "TO1 Kimla",
+          "query": "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = 'to1_kimla_temperature') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "AC"
+        }
+      ],
+      "title": "Temperatures - Zigbee2MQTT"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Laser G01",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't3_w5_laser_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A"
+        },
+        {
+          "alias": "Rodzice G02",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't18_gora_rodzice_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B"
+        },
+        {
+          "alias": "Biuro G02",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't4_patryk_biuro_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C"
+        },
+        {
+          "alias": "Warsztat G03",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't1_korytarz_warszt_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D"
+        },
+        {
+          "alias": "Pompownia G03",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't6_pompownia_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E"
+        },
+        {
+          "alias": "W4",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't2_w4_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F"
+        },
+        {
+          "alias": "Malarnia",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't15_malarnia_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G"
+        },
+        {
+          "alias": "Garaz",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't12_garaz_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "H"
+        },
+        {
+          "alias": "Bartek",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't5_bartek_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "I"
+        },
+        {
+          "alias": "Salon Patryk",
+          "query": "SELECT mean(\"value\") FROM \"percent\" WHERE (\"entity_id\"::tag = 't15_salon_patryk_humidity') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "J"
+        }
+      ],
+      "title": "Humidity - Zigbee2MQTT"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "hectopascal"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Laser",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't3_w5_laser_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A"
+        },
+        {
+          "alias": "Rodzice",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't18_gora_rodzice_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B"
+        },
+        {
+          "alias": "Biuro",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't4_patryk_biuro_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C"
+        },
+        {
+          "alias": "Warsztat",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't1_korytarz_warszt_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D"
+        },
+        {
+          "alias": "Pompownia",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't6_pompownia_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E"
+        },
+        {
+          "alias": "W4",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't2_w4_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F"
+        },
+        {
+          "alias": "Malarnia",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't15_malarnia_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G"
+        },
+        {
+          "alias": "Garaz",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't12_garaz_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "H"
+        },
+        {
+          "alias": "Bartek",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't5_bartek_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "I"
+        },
+        {
+          "alias": "Salon",
+          "query": "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = 't15_salon_patryk_pressure') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "J"
+        }
+      ],
+      "title": "Pressure - Zigbee2MQTT"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Gate C1 W5 contact",
+          "query": "SELECT last(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'binary_sensor.c1_w5_brama_contact') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "A",
+          "rawQuery": true
+        },
+        {
+          "alias": "Gate C2 W4 contact",
+          "query": "SELECT last(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'binary_sensor.c2_w4_brama_contact') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "B",
+          "rawQuery": true
+        },
+        {
+          "alias": "Garage contact",
+          "query": "SELECT last(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'binary_sensor.c2_garaz_brama_contact') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "C",
+          "rawQuery": true
+        }
+      ],
+      "title": "Gate contacts"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 33
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Smoke Garage",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'sensor.s3_garaz_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "A",
+          "rawQuery": true
+        },
+        {
+          "alias": "Smoke Warsztat",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'sensor.s5_warsztat_schody_ga3ra_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "B",
+          "rawQuery": true
+        },
+        {
+          "alias": "Smoke Rodzice",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'sensor.s9_rodzice_gora_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "C",
+          "rawQuery": true
+        },
+        {
+          "alias": "Smoke Patryk Hall",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'sensor.s2_patryk_dom_korytarz_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "D",
+          "rawQuery": true
+        },
+        {
+          "alias": "Smoke Bartek",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"entity_id\" = 'sensor.s8_bartek_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "refId": "E",
+          "rawQuery": true
+        }
+      ],
+      "title": "Smoke density tracks"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "zigbee2mqtt",
+    "climate",
+    "safety"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Zigbee2MQTT Ultimate",
+  "uid": "z2m-ultimate",
+  "version": 1,
+  "weekStart": ""
+}

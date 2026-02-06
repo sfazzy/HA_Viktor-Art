@@ -1,0 +1,31 @@
+#
+# WARNING: DEPRECATED / NOT USED
+#
+# This folder previously contained a Zigbee2MQTT instance configured to use the same
+# coordinator as `zigbee2mqtt2` (G02), which caused conflicts (duplicate base_topic +
+# duplicate serial port).
+#
+# Keep this file as a safe placeholder only (no coordinator connection).
+#
+version: 4
+permit_join: false
+
+homeassistant:
+  enabled: true
+
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  base_topic: tasmota_unused
+
+frontend:
+  enabled: false
+
+serial:
+  # Intentionally invalid to avoid touching any real coordinator.
+  port: tcp://192.0.2.1:8888
+  adapter: ezsp
+
+advanced:
+  log_level: warning
+
+devices: {}

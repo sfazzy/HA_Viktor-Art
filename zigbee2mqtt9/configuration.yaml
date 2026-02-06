@@ -1,0 +1,61 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+  channel: 13
+  network_key:
+    - 55
+    - 77
+    - 164
+    - 2
+    - 183
+    - 53
+    - 108
+    - 80
+    - 114
+    - 71
+    - 196
+    - 165
+    - 77
+    - 225
+    - 24
+    - 58
+  pan_id: 14364
+  ext_pan_id:
+    - 49
+    - 104
+    - 250
+    - 197
+    - 247
+    - 10
+    - 1
+    - 121
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g9
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.169:8888
+  adapter: ezsp
+restart: always
+devices:
+  '0x54ef441000d9b1c8':
+    friendly_name: S2 Patryk Dom Korytarz
+  '0x00158d008b77f961':
+    friendly_name: T15 Salon Patryk
+  '0x00158d008b35fcf6':
+    friendly_name: M2 Salon Patryk
+  '0xa4c138bed62ce9bb':
+    friendly_name: '0xa4c138bed62ce9bb'
+  '0x00158d008b77dbae':
+    friendly_name: T9 - Patryk Hall
+blocklist: []

@@ -1,0 +1,58 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+  channel: 11
+  network_key:
+    - 40
+    - 217
+    - 182
+    - 222
+    - 222
+    - 3
+    - 152
+    - 225
+    - 58
+    - 51
+    - 175
+    - 254
+    - 178
+    - 30
+    - 17
+    - 246
+  pan_id: 25253
+  ext_pan_id:
+    - 0
+    - 3
+    - 159
+    - 113
+    - 166
+    - 149
+    - 61
+    - 179
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g1
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.161:6688
+  adapter: ezsp
+restart: always
+devices:
+  '0x00158d008b85c78d':
+    friendly_name: C1 - W5 brama
+  '0x00158d008b7cd65c':
+    friendly_name: T3 - W5 Laser
+blocklist:
+  - '0x54ef441001243f60'
+  - '0x54ef441000d99efe'
+  - '0xa4c13832b48e187a'

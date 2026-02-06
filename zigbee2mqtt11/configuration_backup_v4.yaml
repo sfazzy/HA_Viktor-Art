@@ -1,0 +1,56 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+  channel: 22
+  network_key:
+    - 111
+    - 1
+    - 110
+    - 108
+    - 1
+    - 196
+    - 254
+    - 34
+    - 35
+    - 91
+    - 60
+    - 75
+    - 163
+    - 81
+    - 86
+    - 155
+  pan_id: 57741
+  ext_pan_id:
+    - 0
+    - 156
+    - 191
+    - 255
+    - 193
+    - 14
+    - 112
+    - 84
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g11
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: false
+serial:
+  port: tcp://192.168.2.171:8888
+  adapter: ezsp
+restart: always
+devices:
+  '0x00158d008b7a529b':
+    friendly_name: T17 - Galeria
+  '0x00158d008b5a269d':
+    friendly_name: M4 - Galeria
+  '0xa4c138e0825b93a0':
+    friendly_name: TO1 - Kimla

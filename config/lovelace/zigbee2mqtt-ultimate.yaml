@@ -1,0 +1,144 @@
+title: Zigbee2MQTT Ultimate
+views:
+  - title: Climate
+    path: climate
+    icon: mdi:thermometer
+    cards:
+      - type: markdown
+        content: |
+          ## Unified climate view
+          Temperatures, humidity, and pressure values are drawn from all Zigbee2MQTT coordinators; tweak the sensors below if I missed any.
+
+      - type: history-graph
+        title: Temperature timeline (last 24h)
+        entities:
+          - sensor.t3_w5_laser_temperature
+          - sensor.t18_gora_rodzice_temperature
+          - sensor.t4_patryk_biuro_temperature
+          - sensor.t1_korytarz_warszt_temperature
+          - sensor.t6_pompownia_temperature
+          - sensor.t2_w4_temperature
+          - sensor.t15_malarnia_temperature
+          - sensor.t12_garaz_temperature
+          - sensor.t5_bartek_temperature
+          - sensor.t9_patryk_hall_temperature
+          - sensor.t15_salon_patryk_temperature
+        hours_to_show: 24
+        refresh_interval: 180
+
+      - type: glance
+        title: Latest temperature readings
+        entities:
+          - entity: sensor.t3_w5_laser_temperature
+            name: Laser (G01)
+          - entity: sensor.t18_gora_rodzice_temperature
+            name: Parents (G02)
+          - entity: sensor.t4_patryk_biuro_temperature
+            name: Office (G02)
+          - entity: sensor.t6_pompownia_temperature
+            name: Pump (G03)
+          - entity: sensor.t2_w4_temperature
+            name: W4 (G05)
+          - entity: sensor.t15_malarnia_temperature
+            name: Painting room (G06)
+          - entity: sensor.t12_garaz_temperature
+            name: Garage (G07)
+          - entity: sensor.t5_bartek_temperature
+            name: Bartek (G10)
+          - entity: sensor.t15_salon_patryk_temperature
+            name: Living (G09)
+
+  - title: Atmosphere
+    path: atmosphere
+    icon: mdi:air-filter
+    cards:
+      - type: history-graph
+        title: Humidity trend (24h)
+        entities:
+          - sensor.t3_w5_laser_humidity
+          - sensor.t18_gora_rodzice_humidity
+          - sensor.t4_patryk_biuro_humidity
+          - sensor.t1_korytarz_warszt_humidity
+          - sensor.t6_pompownia_humidity
+          - sensor.t2_w4_humidity
+          - sensor.t15_malarnia_humidity
+          - sensor.t12_garaz_humidity
+          - sensor.t5_bartek_humidity
+          - sensor.t9_patryk_hall_humidity
+          - sensor.t15_salon_patryk_humidity
+        hours_to_show: 24
+        refresh_interval: 180
+
+      - type: history-graph
+        title: Pressure overview (24h)
+        entities:
+          - sensor.t3_w5_laser_pressure
+          - sensor.t18_gora_rodzice_pressure
+          - sensor.t4_patryk_biuro_pressure
+          - sensor.t1_korytarz_warszt_pressure
+          - sensor.t6_pompownia_pressure
+          - sensor.t2_w4_pressure
+          - sensor.t15_malarnia_pressure
+          - sensor.t12_garaz_pressure
+          - sensor.t5_bartek_pressure
+          - sensor.t9_patryk_hall_pressure
+          - sensor.t15_salon_patryk_pressure
+        hours_to_show: 24
+        refresh_interval: 180
+
+  - title: Gates & Access
+    path: gates
+    icon: mdi:gate
+    cards:
+      - type: entities
+        title: Gate contact states
+        show_header_toggle: false
+        entities:
+          - binary_sensor.c1_w5_brama_contact
+          - binary_sensor.c2_w4_brama_contact
+          - binary_sensor.c2_garaz_brama_contact
+          - binary_sensor.c2_garaz_brama_motion
+
+      - type: history-graph
+        title: Gate activity (inferred from opening/closing)
+        entities:
+          - binary_sensor.c1_w5_brama_contact
+          - binary_sensor.c2_w4_brama_contact
+          - binary_sensor.c2_garaz_brama_contact
+        hours_to_show: 48
+        refresh_interval: 300
+
+  - title: Safety Sensors
+    path: safety
+    icon: mdi:alert
+    cards:
+      - type: entities
+        title: Smoke detector summaries
+        show_header_toggle: false
+        entities:
+          - sensor.s3_garaz_smoke_density
+          - sensor.s5_warsztat_schody_ga3ra_smoke_density
+          - sensor.s9_rodzice_gora_smoke_density
+          - sensor.s2_patryk_dom_korytarz_smoke_density
+          - sensor.s8_bartek_smoke_density
+
+      - type: history-graph
+        title: Smoke density timelines
+        entities:
+          - sensor.s3_garaz_smoke_density
+          - sensor.s5_warsztat_schody_ga3ra_smoke_density
+          - sensor.s9_rodzice_gora_smoke_density
+          - sensor.s2_patryk_dom_korytarz_smoke_density
+          - sensor.s8_bartek_smoke_density
+        hours_to_show: 72
+        refresh_interval: 300
+
+      - type: entities
+        title: Flood sensors / tamper (placeholders)
+        show_header_toggle: false
+        entities:
+          - binary_sensor.flood_basement_status
+          - binary_sensor.flood_attic_status
+          - binary_sensor.malarnia_leak
+          - binary_sensor.pumpownia_leak
+        footer: Add moisture/flood binary sensors here if you have them in Zigbee2MQTT.

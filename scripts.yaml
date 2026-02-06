@@ -1,0 +1,41 @@
+z2m_safety_silence:
+  alias: Z2M Safety - Silence alarms
+  icon: mdi:volume-off
+  mode: single
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: ha/z2m_safety/silence
+        payload: '{"action":"press","source":"ha_script"}'
+        qos: 0
+        retain: false
+
+z2m_safety_test_mode:
+  alias: Z2M Safety - Test mode (sirens off)
+  icon: mdi:alarm-off
+  mode: single
+  sequence:
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.safety_sirens_enabled
+    - service: mqtt.publish
+      data:
+        topic: ha/z2m_safety/sirens
+        payload: '{"enabled":false,"source":"ha_script"}'
+        qos: 0
+        retain: false
+
+z2m_safety_production_mode:
+  alias: Z2M Safety - Production mode (sirens on)
+  icon: mdi:alarm
+  mode: single
+  sequence:
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.safety_sirens_enabled
+    - service: mqtt.publish
+      data:
+        topic: ha/z2m_safety/sirens
+        payload: '{"enabled":true,"source":"ha_script"}'
+        qos: 0
+        retain: false

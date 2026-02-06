@@ -1,0 +1,54 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+  channel: 25
+  network_key:
+    - 16
+    - 32
+    - 48
+    - 64
+    - 80
+    - 96
+    - 112
+    - 128
+    - 144
+    - 160
+    - 176
+    - 192
+    - 208
+    - 224
+    - 240
+    - 15
+  pan_id: 50001
+  ext_pan_id:
+    - 22
+    - 33
+    - 44
+    - 55
+    - 66
+    - 77
+    - 88
+    - 99
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: addons
+  password: giePh3Iigh0SheiN4Ogh5OoRai0eeK7eishohgech5poCheito2eiphu0iG5Ziep
+  base_topic: tasmota_g12
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.172:8888
+  adapter: ezsp
+restart: always
+devices:
+  '0xa4c138b372ce23e6':
+    friendly_name: A1 - Rodzice
+  '0x54ef44100129504f':
+    friendly_name: S9 - Rodzice Gora

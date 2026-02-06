@@ -1,0 +1,67 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+  channel: 17
+  network_key:
+    - 166
+    - 70
+    - 40
+    - 110
+    - 89
+    - 161
+    - 164
+    - 252
+    - 63
+    - 171
+    - 216
+    - 40
+    - 84
+    - 15
+    - 249
+    - 52
+  pan_id: 13434
+  ext_pan_id:
+    - 238
+    - 65
+    - 159
+    - 19
+    - 100
+    - 184
+    - 22
+    - 57
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g10
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.170:8888
+  adapter: ezsp
+restart: always
+devices:
+  '0x54ef441000d99efe':
+    friendly_name: S8 Bartek
+  '0x00158d008b5a294c':
+    friendly_name: M5 Bartek
+  '0x00158d008b7cd5ec':
+    friendly_name: T5 Bartek
+  '0x00158d008b615893':
+    friendly_name: T8 Dostawka
+  '0x00158d008b85dfb5':
+    friendly_name: C4 Dostawka
+  '0xa4c13832b48e187a':
+    friendly_name: '0xa4c13832b48e187a'
+  '0x00158d008b35dd1d':
+    friendly_name: '0x00158d008b35dd1d'
+  '0xa4c1381a5d951b5b':
+    friendly_name: TO2 - Suszarnia
+blocklist: []

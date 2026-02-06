@@ -1,0 +1,60 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  network_key:
+    - 12
+    - 222
+    - 91
+    - 18
+    - 199
+    - 44
+    - 3
+    - 88
+    - 14
+    - 250
+    - 76
+    - 100
+    - 33
+    - 17
+    - 190
+    - 73
+  channel: 12
+  pan_id: 41234
+  ext_pan_id:
+    - 201
+    - 122
+    - 33
+    - 44
+    - 55
+    - 66
+    - 77
+    - 88
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g2
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.162:8888
+  adapter: ezsp
+restart: always
+devices:
+  '0x7cc6b6fffe16312c':
+    friendly_name: S1 - Patryk Biuro
+  '0x00158d008b77dcee':
+    friendly_name: T18 - Gora Rodzice
+  '0xa4c138af055dcf36':
+    friendly_name: '0xa4c138af055dcf36'
+  '0x00158d008b35fc4f':
+    friendly_name: M6 - Patryk Góra
+  '0x00158d008b7cd5bd':
+    friendly_name: T4 - Patryk Góra
+blocklist: []
+passlist: []

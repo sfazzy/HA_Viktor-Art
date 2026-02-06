@@ -1,0 +1,608 @@
+﻿
+# Loads default set of integrations. Do not remove.
+default_config:
+# LIVE-MARKER-123
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Zigbee2MQTT helper groups (auto-generated from entity registry)
+group: !include z2m_groups.yaml
+
+input_boolean:
+  safety_sirens_enabled:
+    name: Safety - Sirens enabled
+    icon: mdi:alarm
+
+binary_sensor:
+  - platform: template
+    sensors:
+      safety_z2m_any_bridge_offline:
+        friendly_name: "Safety - Any Z2M bridge offline"
+        device_class: problem
+        value_template: >-
+          {{
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_5','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_6','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_7','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_8','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_9','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_10','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_11','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_12','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_13','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_14','off') or
+            is_state('binary_sensor.zigbee2mqtt_bridge_connection_state_16','off')
+          }}
+
+      safety_z2m_any_permit_join_on:
+        friendly_name: "Safety - Any Z2M permit_join ON"
+        device_class: problem
+        value_template: >-
+          {{
+            is_state('switch.zigbee2mqtt_bridge_permit_join_2','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_3','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_4','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_5','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_6','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_7','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_8','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_9','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_10','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_11','on') or
+            is_state('switch.zigbee2mqtt_bridge_permit_join_12','on')
+          }}
+
+logger:
+  default: warning
+  logs:
+    homeassistant.components.influxdb: info
+
+influxdb:
+  host: 192.168.2.108
+  port: 8086
+  database: homeassistant
+  username: homeassistant
+  password: !secret influxdb_password
+  max_retries: 3
+  default_measurement: state
+
+# Boiler (Hargassner) telnet poller.
+# Uses a command_line sensor to avoid issues with the built-in `tcp` sensor
+# (filedescriptor out of range in select()) and to avoid custom integration loading problems.
+command_line:
+  - sensor:
+      name: panna_telnet
+      command: "python3 /config/panna_telnet_poll.py --host 192.168.2.3 --port 23 --timeout 5 --max-bytes 4096"
+      scan_interval: 30
+      value_template: "{{ value_json.state }}"
+      json_attributes:
+        - tokens
+        - tokens_len
+        - raw_len
+        - last_error
+
+sensor:
+  # Safety overview sensors for large-area supervision
+  - platform: template
+    sensors:
+      safety_z2m_offline_devices_total:
+        friendly_name: "Safety - Z2M offline devices (total)"
+        unit_of_measurement: "devices"
+        value_template: >-
+          {{
+            [
+              states('sensor.z2m_g01_sensors_offline'),
+              states('sensor.z2m_g02_sensors_offline'),
+              states('sensor.z2m_g03_sensors_offline'),
+              states('sensor.z2m_g04_sensors_offline'),
+              states('sensor.z2m_g05_sensors_offline'),
+              states('sensor.z2m_g06_sensors_offline'),
+              states('sensor.z2m_g07_sensors_offline'),
+              states('sensor.z2m_g08_sensors_offline'),
+              states('sensor.z2m_g09_sensors_offline'),
+              states('sensor.z2m_g10_sensors_offline'),
+              states('sensor.z2m_g12_sensors_offline')
+            ] | map('int') | sum
+          }}
+
+      safety_health:
+        friendly_name: "Safety - Health"
+        value_template: >-
+          {% if is_state('binary_sensor.safety_z2m_any_bridge_offline','on') %}
+            ALARM
+          {% elif is_state('binary_sensor.safety_z2m_any_permit_join_on','on') %}
+            WARN
+          {% elif (states('sensor.safety_z2m_offline_devices_total') | int(0)) > 0 %}
+            WARN
+          {% else %}
+            OK
+          {% endif %}
+        icon_template: >-
+          {% if is_state('binary_sensor.safety_z2m_any_bridge_offline','on') %}
+            mdi:alert-octagon
+          {% elif is_state('binary_sensor.safety_z2m_any_permit_join_on','on') %}
+            mdi:alert
+          {% elif (states('sensor.safety_z2m_offline_devices_total') | int(0)) > 0 %}
+            mdi:alert
+          {% else %}
+            mdi:shield-check
+          {% endif %}
+
+  - platform: template
+    sensors:
+      panna_acc_temp_top:
+        friendly_name: Hargassner_acc_temp_top
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 27) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[27] | float }}
+
+      panna_acc_temp_center:
+        friendly_name: Hargassner_acc_temp_center
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 28) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[28] | float }}
+
+      panna_acc_temp_bottom:
+        friendly_name: Hargassner_acc_temp_bottom
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 29) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[29] | float }}
+
+      panna_piec_temp:
+        friendly_name: Hargassner_piec_temp
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 4) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[4] | float }}
+
+      panna_spaliny_temp:
+        friendly_name: Hargassner_piec_spaliny_temp
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 6) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[6] | float }}
+
+      panna_piec_moc:
+        friendly_name: Hargassner_piec_moc
+        unit_of_measurement: "%"
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 13) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[13] | float }}
+
+      panna_hwt:
+        friendly_name: Hargassner_hwt
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 24) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[24] | float }}
+
+      panna_obieg_dom:
+        friendly_name: Hargassner_dom
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 62) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[62] | float }}
+
+      panna_obieg_warsztat:
+        friendly_name: Hargassner_war
+        unit_of_measurement: "\u00b0C"
+        device_class: temperature
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 68) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[68] | float }}
+
+      panna_bufor_napelnienie:
+        friendly_name: Hargassner_buffer_percentage
+        unit_of_measurement: "%"
+        availability_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p is not none and (p | length > 43) }}
+        value_template: >-
+          {% set p = state_attr('sensor.panna_telnet', 'tokens') %}
+          {{ p[43] | float }}
+
+
+
+
+
+
+      # --- Zigbee2MQTT per-network sensor counts (auto-generated groups) ---
+      # These sensors count how many MQTT-discovered sensor.* entities belong to each Z2M base_topic
+      # and how many of them are currently unavailable/unknown (treated as offline).
+
+      z2m_g01_sensors_total:
+        friendly_name: "G01 - W5 Laser (Viktor-Art) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g01_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g01_sensors_online:
+        friendly_name: "G01 - W5 Laser (Viktor-Art) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g01_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g01_sensors_offline:
+        friendly_name: "G01 - W5 Laser (Viktor-Art) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g01_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g01_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g03_sensors_total:
+        friendly_name: "G03 - Pompownia (Viktor-Art) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g03_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g03_sensors_online:
+        friendly_name: "G03 - Pompownia (Viktor-Art) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g03_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g03_sensors_offline:
+        friendly_name: "G03 - Pompownia (Viktor-Art) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g03_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g03_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g04_sensors_total:
+        friendly_name: "G04 - W3 (Viktor-Art) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g04_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g04_sensors_online:
+        friendly_name: "G04 - W3 (Viktor-Art) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g04_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g04_sensors_offline:
+        friendly_name: "G04 - W3 (Viktor-Art) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g04_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g04_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g05_sensors_total:
+        friendly_name: "G05 - W4 6AX (Viktor-Art) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g05_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g05_sensors_online:
+        friendly_name: "G05 - W4 6AX (Viktor-Art) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g05_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g05_sensors_offline:
+        friendly_name: "G05 - W4 6AX (Viktor-Art) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g05_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g05_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g06_sensors_total:
+        friendly_name: "G06 - Mal (Viktor-Art) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g06_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g06_sensors_online:
+        friendly_name: "G06 - Mal (Viktor-Art) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g06_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g06_sensors_offline:
+        friendly_name: "G06 - Mal (Viktor-Art) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g06_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g06_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g10_sensors_total:
+        friendly_name: "G10 - Bartek Biuro (Viktor-Art) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g10_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g10_sensors_online:
+        friendly_name: "G10 - Bartek Biuro (Viktor-Art) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g10_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g10_sensors_offline:
+        friendly_name: "G10 - Bartek Biuro (Viktor-Art) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g10_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g10_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g02_sensors_total:
+        friendly_name: "G02 - Biuro Patryk (Home) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g02_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g02_sensors_online:
+        friendly_name: "G02 - Biuro Patryk (Home) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g02_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g02_sensors_offline:
+        friendly_name: "G02 - Biuro Patryk (Home) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g02_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g02_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g07_sensors_total:
+        friendly_name: "G07 - Garaz (Home) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g07_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g07_sensors_online:
+        friendly_name: "G07 - Garaz (Home) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g07_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g07_sensors_offline:
+        friendly_name: "G07 - Garaz (Home) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g07_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g07_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g08_sensors_total:
+        friendly_name: "G08 - Rodzice Dom (Home) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g08_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g08_sensors_online:
+        friendly_name: "G08 - Rodzice Dom (Home) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g08_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g08_sensors_offline:
+        friendly_name: "G08 - Rodzice Dom (Home) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g08_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g08_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g09_sensors_total:
+        friendly_name: "G09 - Patryk Dom (Home) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g09_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g09_sensors_online:
+        friendly_name: "G09 - Patryk Dom (Home) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g09_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g09_sensors_offline:
+        friendly_name: "G09 - Patryk Dom (Home) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g09_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g09_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+      z2m_g12_sensors_total:
+        friendly_name: "G12 - Rodzice Gora (Home) ? Sensors total"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g12_sensors') | list %}
+          {{ ents | count }}
+
+      z2m_g12_sensors_online:
+        friendly_name: "G12 - Rodzice Gora (Home) ? Sensors online"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set ents = expand('group.z2m_g12_sensors') | list %}
+          {{ ents | rejectattr('state','eq','unavailable') | rejectattr('state','eq','unknown') | list | count }}
+
+      z2m_g12_sensors_offline:
+        friendly_name: "G12 - Rodzice Gora (Home) ? Sensors offline"
+        unit_of_measurement: "entities"
+        value_template: >-
+          {% set total = states('sensor.z2m_g12_sensors_total') | int(0) %}
+          {% set online = states('sensor.z2m_g12_sensors_online') | int(0) %}
+          {{ (total - online) if (total - online) > 0 else 0 }}
+
+# Zigbee2MQTT add-on UIs in the HA left sidebar.
+#
+# This uses the custom integration in `custom_components/ingress` (domain: `ingress`)
+# because HA's built-in `panel_iframe:` does not work reliably here and caused 404s.
+ingress:
+  grafana:
+    work_mode: iframe
+    ui_mode: replace
+    require_admin: true
+    title: "Grafana (Admin)"
+    icon: mdi:chart-line
+    url: "http://192.168.2.108:3001/login"
+
+  zigbee2mqtt1:
+    work_mode: hassio
+    title: "G01 - W5 Laser (Viktor-Art)"
+    icon: mdi:zigbee
+    url: 45df7312_zigbee2mqtt
+    cookie_name: z2m_g01
+  zigbee2mqtt2:
+    work_mode: hassio
+    title: "G02 - Biuro Patryk (Home)"
+    icon: mdi:zigbee
+    url: 8c77aaed_zigbee2mqtt
+    cookie_name: z2m_g02
+  zigbee2mqtt3:
+    work_mode: hassio
+    title: "G03 - Pompownia (Viktor-Art)"
+    icon: mdi:zigbee
+    url: 058ba649_zigbee2mqtt
+    cookie_name: z2m_g03
+  zigbee2mqtt4:
+    work_mode: hassio
+    title: "G04 - W3 (Viktor-Art)"
+    icon: mdi:zigbee
+    url: 9336c2b0_zigbee2mqtt
+    cookie_name: z2m_g04
+  zigbee2mqtt5:
+    work_mode: hassio
+    title: "G05 - W4 6AX (Viktor-Art)"
+    icon: mdi:zigbee
+    url: 1ff69cfe_zigbee2mqtt
+    cookie_name: z2m_g05
+  zigbee2mqtt6:
+    work_mode: hassio
+    title: "G06 - Mal (Viktor-Art)"
+    icon: mdi:zigbee
+    url: ffab12c2_zigbee2mqtt
+    cookie_name: z2m_g06
+  zigbee2mqtt7:
+    work_mode: hassio
+    title: "G07 - Garaz (Home)"
+    icon: mdi:zigbee
+    url: 3b2f1408_zigbee2mqtt
+    cookie_name: z2m_g07
+  zigbee2mqtt8:
+    work_mode: hassio
+    title: "G08 - Rodzice Dom (Home)"
+    icon: mdi:zigbee
+    url: 78fc6e85_zigbee2mqtt
+    cookie_name: z2m_g08
+  zigbee2mqtt9:
+    work_mode: hassio
+    title: "G09 - Patryk Dom (Home)"
+    icon: mdi:zigbee
+    url: 0d393435_zigbee2mqtt
+    cookie_name: z2m_g09
+  zigbee2mqtt10:
+    work_mode: hassio
+    title: "G10 - Bartek Biuro (Viktor-Art)"
+    icon: mdi:zigbee
+    url: 27f8a422_zigbee2mqtt
+    cookie_name: z2m_g10
+  zigbee2mqtt11:
+    work_mode: hassio
+    title: "G11 - Spare"
+    icon: mdi:zigbee
+    url: 0ef4a71a_zigbee2mqtt
+    cookie_name: z2m_g11
+  zigbee2mqtt12:
+    work_mode: hassio
+    title: "G12 - Rodzice Gora (Home)"
+    icon: mdi:zigbee
+    url: def7cce8_zigbee2mqtt
+    cookie_name: z2m_g12
+
+# Additional Lovelace dashboards (YAML mode).
+lovelace:
+  dashboards:
+    viktor-slick:
+      mode: yaml
+      title: Viktor (Slick)
+      icon: mdi:monitor-dashboard
+      show_in_sidebar: true
+      require_admin: false
+      filename: lovelace/slick.yaml
+
+    viktor-heating:
+      mode: yaml
+      title: Viktor (Heating)
+      icon: mdi:boiler
+      show_in_sidebar: true
+      require_admin: false
+      filename: lovelace/heating.yaml
+
+    viktor-zigbee2mqtt:
+      mode: yaml
+      title: Zigbee2MQTT (Launcher)
+      icon: mdi:zigbee
+      show_in_sidebar: false
+      require_admin: false
+      filename: lovelace/zigbee2mqtt-launcher.yaml

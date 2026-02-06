@@ -1,0 +1,13 @@
+{
+  "domain": "saj_inverter",
+  "name": "SAJ Inverter (Local)",
+  "version": "0.1.0",
+  "documentation": "https://github.com/sfazzy/SAJInverter",
+  "requirements": [],
+  "codeowners": [ "@sfazzy" ],
+  "config_flow": true,
+  "options_flow": true,
+  "logo": "icon.png",
+  "iot_class": "local_polling",
+  "dependencies": []
+}

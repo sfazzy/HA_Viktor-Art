@@ -1,0 +1,65 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  channel: 20
+  pan_id: 30003
+  ext_pan_id:
+    - 149
+    - 42
+    - 37
+    - 171
+    - 141
+    - 156
+    - 28
+    - 82
+  network_key:
+    - 145
+    - 146
+    - 139
+    - 171
+    - 109
+    - 50
+    - 255
+    - 146
+    - 60
+    - 46
+    - 218
+    - 95
+    - 174
+    - 200
+    - 254
+    - 24
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g3
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.163:8888
+  adapter: ezsp
+restart: always
+devices:
+  '0x00158d008b4437c3':
+    friendly_name: B1 Korytarz warsztat
+  '0xa4c1388a1a522365':
+    friendly_name: P1 Pompownia
+  '0x54ef4410012949d0':
+    friendly_name: S6 Korytarz Warsztat
+  '0x00158d008b7cd622':
+    friendly_name: T1 Korytarz Warszt
+  '0x00158d008b7cd540':
+    friendly_name: T6 pompownia
+  '0xa4c13822b76ad085':
+    friendly_name: F1 Zalanie Pompownia
+  '0xa4c13832b48e187a':
+    friendly_name: '0xa4c13832b48e187a'
+  '0xa4c138ecb6cfee87':
+    friendly_name: A2 - Kopiarka
+blocklist: []

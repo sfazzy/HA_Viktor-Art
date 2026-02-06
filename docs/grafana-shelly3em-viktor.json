@@ -1,0 +1,1417 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Company total power",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Company (viktor-art) - Total Power (Shelly Pro 3EM e08cfe971b1c)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "custom": {
+            "lineWidth": 2
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PF A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PF B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PF C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Company phase A",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_a_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company phase B",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_b_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company phase C",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_c_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "PF A",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_a_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "PFA",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "PF B",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_b_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "PFB",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "PF C",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_c_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "PFC",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Company - Power + Power factor (per phase)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "voltampere"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Company phase A",
+          "query": "SELECT mean(\"value\") FROM \"VA\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_a_apparent_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company phase B",
+          "query": "SELECT mean(\"value\") FROM \"VA\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_b_apparent_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company phase C",
+          "query": "SELECT mean(\"value\") FROM \"VA\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_c_apparent_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Company - Apparent Power by Phase (VA)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "custom": {
+            "fillOpacity": 8,
+            "lineWidth": 2,
+            "showPoints": "never"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company import (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-yellow"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company export/returned (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-red"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company PGE buffer 70% (kWh)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#7EB26D"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company import (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-yellow"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company export/returned (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-red"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company PGE buffer 70% (kWh)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#7EB26D"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company shade: consumed above returned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#E24D42"
+                }
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-red"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 22
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Company shade: returned above consumed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#EAB839"
+                }
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-yellow"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 14
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Company import (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company export/returned (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_energy_returned') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company PGE buffer 70% (kWh)",
+          "query": "SELECT mean(\"value\") * 0.7 FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_energy_returned') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "type": "math",
+          "expression": "((($A - $B) + abs($A - $B)) / 2)",
+          "alias": "Company shade: consumed above returned"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "type": "math",
+          "expression": "((($B - $A) + abs($B - $A)) / 2)",
+          "alias": "Company shade: returned above consumed"
+        }
+      ],
+      "title": "Company - Energy Import/Export + PGE buffer",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Home total active power",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_active_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Home - Total Active Power (Shelly Pro 3EM63 a4f00fcbc1b8)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "custom": {
+            "lineWidth": 2
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PF A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PF B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PF C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Home phase A",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_a_active_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home phase B",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_b_active_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home phase C",
+          "query": "SELECT mean(\"value\") FROM \"W\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_c_active_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "PF A",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_a_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "PFA",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "PF B",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_b_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "PFB",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "PF C",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_c_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "PFC",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Home - Power + Power factor (per phase)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "voltampere"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Home phase A",
+          "query": "SELECT mean(\"value\") FROM \"VA\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_a_apparent_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home phase B",
+          "query": "SELECT mean(\"value\") FROM \"VA\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_b_apparent_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home phase C",
+          "query": "SELECT mean(\"value\") FROM \"VA\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_c_apparent_power') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Home - Apparent Power by Phase (VA)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "custom": {
+            "fillOpacity": 8,
+            "lineWidth": 2,
+            "showPoints": "never"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home import (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-yellow"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home export/returned (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-red"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home PGE buffer 70% (kWh)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#7EB26D"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home import (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-yellow"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home export/returned (kWh)"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-red"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home PGE buffer 70% (kWh)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#7EB26D"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home shade: consumed above returned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#E24D42"
+                }
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-red"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 22
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home shade: returned above consumed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#EAB839"
+                }
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "normal",
+                  "group": "gap-yellow"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 14
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 56
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Home import (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_active_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home export/returned (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_active_returned_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home PGE buffer 70% (kWh)",
+          "query": "SELECT mean(\"value\") * 0.7 FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_active_returned_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "type": "math",
+          "expression": "((($A - $B) + abs($A - $B)) / 2)",
+          "alias": "Home shade: consumed above returned"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "type": "math",
+          "expression": "((($B - $A) + abs($B - $A)) / 2)",
+          "alias": "Home shade: returned above consumed"
+        }
+      ],
+      "title": "Home - Energy Import/Export + PGE buffer",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 72
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Company PF A",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_a_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company PF B",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_b_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company PF C",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_c_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Company - Power Factor by Phase",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 80
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Home PF A",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_a_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home PF B",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_b_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home PF C",
+          "query": "SELECT mean(\"value\") FROM \"state\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_c_power_factor') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Home - Power Factor by Phase",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "amp"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 88
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Company current total",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company current A",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_a_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company current B",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_b_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company current C",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_phase_c_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Company - Current (enable the current entities in HA if empty)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "amp"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 96
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Home current total",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home current A",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_a_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home current B",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_b_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home current C",
+          "query": "SELECT mean(\"value\") FROM \"A\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_phase_c_current') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Home - Current (enable the current entities in HA if empty)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwh",
+          "custom": {
+            "fillOpacity": 6,
+            "lineWidth": 2
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 104
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "alias": "Company import (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company export/returned (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_energy_returned') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Company PGE buffer 70% (kWh)",
+          "query": "SELECT mean(\"value\") * 0.7 FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em_e08cfe971b1c_energy_returned') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home import (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_active_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home export/returned (kWh)",
+          "query": "SELECT mean(\"value\") FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_active_returned_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Home PGE buffer 70% (kWh)",
+          "query": "SELECT mean(\"value\") * 0.7 FROM \"kWh\" WHERE (\"domain\" = 'sensor' AND \"entity_id\" = 'shellypro3em63_a4f00fcbc1b8_total_active_returned_energy') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Combined - Energy import/export + PGE buffer",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "home-assistant",
+    "influxdb",
+    "shelly",
+    "viktor-art"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Viktor - Shelly Pro 3EM (Company + Home)",
+  "uid": "viktor-shelly3em-company-home",
+  "version": 1,
+  "weekStart": ""
+}

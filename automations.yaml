@@ -1,0 +1,97 @@
+- id: z2m_supervision_bridge_offline
+  alias: "Z2M Supervision - Bridge offline"
+  description: "Alert when any Zigbee2MQTT bridge goes offline."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id:
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_5
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_6
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_7
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_8
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_9
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_10
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_11
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_12
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_13
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_14
+        - binary_sensor.zigbee2mqtt_bridge_connection_state_16
+      to: "off"
+      for: "00:01:00"
+  action:
+    - service: notify.notify
+      data:
+        title: "Zigbee2MQTT bridge OFFLINE"
+        message: >-
+          {{ trigger.to_state.name }} is OFFLINE ({{ trigger.entity_id }}) since {{ trigger.to_state.last_changed }}.
+    - service: notify.email_notification_sender_1
+      data:
+        title: "Zigbee2MQTT bridge OFFLINE"
+        message: >-
+          {{ trigger.to_state.name }} is OFFLINE ({{ trigger.entity_id }}) since {{ trigger.to_state.last_changed }}.
+
+- id: z2m_supervision_permit_join_left_on
+  alias: "Z2M Supervision - Permit join left ON"
+  description: "Alert if pairing (permit_join) is left on for too long."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id:
+        - switch.zigbee2mqtt_bridge_permit_join_2
+        - switch.zigbee2mqtt_bridge_permit_join_3
+        - switch.zigbee2mqtt_bridge_permit_join_4
+        - switch.zigbee2mqtt_bridge_permit_join_5
+        - switch.zigbee2mqtt_bridge_permit_join_6
+        - switch.zigbee2mqtt_bridge_permit_join_7
+        - switch.zigbee2mqtt_bridge_permit_join_8
+        - switch.zigbee2mqtt_bridge_permit_join_9
+        - switch.zigbee2mqtt_bridge_permit_join_10
+        - switch.zigbee2mqtt_bridge_permit_join_11
+        - switch.zigbee2mqtt_bridge_permit_join_12
+      to: "on"
+      for: "00:15:00"
+  action:
+    - service: notify.notify
+      data:
+        title: "Zigbee2MQTT pairing left ON"
+        message: >-
+          Pairing is still enabled: {{ trigger.to_state.name }} ({{ trigger.entity_id }}) since {{ trigger.to_state.last_changed }}.
+          Consider turning it OFF to protect network integrity.
+    - service: notify.email_notification_sender_1
+      data:
+        title: "Zigbee2MQTT pairing left ON"
+        message: >-
+          Pairing is still enabled: {{ trigger.to_state.name }} ({{ trigger.entity_id }}) since {{ trigger.to_state.last_changed }}.
+          Consider turning it OFF to protect network integrity.
+
+- id: z2m_supervision_offline_devices_present
+  alias: "Z2M Supervision - Devices offline"
+  description: "Alert when a coordinator reports offline devices for a sustained period."
+  mode: single
+  trigger:
+    - platform: numeric_state
+      entity_id:
+        - sensor.z2m_g01_sensors_offline
+        - sensor.z2m_g02_sensors_offline
+        - sensor.z2m_g03_sensors_offline
+        - sensor.z2m_g04_sensors_offline
+        - sensor.z2m_g05_sensors_offline
+        - sensor.z2m_g06_sensors_offline
+        - sensor.z2m_g07_sensors_offline
+        - sensor.z2m_g08_sensors_offline
+        - sensor.z2m_g09_sensors_offline
+        - sensor.z2m_g10_sensors_offline
+        - sensor.z2m_g12_sensors_offline
+      above: 0
+      for: "00:10:00"
+  action:
+    - service: notify.notify
+      data:
+        title: "Zigbee2MQTT devices OFFLINE"
+        message: >-
+          {{ trigger.to_state.name }} reports {{ trigger.to_state.state }} offline device(s) ({{ trigger.entity_id }}) since {{ trigger.to_state.last_changed }}.
+    - service: notify.email_notification_sender_1
+      data:
+        title: "Zigbee2MQTT devices OFFLINE"
+        message: >-
+          {{ trigger.to_state.name }} reports {{ trigger.to_state.state }} offline device(s) ({{ trigger.entity_id }}) since {{ trigger.to_state.last_changed }}.

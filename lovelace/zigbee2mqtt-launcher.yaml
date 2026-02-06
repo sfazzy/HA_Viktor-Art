@@ -1,0 +1,281 @@
+# Zigbee2MQTT launcher / health dashboard
+# Single-card layout per area (Viktor-Art / Home) to avoid column alignment issues.
+
+views:
+  - title: Viktor-Art
+    path: viktor-art
+    icon: mdi:factory
+    cards:
+      - type: entities
+        title: Zigbee2MQTT - Viktor-Art
+        show_header_toggle: false
+        entities:
+          - type: markdown
+            content: "Online / Pairing / Log / Restart for each coordinator."
+
+          - type: section
+            label: "Safety"
+          - entity: sensor.safety_health
+            name: Safety health
+          - entity: sensor.safety_z2m_offline_devices_total
+            name: Offline devices (total)
+          - entity: binary_sensor.safety_z2m_any_bridge_offline
+            name: Any bridge offline
+          - entity: binary_sensor.safety_z2m_any_permit_join_on
+            name: Pairing (any) ON
+          - entity: input_boolean.safety_sirens_enabled
+            name: Sirens enabled
+          - entity: script.z2m_safety_silence
+            name: Silence alarms (virtual)
+          - entity: script.z2m_safety_test_mode
+            name: Test mode (sirens off)
+          - entity: script.z2m_safety_production_mode
+            name: Production mode (sirens on)
+
+          - type: section
+            label: "G01 - W5 Laser (Viktor-Art)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_5
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_3
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_3
+            name: Log level
+          - entity: sensor.z2m_g01_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g01_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g01_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_3
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G03 - Pompownia (Viktor-Art)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_7
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_2
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_2
+            name: Log level
+          - entity: sensor.z2m_g03_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g03_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g03_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_2
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G04 - W3 (Viktor-Art)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_11
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_8
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_8
+            name: Log level
+          - entity: sensor.z2m_g04_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g04_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g04_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_8
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G05 - W4 6AX (Viktor-Art)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_12
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_9
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_9
+            name: Log level
+          - entity: sensor.z2m_g05_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g05_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g05_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_9
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G06 - Mal (Viktor-Art)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_9
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_6
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_6
+            name: Log level
+          - entity: sensor.z2m_g06_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g06_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g06_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_6
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G10 - Bartek Biuro (Viktor-Art)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_14
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_11
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_11
+            name: Log level
+          - entity: sensor.z2m_g10_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g10_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g10_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_11
+            name: Restart Zigbee2MQTT
+
+      - type: markdown
+        content: |
+          **Quick links (UI):**
+          - [G01 UI](/hassio/ingress/45df7312_zigbee2mqtt)
+          - [G03 UI](/hassio/ingress/058ba649_zigbee2mqtt)
+          - [G04 UI](/hassio/ingress/9336c2b0_zigbee2mqtt)
+          - [G05 UI](/hassio/ingress/1ff69cfe_zigbee2mqtt)
+          - [G06 UI](/hassio/ingress/ffab12c2_zigbee2mqtt)
+          - [G10 UI](/hassio/ingress/27f8a422_zigbee2mqtt)
+
+  - title: Home
+    path: home
+    icon: mdi:home
+    cards:
+      - type: entities
+        title: Zigbee2MQTT - Home
+        show_header_toggle: false
+        entities:
+          - type: markdown
+            content: "Online / Pairing / Log / Restart for each coordinator."
+
+          - type: section
+            label: "Safety"
+          - entity: sensor.safety_health
+            name: Safety health
+          - entity: sensor.safety_z2m_offline_devices_total
+            name: Offline devices (total)
+          - entity: binary_sensor.safety_z2m_any_bridge_offline
+            name: Any bridge offline
+          - entity: binary_sensor.safety_z2m_any_permit_join_on
+            name: Pairing (any) ON
+          - entity: input_boolean.safety_sirens_enabled
+            name: Sirens enabled
+          - entity: script.z2m_safety_silence
+            name: Silence alarms (virtual)
+          - entity: script.z2m_safety_test_mode
+            name: Test mode (sirens off)
+          - entity: script.z2m_safety_production_mode
+            name: Production mode (sirens on)
+
+          - type: section
+            label: "G02 - Biuro Patryk (Home)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_6
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_4
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_4
+            name: Log level
+          - entity: sensor.z2m_g02_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g02_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g02_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_4
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G07 - Garaz (Home)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_10
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_7
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_7
+            name: Log level
+          - entity: sensor.z2m_g07_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g07_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g07_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_7
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G08 - Rodzice Dom (Home)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_8
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_5
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_5
+            name: Log level
+          - entity: sensor.z2m_g08_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g08_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g08_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_5
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G09 - Patryk Dom (Home)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_13
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_10
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_10
+            name: Log level
+          - entity: sensor.z2m_g09_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g09_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g09_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_10
+            name: Restart Zigbee2MQTT
+
+          - type: section
+            label: "G12 - Rodzice Gora (Home)"
+          - entity: binary_sensor.zigbee2mqtt_bridge_connection_state_16
+            name: Online
+          - entity: switch.zigbee2mqtt_bridge_permit_join_12
+            name: Pairing (Permit join)
+          - entity: select.zigbee2mqtt_bridge_log_level_12
+            name: Log level
+          - entity: sensor.z2m_g12_sensors_total
+            name: Sensors total
+          - entity: sensor.z2m_g12_sensors_online
+            name: Sensors online
+          - entity: sensor.z2m_g12_sensors_offline
+            name: Sensors offline
+          - entity: button.zigbee2mqtt_bridge_restart_12
+            name: Restart Zigbee2MQTT
+
+      - type: markdown
+        content: |
+          **Quick links (UI):**
+          - [G02 UI](/hassio/ingress/8c77aaed_zigbee2mqtt)
+          - [G07 UI](/hassio/ingress/3b2f1408_zigbee2mqtt)
+          - [G08 UI](/hassio/ingress/78fc6e85_zigbee2mqtt)
+          - [G09 UI](/hassio/ingress/0d393435_zigbee2mqtt)
+          - [G12 UI](/hassio/ingress/def7cce8_zigbee2mqtt)
+
+  - title: Spare
+    path: spare
+    icon: mdi:archive
+    cards:
+      - type: markdown
+        content: |
+          # Zigbee2MQTT - Spare
+          G11 is marked as spare/disabled in config.
+
+          - [G11 UI](/hassio/ingress/0ef4a71a_zigbee2mqtt)
+          - [G11 Add-on](/hassio/addon/0ef4a71a_zigbee2mqtt)

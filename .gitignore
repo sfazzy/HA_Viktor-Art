@@ -1,0 +1,70 @@
+# Home Assistant (git hygiene)
+# Goal: keep only files you intentionally edit; ignore runtime state, databases, logs, caches.
+
+# --- Core runtime/state ---
+.HA_VERSION
+.cloud/
+.storage/
+.ssh/
+.wheels/
+.cache/
+.config/
+.google.token
+.uuid
+.ha_run.lock
+
+# --- Logs ---
+home-assistant.log*
+home-assistant.log.fault
+*.log
+*.log.*
+
+# --- Databases ---
+home-assistant_v2.db*
+zigbee.db*
+*.db
+*.db-*
+*.db-shm
+*.db-wal
+
+# --- Backups / temp ---
+*.bak
+*.bak-*
+*.tmp
+*.swp
+*~
+configuration2
+core
+secrets.yaml
+secrets*.yaml
+
+# --- Media / generated ---
+tts/
+www/community/
+image/
+
+# --- Zigbee2MQTT runtime artifacts (per instance folders) ---
+zigbee2mqtt*/database.db*
+zigbee2mqtt*/state.json*
+zigbee2mqtt*/log.log*
+zigbee2mqtt*/log.*.log*
+zigbee2mqtt*/coordinator_backup.json*
+zigbee2mqtt*/data/
+
+# --- ESPHome build/cache ---
+esphome/.esphome/
+esphome/build/
+esphome/.pioenvs/
+esphome/.piolibdeps/
+
+# --- Python/Node noise (custom components tooling) ---
+**/__pycache__/
+**/*.pyc
+**/.DS_Store
+**/node_modules/
+
+# Local tokens for automation scripts
+tools/grafana/token.txt
+tools/grafana/.env
+tools/grafana/.token.secure
+tools/grafana/.token*

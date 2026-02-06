@@ -1,0 +1,901 @@
+{
+    "dashboard":  {
+                      "annotations":  {
+                                          "list":  [
+                                                       {
+                                                           "builtIn":  1,
+                                                           "datasource":  "-- Grafana --",
+                                                           "enable":  true,
+                                                           "hide":  true,
+                                                           "iconColor":  "rgba(0, 0, 0, 0)",
+                                                           "name":  "Annotations \u0026 Alerts",
+                                                           "type":  "dashboard"
+                                                       }
+                                                   ]
+                                      },
+                      "editable":  true,
+                      "fiscalYearStartMonth":  0,
+                      "graphTooltip":  0,
+                      "id":  5,
+                      "links":  [
+
+                                ],
+                      "panels":  [
+                                     {
+                                         "datasource":  {
+                                                            "type":  "influxdb",
+                                                            "uid":  "femby2cm9x3b4a"
+                                                        },
+                                         "fieldConfig":  {
+                                                             "defaults":  {
+                                                                              "color":  {
+                                                                                            "mode":  "thresholds"
+                                                                                        },
+                                                                              "mappings":  [
+
+                                                                                           ],
+                                                                              "thresholds":  {
+                                                                                                 "mode":  "absolute",
+                                                                                                 "steps":  [
+                                                                                                               {
+                                                                                                                   "color":  "dark-blue",
+                                                                                                                   "value":  0
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "semi-dark-blue",
+                                                                                                                   "value":  -10
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "blue",
+                                                                                                                   "value":  -5
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "light-blue",
+                                                                                                                   "value":  0
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "super-light-blue",
+                                                                                                                   "value":  5
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "green",
+                                                                                                                   "value":  10
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "dark-green",
+                                                                                                                   "value":  15
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "yellow",
+                                                                                                                   "value":  20
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "orange",
+                                                                                                                   "value":  22
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "semi-dark-red",
+                                                                                                                   "value":  25
+                                                                                                               }
+                                                                                                           ]
+                                                                                             },
+                                                                              "unit":  "celsius"
+                                                                          },
+                                                             "overrides":  [
+
+                                                                           ]
+                                                         },
+                                         "gridPos":  {
+                                                         "h":  9,
+                                                         "w":  24,
+                                                         "x":  0,
+                                                         "y":  0
+                                                     },
+                                         "id":  1,
+                                         "options":  {
+                                                         "minVizHeight":  75,
+                                                         "minVizWidth":  75,
+                                                         "orientation":  "auto",
+                                                         "reduceOptions":  {
+                                                                               "calcs":  [
+                                                                                             "lastNotNull"
+                                                                                         ],
+                                                                               "fields":  "",
+                                                                               "values":  false
+                                                                           },
+                                                         "showThresholdLabels":  false,
+                                                         "showThresholdMarkers":  true,
+                                                         "sizing":  "auto"
+                                                     },
+                                         "pluginVersion":  "12.3.0",
+                                         "targets":  [
+                                                         {
+                                                             "alias":  "T1 Korytarz Warszt",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t1_korytarz_warszt_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "M",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T2 W4",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t2_w4_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "N",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T3 W5 Laser",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t3_w5_laser_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "O",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T4 Patryk Biuro",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t4_patryk_biuro_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "P",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T5 Bartek",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t5_bartek_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "Q",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T6 Pompownia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t6_pompownia_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "R",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T7 Kotlownia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t7_kotlownia_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "S",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T8 Dostawka",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t8_dostawka_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "T",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T9 Patryk Hall",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t9_patryk_hall_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "U",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T10 Rodzice Dol",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t10_rodzice_dol_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "V",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T12 Garaz",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t12_garaz_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "W",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T14 Suszarnia Konwencjonalna",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t14_suszarnia_konwencjonalna_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "X",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T15 Malarnia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t15_malarnia_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "Y",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T15 Salon Patryk",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t15_salon_patryk_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "Z",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T18 Gora Rodzice",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t18_gora_rodzice_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "AA",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T20 W3",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t20_w3_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "AB",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "TO1 Kimla",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027to1_kimla_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "AC",
+                                                             "resultFormat":  "time_series"
+                                                         }
+                                                     ],
+                                         "title":  "Temperatures - Zigbee2MQTT",
+                                         "type":  "gauge"
+                                     },
+                                     {
+                                         "datasource":  {
+                                                            "type":  "influxdb",
+                                                            "uid":  "femby2cm9x3b4a"
+                                                        },
+                                         "fieldConfig":  {
+                                                             "defaults":  {
+                                                                              "color":  {
+                                                                                            "mode":  "thresholds",
+                                                                                            "seriesBy":  "max"
+                                                                                        },
+                                                                              "custom":  {
+                                                                                             "axisBorderShow":  true,
+                                                                                             "axisCenteredZero":  false,
+                                                                                             "axisColorMode":  "text",
+                                                                                             "axisGridShow":  true,
+                                                                                             "axisLabel":  "",
+                                                                                             "axisPlacement":  "auto",
+                                                                                             "barAlignment":  0,
+                                                                                             "barWidthFactor":  0.6,
+                                                                                             "drawStyle":  "line",
+                                                                                             "fillOpacity":  0,
+                                                                                             "gradientMode":  "opacity",
+                                                                                             "hideFrom":  {
+                                                                                                              "legend":  false,
+                                                                                                              "tooltip":  false,
+                                                                                                              "viz":  false
+                                                                                                          },
+                                                                                             "insertNulls":  3600000,
+                                                                                             "lineInterpolation":  "smooth",
+                                                                                             "lineWidth":  1,
+                                                                                             "pointSize":  3,
+                                                                                             "scaleDistribution":  {
+                                                                                                                       "type":  "linear"
+                                                                                                                   },
+                                                                                             "showPoints":  "always",
+                                                                                             "showValues":  false,
+                                                                                             "spanNulls":  true,
+                                                                                             "stacking":  {
+                                                                                                              "group":  "A",
+                                                                                                              "mode":  "none"
+                                                                                                          },
+                                                                                             "thresholdsStyle":  {
+                                                                                                                     "mode":  "area"
+                                                                                                                 }
+                                                                                         },
+                                                                              "fieldMinMax":  false,
+                                                                              "mappings":  [
+
+                                                                                           ],
+                                                                              "thresholds":  {
+                                                                                                 "mode":  "absolute",
+                                                                                                 "steps":  [
+                                                                                                               {
+                                                                                                                   "color":  "dark-blue",
+                                                                                                                   "value":  0
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "semi-dark-blue",
+                                                                                                                   "value":  -10
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "blue",
+                                                                                                                   "value":  -5
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "light-blue",
+                                                                                                                   "value":  0
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "super-light-blue",
+                                                                                                                   "value":  5
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "green",
+                                                                                                                   "value":  10
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "dark-green",
+                                                                                                                   "value":  15
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "yellow",
+                                                                                                                   "value":  20
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "orange",
+                                                                                                                   "value":  22
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "semi-dark-red",
+                                                                                                                   "value":  25
+                                                                                                               }
+                                                                                                           ]
+                                                                                             },
+                                                                              "unit":  "celsius"
+                                                                          },
+                                                             "overrides":  [
+
+                                                                           ]
+                                                         },
+                                         "gridPos":  {
+                                                         "h":  9,
+                                                         "w":  24,
+                                                         "x":  0,
+                                                         "y":  9
+                                                     },
+                                         "id":  6,
+                                         "options":  {
+                                                         "legend":  {
+                                                                        "calcs":  [
+
+                                                                                  ],
+                                                                        "displayMode":  "list",
+                                                                        "placement":  "bottom",
+                                                                        "showLegend":  true
+                                                                    },
+                                                         "tooltip":  {
+                                                                         "hideZeros":  false,
+                                                                         "mode":  "single",
+                                                                         "sort":  "none"
+                                                                     }
+                                                     },
+                                         "pluginVersion":  "12.3.0",
+                                         "targets":  [
+                                                         {
+                                                             "alias":  "T1 Korytarz Warszt",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t1_korytarz_warszt_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "M",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T2 W4",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t2_w4_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "N",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T3 W5 Laser",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t3_w5_laser_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "O",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T4 Patryk Biuro",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t4_patryk_biuro_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "P",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T5 Bartek",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t5_bartek_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "Q",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T6 Pompownia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t6_pompownia_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "R",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T7 Kotlownia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t7_kotlownia_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "S",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T8 Dostawka",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t8_dostawka_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "T",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T9 Patryk Hall",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t9_patryk_hall_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "U",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T10 Rodzice Dol",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t10_rodzice_dol_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "V",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T12 Garaz",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t12_garaz_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "W",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T14 Suszarnia Konwencjonalna",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t14_suszarnia_konwencjonalna_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "X",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T15 Malarnia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t15_malarnia_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "Y",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T15 Salon Patryk",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t15_salon_patryk_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "Z",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T18 Gora Rodzice",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t18_gora_rodzice_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "AA",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "T20 W3",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027t20_w3_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "AB",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "TO1 Kimla",
+                                                             "query":  "SELECT mean(\"value\") FROM \"°C\" WHERE (\"entity_id\"::tag = \u0027to1_kimla_temperature\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "AC",
+                                                             "resultFormat":  "time_series"
+                                                         }
+                                                     ],
+                                         "title":  "Temperatures - Zigbee2MQTT",
+                                         "transparent":  true,
+                                         "type":  "timeseries"
+                                     },
+                                     {
+                                         "datasource":  {
+                                                            "type":  "influxdb",
+                                                            "uid":  "femby2cm9x3b4a"
+                                                        },
+                                         "fieldConfig":  {
+                                                             "defaults":  {
+                                                                              "color":  {
+                                                                                            "mode":  "palette-classic",
+                                                                                            "seriesBy":  "last"
+                                                                                        },
+                                                                              "custom":  {
+                                                                                             "axisBorderShow":  false,
+                                                                                             "axisCenteredZero":  false,
+                                                                                             "axisColorMode":  "text",
+                                                                                             "axisLabel":  "",
+                                                                                             "axisPlacement":  "auto",
+                                                                                             "barAlignment":  0,
+                                                                                             "barWidthFactor":  0.6,
+                                                                                             "drawStyle":  "line",
+                                                                                             "fillOpacity":  11,
+                                                                                             "gradientMode":  "opacity",
+                                                                                             "hideFrom":  {
+                                                                                                              "legend":  false,
+                                                                                                              "tooltip":  false,
+                                                                                                              "viz":  false
+                                                                                                          },
+                                                                                             "insertNulls":  false,
+                                                                                             "lineInterpolation":  "smooth",
+                                                                                             "lineWidth":  1,
+                                                                                             "pointSize":  3,
+                                                                                             "scaleDistribution":  {
+                                                                                                                       "type":  "linear"
+                                                                                                                   },
+                                                                                             "showPoints":  "always",
+                                                                                             "showValues":  false,
+                                                                                             "spanNulls":  3600000,
+                                                                                             "stacking":  {
+                                                                                                              "group":  "A",
+                                                                                                              "mode":  "none"
+                                                                                                          },
+                                                                                             "thresholdsStyle":  {
+                                                                                                                     "mode":  "area"
+                                                                                                                 }
+                                                                                         },
+                                                                              "mappings":  [
+
+                                                                                           ],
+                                                                              "thresholds":  {
+                                                                                                 "mode":  "percentage",
+                                                                                                 "steps":  [
+                                                                                                               {
+                                                                                                                   "color":  "dark-purple",
+                                                                                                                   "value":  0
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "purple",
+                                                                                                                   "value":  10
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "#6ED0E0",
+                                                                                                                   "value":  20
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "green",
+                                                                                                                   "value":  30
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "yellow",
+                                                                                                                   "value":  50
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "orange",
+                                                                                                                   "value":  70
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "dark-red",
+                                                                                                                   "value":  90
+                                                                                                               }
+                                                                                                           ]
+                                                                                             },
+                                                                              "unit":  "percent"
+                                                                          },
+                                                             "overrides":  [
+
+                                                                           ]
+                                                         },
+                                         "gridPos":  {
+                                                         "h":  8,
+                                                         "w":  24,
+                                                         "x":  0,
+                                                         "y":  18
+                                                     },
+                                         "id":  2,
+                                         "options":  {
+                                                         "legend":  {
+                                                                        "calcs":  [
+
+                                                                                  ],
+                                                                        "displayMode":  "list",
+                                                                        "placement":  "bottom",
+                                                                        "showLegend":  true
+                                                                    },
+                                                         "tooltip":  {
+                                                                         "hideZeros":  false,
+                                                                         "mode":  "single",
+                                                                         "sort":  "none"
+                                                                     }
+                                                     },
+                                         "pluginVersion":  "12.3.0",
+                                         "targets":  [
+                                                         {
+                                                             "alias":  "Laser G01",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE \"entity_id\"::tag = \u0027t3_w5_laser_humidity\u0027 AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "A",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Rodzice G02",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t18_gora_rodzice_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "B",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Biuro G02",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t4_patryk_biuro_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "C",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Warsztat G03",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t1_korytarz_warszt_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "D",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Pompownia G03",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t6_pompownia_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "E",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "W4",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t2_w4_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "F",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Malarnia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t15_malarnia_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "G",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Garaz",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t12_garaz_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "H",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Bartek",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t5_bartek_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "I",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Salon Patryk",
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE (\"entity_id\"::tag = \u0027t15_salon_patryk_humidity\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "J",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Na zewnątrz (Kimla)",
+                                                             "datasource":  {
+                                                                                "type":  "influxdb",
+                                                                                "uid":  "femby2cm9x3b4a"
+                                                                            },
+                                                             "hide":  false,
+                                                             "query":  "SELECT mean(\"value\") FROM \"%\" WHERE \"entity_id\"::tag = \u0027to1_kimla__humidity\u0027 AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "K",
+                                                             "resultFormat":  "time_series"
+                                                         }
+                                                     ],
+                                         "title":  "Humidity - Zigbee2MQTT",
+                                         "transparent":  true,
+                                         "type":  "timeseries"
+                                     },
+                                     {
+                                         "datasource":  {
+                                                            "type":  "influxdb",
+                                                            "uid":  "femby2cm9x3b4a"
+                                                        },
+                                         "fieldConfig":  {
+                                                             "defaults":  {
+                                                                              "color":  {
+                                                                                            "mode":  "palette-classic-by-name"
+                                                                                        },
+                                                                              "custom":  {
+                                                                                             "axisBorderShow":  false,
+                                                                                             "axisCenteredZero":  false,
+                                                                                             "axisColorMode":  "text",
+                                                                                             "axisLabel":  "",
+                                                                                             "axisPlacement":  "auto",
+                                                                                             "barAlignment":  0,
+                                                                                             "barWidthFactor":  0.6,
+                                                                                             "drawStyle":  "line",
+                                                                                             "fillOpacity":  8,
+                                                                                             "gradientMode":  "opacity",
+                                                                                             "hideFrom":  {
+                                                                                                              "legend":  false,
+                                                                                                              "tooltip":  false,
+                                                                                                              "viz":  false
+                                                                                                          },
+                                                                                             "insertNulls":  false,
+                                                                                             "lineInterpolation":  "smooth",
+                                                                                             "lineWidth":  1,
+                                                                                             "pointSize":  5,
+                                                                                             "scaleDistribution":  {
+                                                                                                                       "type":  "linear"
+                                                                                                                   },
+                                                                                             "showPoints":  "auto",
+                                                                                             "showValues":  false,
+                                                                                             "spanNulls":  3600000,
+                                                                                             "stacking":  {
+                                                                                                              "group":  "A",
+                                                                                                              "mode":  "none"
+                                                                                                          },
+                                                                                             "thresholdsStyle":  {
+                                                                                                                     "mode":  "off"
+                                                                                                                 }
+                                                                                         },
+                                                                              "mappings":  [
+
+                                                                                           ],
+                                                                              "thresholds":  {
+                                                                                                 "mode":  "absolute",
+                                                                                                 "steps":  [
+                                                                                                               {
+                                                                                                                   "color":  "green",
+                                                                                                                   "value":  0
+                                                                                                               },
+                                                                                                               {
+                                                                                                                   "color":  "red",
+                                                                                                                   "value":  80
+                                                                                                               }
+                                                                                                           ]
+                                                                                             },
+                                                                              "unit":  "hectopascal"
+                                                                          },
+                                                             "overrides":  [
+
+                                                                           ]
+                                                         },
+                                         "gridPos":  {
+                                                         "h":  8,
+                                                         "w":  24,
+                                                         "x":  0,
+                                                         "y":  26
+                                                     },
+                                         "id":  3,
+                                         "options":  {
+                                                         "legend":  {
+                                                                        "calcs":  [
+
+                                                                                  ],
+                                                                        "displayMode":  "list",
+                                                                        "placement":  "bottom",
+                                                                        "showLegend":  true
+                                                                    },
+                                                         "tooltip":  {
+                                                                         "hideZeros":  false,
+                                                                         "mode":  "single",
+                                                                         "sort":  "none"
+                                                                     }
+                                                     },
+                                         "pluginVersion":  "12.3.0",
+                                         "targets":  [
+                                                         {
+                                                             "alias":  "Laser",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE \"entity_id\"::tag = \u0027t3_w5_laser_pressure\u0027 AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "A",
+                                                             "resultFormat":  "time_series"
+                                                         },
+                                                         {
+                                                             "alias":  "Rodzice",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t18_gora_rodzice_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "B"
+                                                         },
+                                                         {
+                                                             "alias":  "Biuro",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t4_patryk_biuro_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "C"
+                                                         },
+                                                         {
+                                                             "alias":  "Warsztat",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t1_korytarz_warszt_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "D"
+                                                         },
+                                                         {
+                                                             "alias":  "Pompownia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t6_pompownia_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "E"
+                                                         },
+                                                         {
+                                                             "alias":  "W4",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t2_w4_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "F"
+                                                         },
+                                                         {
+                                                             "alias":  "Malarnia",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t15_malarnia_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "G"
+                                                         },
+                                                         {
+                                                             "alias":  "Garaz",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t12_garaz_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "H"
+                                                         },
+                                                         {
+                                                             "alias":  "Bartek",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t5_bartek_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "I"
+                                                         },
+                                                         {
+                                                             "alias":  "Salon",
+                                                             "query":  "SELECT mean(\"value\") FROM \"hPa\" WHERE (\"entity_id\"::tag = \u0027t15_salon_patryk_pressure\u0027) AND $timeFilter GROUP BY time($__interval) fill(null)",
+                                                             "rawQuery":  true,
+                                                             "refId":  "J"
+                                                         }
+                                                     ],
+                                         "title":  "Pressure - Zigbee2MQTT",
+                                         "type":  "timeseries"
+                                     }
+                                 ],
+                      "preload":  false,
+                      "refresh":  "30s",
+                      "schemaVersion":  42,
+                      "tags":  [
+                                   "zigbee2mqtt",
+                                   "climate",
+                                   "safety"
+                               ],
+                      "templating":  {
+                                         "list":  [
+
+                                                  ]
+                                     },
+                      "time":  {
+                                   "from":  "now-24h",
+                                   "to":  "now"
+                               },
+                      "timepicker":  {
+
+                                     },
+                      "timezone":  "",
+                      "title":  "Zigbee2MQTT Ultimate",
+                      "uid":  "z2m-ultimate",
+                      "version":  39,
+                      "weekStart":  ""
+                  },
+    "meta":  {
+                 "type":  "db",
+                 "canSave":  true,
+                 "canEdit":  true,
+                 "canAdmin":  true,
+                 "canStar":  true,
+                 "canDelete":  true,
+                 "slug":  "zigbee2mqtt-ultimate",
+                 "url":  "/d/z2m-ultimate/zigbee2mqtt-ultimate",
+                 "expires":  "0001-01-01T00:00:00Z",
+                 "created":  "2026-01-11T00:11:09Z",
+                 "updated":  "2026-01-11T22:20:15Z",
+                 "updatedBy":  "OpenAi2",
+                 "createdBy":  "OpenAi2",
+                 "version":  39,
+                 "hasAcl":  false,
+                 "isFolder":  false,
+                 "apiVersion":  "v0alpha1",
+                 "folderId":  0,
+                 "folderUid":  "",
+                 "folderTitle":  "General",
+                 "folderUrl":  "",
+                 "provisioned":  false,
+                 "provisionedExternalId":  "",
+                 "annotationsPermissions":  {
+                                                "dashboard":  {
+                                                                  "canAdd":  true,
+                                                                  "canEdit":  true,
+                                                                  "canDelete":  true
+                                                              },
+                                                "organization":  {
+                                                                     "canAdd":  true,
+                                                                     "canEdit":  true,
+                                                                     "canDelete":  true
+                                                                 }
+                                            }
+             }
+}

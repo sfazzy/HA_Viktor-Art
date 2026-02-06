@@ -1,0 +1,771 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "panels": [],
+      "title": "Doors / Contacts",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "Closed", "color": "green" },
+                "1": { "text": "Open", "color": "red" }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 1 },
+      "id": 101,
+      "options": {
+        "alignValue": "left",
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "mergeValues": true,
+        "showValue": "never"
+      },
+      "targets": [
+        {
+          "alias": "C1 W5 brama",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'c1_w5_brama_contact') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "C2 W4 brama",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'c2_w4_brama_contact') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "C2 garaz brama",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'c2_garaz_brama_contact') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "C4 dostawka",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'c4_dostawka_contact') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Door / Contact sensors (Open vs Closed)",
+      "type": "state-timeline"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "id": 110,
+      "panels": [],
+      "title": "Motion",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "Clear", "color": "green" },
+                "1": { "text": "Motion", "color": "orange" }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 10 },
+      "id": 111,
+      "options": {
+        "alignValue": "left",
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "mergeValues": true,
+        "showValue": "never"
+      },
+      "targets": [
+        {
+          "alias": "M1 Rodzice dol",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'm1_rodzice_dol_occupancy') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M2 Garaz",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'm2_garaz_occupancy') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M2 Salon Patryk",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'm2_salon_patryk_occupancy') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M4 Galeria",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'm4_galeria_occupancy') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M5 Bartek",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'm5_bartek_occupancy') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Motion sensors (Motion vs Clear)",
+      "type": "state-timeline"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "id": 120,
+      "panels": [],
+      "title": "Smoke",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "OK", "color": "green" },
+                "1": { "text": "SMOKE", "color": "red" }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
+      "id": 121,
+      "options": {
+        "alignValue": "left",
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "mergeValues": true,
+        "showValue": "never"
+      },
+      "targets": [
+        {
+          "alias": "S2 Patryk dom korytarz",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's2_patryk_dom_korytarz_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S3 Garaz",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's3_garaz_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S4 Malarnia",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's4_malarnia_smoke_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S5 Warsztat schody gora",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's5_warsztat_schody_ga3ra_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S6 Korytarz warsztat",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's6_korytarz_warsztat_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S7 W4 6AX",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's7_w4_6ax_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S8 Bartek",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's8_bartek_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S9 Rodzice gora",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's9_rodzice_gora_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "H",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S1 Patryk biuro",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's1_patryk_biuro_smoke') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "I",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Smoke detectors (SMOKE vs OK)",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 27 },
+      "id": 122,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "alias": "S2 Patryk dom korytarz",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's2_patryk_dom_korytarz_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S3 Garaz",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's3_garaz_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S4 Malarnia",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's4_malarnia_smoke_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S5 Warsztat schody gora",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's5_warsztat_schody_ga3ra_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S6 Korytarz warsztat",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's6_korytarz_warsztat_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S7 W4 6AX",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's7_w4_6ax_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S8 Bartek",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's8_bartek_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S9 Rodzice gora",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's9_rodzice_gora_smoke_density') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "H",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Smoke density (thresholds: >=1 warn, >=5 alert)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 30 },
+              { "color": "red", "value": 60 }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 35 },
+      "id": 123,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "alias": "S2 Patryk dom korytarz",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's2_patryk_dom_korytarz_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S3 Garaz",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's3_garaz_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S4 Malarnia",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's4_malarnia_smoke_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S5 Warsztat schody gora",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's5_warsztat_schody_ga3ra_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S6 Korytarz warsztat",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's6_korytarz_warsztat_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S7 W4 6AX",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's7_w4_6ax_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S8 Bartek",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's8_bartek_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S9 Rodzice gora",
+          "query": "SELECT mean(\"value\") FROM state WHERE (\"entity_id\"::tag = 's9_rodzice_gora_smoke_density_dbm') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "H",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Smoke density (dBm-like scale, adjust thresholds as needed)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "OFF", "color": "green" },
+                "1": { "text": "ON", "color": "red" }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 43 },
+      "id": 124,
+      "options": {
+        "alignValue": "left",
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "mergeValues": true,
+        "showValue": "never"
+      },
+      "targets": [
+        {
+          "alias": "S2 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's2_patryk_dom_korytarz_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S3 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's3_garaz_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S4 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's4_malarnia_smoke_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S5 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's5_warsztat_schody_ga3ra_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S6 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's6_korytarz_warsztat_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S7 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's7_w4_6ax_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S8 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's8_bartek_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "S9 buzzer manual alarm",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 's9_rodzice_gora_buzzer_manual_alarm') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "H",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Smoke alarms - siren / manual alarm (ON vs OFF)",
+      "type": "state-timeline"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 51 },
+      "id": 130,
+      "panels": [],
+      "title": "Flood / Water Leaks",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "Dry", "color": "green" },
+                "1": { "text": "LEAK", "color": "red" }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 52 },
+      "id": 131,
+      "options": {
+        "alignValue": "left",
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "mergeValues": true,
+        "showValue": "never"
+      },
+      "targets": [
+        {
+          "alias": "F1 Kotlownia",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'f1_kotlownia_water_leak') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "F1 Pompownia",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'f1_pompownia_water_leak') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "0xa4c138... leak 2",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = '0xa4c13822b76ad085_water_leak_2') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "0xa4c138... leak 3",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = '0xa4c13822b76ad085_water_leak_3') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Leak sensors (LEAK vs Dry)",
+      "type": "state-timeline"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 60 },
+      "id": 140,
+      "panels": [],
+      "title": "Illuminance",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 10 },
+              { "color": "yellow", "value": 100 },
+              { "color": "orange", "value": 500 }
+            ]
+          },
+          "unit": "lux"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 61 },
+      "id": 141,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "alias": "M1 Rodzice dol",
+          "query": "SELECT mean(\"value\") FROM lx WHERE (\"entity_id\"::tag = 'm1_rodzice_dol_illuminance') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M2 Garaz",
+          "query": "SELECT mean(\"value\") FROM lx WHERE (\"entity_id\"::tag = 'm2_garaz_illuminance') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M2 Salon Patryk",
+          "query": "SELECT mean(\"value\") FROM lx WHERE (\"entity_id\"::tag = 'm2_salon_patryk_illuminance') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M4 Galeria",
+          "query": "SELECT mean(\"value\") FROM lx WHERE (\"entity_id\"::tag = 'm4_galeria_illuminance') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "M5 Bartek",
+          "query": "SELECT mean(\"value\") FROM lx WHERE (\"entity_id\"::tag = 'm5_bartek_illuminance') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Illuminance (lx)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 69 },
+      "id": 150,
+      "panels": [],
+      "title": "Battery / Maintenance",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_INFLUXDB}",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "OK", "color": "green" },
+                "1": { "text": "LOW", "color": "red" }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 70 },
+      "id": 151,
+      "options": {
+        "alignValue": "left",
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "mergeValues": true,
+        "showValue": "never"
+      },
+      "targets": [
+        {
+          "alias": "F1 Kotlownia",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'f1_kotlownia_battery_low') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "F1 Pompownia",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = 'f1_pompownia_battery_low') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "0xa4c138... low 2",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = '0xa4c13822b76ad085_battery_low_2') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "0xa4c138... low 3",
+          "query": "SELECT last(\"value\") FROM state WHERE (\"entity_id\"::tag = '0xa4c13822b76ad085_battery_low_3') AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Battery low (LOW vs OK)",
+      "type": "state-timeline"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["zigbee2mqtt", "security", "safety"],
+  "templating": { "list": [] },
+  "time": { "from": "now-24h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Z2M Safety and Security",
+  "uid": "z2m-safety-security",
+  "version": 1,
+  "weekStart": ""
+}

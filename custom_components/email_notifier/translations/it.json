@@ -1,0 +1,124 @@
+{
+    "title": "Email Notifier",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Configurazione Account Email",
+                "description": "Inserisci i dettagli del server SMTP",
+                "data": {
+                    "server": "Server SMTP",
+                    "port": "Porta",
+                    "username": "Nome utente",
+                    "password": "Password",
+                    "sender": "Email mittente",
+                    "recipients": "Email destinatario(i)",
+                    "sender_name": "Nome mittente",
+                    "encryption": "Crittografia",
+                    "timeout": "Timeout (secondi)",
+                    "test_connection": "Testa connessione"
+                }
+            }
+        },
+        "error": {
+            "connection_failed": "Connessione al server SMTP fallita. Controlla le impostazioni."
+        },
+        "abort": {
+            "already_configured": "Questo account email è già configurato."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Modifica Account Email",
+                "description": "Modifica le impostazioni dell'account email",
+                "data": {
+                    "server": "Server SMTP",
+                    "port": "Porta",
+                    "username": "Nome utente",
+                    "password": "Password",
+                    "sender": "Email mittente",
+                    "recipients": "Email destinatario(i)",
+                    "sender_name": "Nome mittente",
+                    "encryption": "Crittografia",
+                    "timeout": "Timeout (secondi)",
+                    "test_connection": "Testa connessione"
+                }
+            }
+        },
+        "error": {
+            "connection_failed": "Connessione al server SMTP fallita. Controlla le impostazioni."
+        }
+    },
+    "entity": {
+        "notify": {
+            "entity_name": {
+                "name": "Account email mittente: {sender}"
+            }
+        },
+        "state": {
+            "ready": {
+                "name": "Pronto"
+            },
+            "sending": {
+                "name": "Invio in corso..."
+            }
+        }
+    },
+    "selector": {
+        "encryption": {
+            "options": {
+                "none": "Nessuno",
+                "starttls": "STARTTLS",
+                "tls": "TLS"
+            }
+        }
+    },
+    "services": {
+        "send": {
+            "name": "Invia Email.",
+            "description": "Invia un messaggio email a uno o più destinatari",
+            "fields": {
+                "account": {
+                    "name": "Account email mittente",
+                    "description": "L'account email del mittente"
+                },
+                "recipients": {
+                    "name": "Email destinatario(i)",
+                    "description": "Separa più destinatari con una virgola"
+                },
+                "title": {
+                    "name": "Oggetto",
+                    "description": "Oggetto dell'email"
+                },
+                "message": {
+                    "name": "Messaggio",
+                    "description": "Corpo del messaggio in testo semplice. Facoltativo se si utilizza HTML"
+                },
+                "html": {
+                    "name": "Contenuto HTML",
+                    "description": "Versione HTML del corpo dell'email per una formattazione avanzata"
+                },
+                "images": {
+                    "name": "Immagini",
+                    "description": "Percorsi file immagine o URL da incorporare nelle email HTML (uno per riga)"
+                },
+                "attachments": {
+                    "name": "Allegati",
+                    "description": "Percorsi file o URL da allegare (uno per riga)"
+                },
+                "from_address": {
+                    "name": "Indirizzo Mittente",
+                    "description": "Indirizzo email del mittente personalizzato"
+                },
+                "sender_name": {
+                    "name": "Nome Mittente",
+                    "description": "Nome visualizzato del mittente personalizzato"
+                },
+                "reply_to": {
+                    "name": "Indirizzo di Risposta (Reply-To)",
+                    "description": "Indirizzo email per le risposte"
+                }
+            }
+        }
+    }
+}

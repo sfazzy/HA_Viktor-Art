@@ -1,0 +1,72 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+  channel: 16
+  network_key:
+    - 111
+    - 207
+    - 164
+    - 125
+    - 44
+    - 81
+    - 62
+    - 228
+    - 252
+    - 242
+    - 159
+    - 238
+    - 66
+    - 153
+    - 81
+    - 173
+  pan_id: 20711
+  ext_pan_id:
+    - 59
+    - 106
+    - 254
+    - 174
+    - 93
+    - 230
+    - 190
+    - 92
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g6
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.166:8888
+  adapter: ezsp
+devices:
+  '0x00158d008b35dd1d':
+    friendly_name: B2 Malarnia
+  '0x54ef441000d99f19':
+    friendly_name: S4 Malarnia Smoke
+  '0x54ef441001243b4b':
+    friendly_name: S5 Warsztat schody gora
+  '0x00158d008b61868b':
+    friendly_name: T15 Malarnia
+  '0x54ef441000d9b1c8':
+    friendly_name: '0x54ef441000d9b1c8'
+  '0xa4c138bed62ce9bb':
+    friendly_name: '0xa4c138bed62ce9bb'
+  '0x54ef44100129504f':
+    friendly_name: '0x54ef44100129504f'
+  '0x54ef441001243bcf':
+    friendly_name: '0x54ef441001243bcf'
+  '0xa4c13832b48e187a':
+    friendly_name: '0xa4c13832b48e187a'
+  '0x00158d008b7cd5bd':
+    friendly_name: '0x00158d008b7cd5bd'
+  '0x00158d008b77dd44':
+    friendly_name: '0x00158d008b77dd44'
+blocklist: []

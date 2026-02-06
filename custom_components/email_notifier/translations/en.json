@@ -1,0 +1,158 @@
+{
+    "title": "Email Notifier",
+    "config": 
+    {
+        "step": 
+        {
+            "user": 
+            {
+                "title": "Email Account Configuration",
+                "description": "Please enter the SMTP server details",
+                "data": 
+                {
+                    "server": "SMTP Server",
+                    "port": "Port",
+                    "username": "Username",
+                    "password": "Password",
+                    "sender": "Sender Email",
+                    "recipients": "Recipient Email(s)",
+                    "sender_name": "Sender Name",
+                    "encryption": "Encryption",
+                    "timeout": "Timeout (seconds)",
+                    "test_connection": "Test Connection"
+                }
+            }
+        },
+        "error": 
+        {
+            "connection_failed": "Failed to connect to the SMTP server. Please check your settings."
+        },
+        "abort": 
+        {
+            "already_configured": "This email account is already configured."
+        }
+    },
+    "options": 
+    {
+        "step": 
+        {
+            "init": 
+            {
+                "title": "Edit Email Account",
+                "description": "Edit email account settings",
+                "data": 
+                {
+                    "server": "SMTP Server",
+                    "port": "Port",
+                    "username": "Username",
+                    "password": "Password",
+                    "sender": "Sender Email",
+                    "recipients": "Recipient Email(s)",
+                    "sender_name": "Sender Name",
+                    "encryption": "Encryption",
+                    "timeout": "Timeout (seconds)",
+                    "test_connection": "Test Connection"
+                }
+            }
+        },
+        "error": 
+        {
+            "connection_failed": "Failed to connect to the SMTP server. Please check your settings."
+        }
+    },
+    "entity": 
+    {
+        "notify": 
+        {
+            "entity_name": 
+            {
+                "name": "Sender Email Account: {sender}"
+            }
+        },
+        "state": 
+        {
+            "ready": 
+            { 
+                "name": "Ready"
+            },
+            "sending":
+            {
+                "name": "Sending..."
+            }
+
+        }
+    },
+    "selector": 
+    {
+        "encryption": 
+        {
+            "options": 
+            {
+                "none": "None",
+                "starttls": "STARTTLS",
+                "tls": "TLS"
+            }
+        }
+    },
+    "services": 
+    {
+        "send": 
+        {
+            "name": "Send Email",
+            "description": "Send an email message to one or more recipients.",
+            "fields": 
+            {
+                "account": 
+                {
+                    "name": "Sender Email Account",
+                    "description": "The sender's email account"
+                },
+                "recipients": 
+                {
+                    "name": "Recipient Email(s)",
+                    "description": "Separate multiple recipients with commas."
+                },
+                "title": 
+                {
+                    "name": "Subject",
+                    "description": ""
+                },
+                "message":
+                {
+                    "name": "Message",
+                    "description": "Plain text message body. Optional when using HTML."
+                },
+                "html":
+                {
+                    "name": "HTML Content",
+                    "description": "HTML version of the email body for rich formatting"
+                },
+                "images":
+                {
+                    "name": "Images",
+                    "description": "Image file paths or URLs to embed in HTML emails (one per line)"
+                },
+                "attachments":
+                {
+                    "name": "Attachments",
+                    "description": "File paths or URLs to attach (one per line)"
+                },
+                "from_address":
+                {
+                    "name": "From Address",
+                    "description": "Custom sender email address"
+                },
+                "sender_name":
+                {
+                    "name": "Sender Name",
+                    "description": "Custom sender display name"
+                },
+                "reply_to":
+                {
+                    "name": "Reply-To Address",
+                    "description": "Email address for replies"
+                }
+            }
+        }
+    }
+}

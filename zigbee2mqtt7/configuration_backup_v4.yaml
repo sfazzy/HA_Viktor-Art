@@ -1,0 +1,62 @@
+version: 4
+permit_join: false
+homeassistant:
+  enabled: true
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+  channel: 21
+  network_key:
+    - 156
+    - 9
+    - 88
+    - 166
+    - 118
+    - 15
+    - 120
+    - 120
+    - 233
+    - 70
+    - 178
+    - 111
+    - 42
+    - 34
+    - 64
+    - 158
+  pan_id: 13270
+  ext_pan_id:
+    - 36
+    - 58
+    - 86
+    - 153
+    - 49
+    - 3
+    - 2
+    - 168
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: mqtt_user
+  password: dupa.123.mqtt
+  base_topic: tasmota_g7
+frontend:
+  enabled: true
+  port: 8099
+availability:
+  enabled: true
+serial:
+  port: tcp://192.168.2.167:8888
+  adapter: ezsp
+devices:
+  '0x54ef441001243bcf':
+    friendly_name: S3 Garaz
+  '0x00158d008b85c966':
+    friendly_name: C2 Garaz Brama
+  '0x00158d008b36024b':
+    friendly_name: M2 Garaz
+  '0x00158d008b7a52ba':
+    friendly_name: T12 - Garaż
+  '0xa4c138bed62ce9bb':
+    friendly_name: T19 - Piwnica
+  '0xa4c1381a8bf36e20':
+    friendly_name: T20 - Pralnia
+blocklist: []
