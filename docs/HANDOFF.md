@@ -21,6 +21,9 @@ This repo contains a Home Assistant configuration with multiple Zigbee2MQTT inst
 - Siren repeat escalation (while alarm remains active):
   - Starts at `floodRepeatSeconds` / `smokeRepeatSeconds` / `heatRepeatSeconds`
   - Each repeat halves the pause until `repeatMinSeconds` (default 10s), then repeats every `repeatMinSeconds`
+- Push reminder escalation (no email escalation):
+  - While alarm is still active, the repeat ticks also send push reminders via `notifyPushService`
+  - Throttled by `pushRepeatMinSeconds` (default 60s) to avoid notification spam when siren repeat reaches 10s
 
 ## Zigbee2MQTT layout
 

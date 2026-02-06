@@ -158,6 +158,7 @@ def main():
     _bullet(doc, "Warstwa 1: Zigbee2MQTT — zbiera zdarzenia z wielu niezależnych sieci Zigbee.")
     _bullet(doc, "Warstwa 2: Node‑RED — logika alarmów, eskalacja, wzorce syren, sterowanie pompami.")
     _bullet(doc, "Warstwa 3: Home Assistant — powiadomienia push/email + nadzór (supervision) i dashboard.")
+    _bullet(doc, "Dodatkowo: przypomnienia push eskalują razem z alarmem (email nie eskaluje), ale są dławione minimalnym odstępem aby uniknąć spamu.")
 
     _note(
         doc,
@@ -290,6 +291,7 @@ def main():
 
     for k, v, d in [
         ("silenceMinutes", "60", "Wyciszenie beepów po 1×."),
+        ("pushRepeatMinSeconds", "60", "Minimalny odstęp dla przypomnień push (nie eskaluje do 10 s jak syreny, żeby nie spamować)."),
         ("pumpRestoreDryMinutes", "5", "Brak WET przez X minut przed restore."),
         ("pumpRestoreDryReportMinutes", "10", "Wymóg świeżego DRY raportu z czujników."),
         ("repeatMinSeconds", "10", "Minimalna przerwa między powtórzeniami (eskalacja do tej wartości)."),
