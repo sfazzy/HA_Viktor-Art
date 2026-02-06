@@ -80,6 +80,7 @@ Open the “CONFIG” function node in the flow and edit:
 - `silenceMinutes`: how long “B button silence” lasts
 - `autoClearFlood` / `autoClearSmoke`: whether to auto-clear when sensors report normal (recommended `false`)
 - `heatThresholdC` + `heatSensors`: heat alarm threshold and list of temp sensors used
+- `pumpRestoreDryMinutes` + `pumpRestoreDryReportMinutes`: when pumps can be restored after triple-press (no wet recently + recent dry confirmations)
 - Siren payload templates for flood vs smoke (Z2M sirens can differ by model/firmware)
 
 ## Notes / limitations
