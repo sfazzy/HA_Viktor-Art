@@ -18,7 +18,7 @@ This repo contains a Home Assistant configuration with multiple Zigbee2MQTT inst
 - MQTT control topics:
   - Virtual silence: `ha/z2m_safety/silence` (1× = silence; 3× within 5s = reset loops + pump restore attempt)
   - Sirens enable: `ha/z2m_safety/sirens` payload `{ "enabled": true|false }`
-- Email: uses Home Assistant custom integration `email_notifier` service `email_notifier.send` (configured in HA; no SMTP credentials in the flow export)
+- Email: Node-RED built-in `e-mail` (SMTP) node is included and prefilled with server/user/port (password is stored in Node-RED credentials and is not exported in JSON by design)
 - Siren repeat escalation (while alarm remains active):
   - Starts at `floodRepeatSeconds` / `smokeRepeatSeconds` / `heatRepeatSeconds`
   - Each repeat halves the pause until `repeatMinSeconds` (default 10s), then repeats every `repeatMinSeconds`

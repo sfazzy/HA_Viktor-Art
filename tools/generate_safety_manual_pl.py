@@ -158,7 +158,7 @@ def main():
     _bullet(doc, "Warstwa 1: Zigbee2MQTT — zbiera zdarzenia z wielu niezależnych sieci Zigbee.")
     _bullet(doc, "Warstwa 2: Node‑RED — logika alarmów, eskalacja, wzorce syren, sterowanie pompami.")
     _bullet(doc, "Warstwa 3: Home Assistant — powiadomienia push/email + nadzór (supervision) i dashboard.")
-    _bullet(doc, "Email wysyłany jest przez Home Assistant (integracja `email_notifier`). Dzięki temu w Node‑RED nie trzymamy haseł SMTP w flow.")
+    _bullet(doc, "Email wysyłany jest przez Node‑RED (node `e-mail` / SMTP). Hasło nie jest częścią exportu flow (Node‑RED przechowuje je w credentials).")
     _bullet(doc, "Dodatkowo: przypomnienia push eskalują razem z alarmem (email nie eskaluje), ale są dławione minimalnym odstępem aby uniknąć spamu.")
 
     _note(
@@ -276,6 +276,7 @@ def main():
     _bullet(doc, "Brak powiadomień: sprawdź Node‑RED Debug: `DEBUG HA response` + tokeny/URL.")
     _bullet(doc, "Brak syren: upewnij się, że tryb Production jest włączony (kontrolka w HA).")
     _bullet(doc, "Pompy nie wracają ON: sprawdź warunki DRY/WET (ostatnie raporty) i okno czasowe 5/10 minut.")
+    _bullet(doc, "Email prosi o has?o po imporcie: ustaw sta?y `credential_secret` w dodatku Node-RED i wpisz has?o raz (credentials b?d? trwa?e).")
     _bullet(doc, "Dużo offline: dodaj routery Zigbee, sprawdź baterie, interferencje Wi‑Fi, rozmieszczenie koordynatorów.")
 
     doc.add_page_break()
