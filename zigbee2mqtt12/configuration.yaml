@@ -52,3 +52,5 @@ devices:
     friendly_name: A1 - Rodzice
   '0x54ef44100129504f':
     friendly_name: S9 - Rodzice Gora
+  '0x00158d008b77dcee':
+    friendly_name: T18 - Rodzice Gora
