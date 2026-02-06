@@ -75,7 +75,7 @@
     "type": "function",
     "z": "tab_z2m_safety",
     "name": "CONFIG",
-    "func": "// Edit these settings for your house/workshop\nconst cfg = {\n  // Silence duration after any B button press\n  silenceMinutes: 60,\n\n  // Optional: virtual HA dashboard button -> MQTT topic (see scripts.yaml)\n  virtualSilenceTopic: \"ha/z2m_safety/silence\",\n\n  // Treat smoke detector 'hush/test' button messages as silence input\n  smokeHushAsSilence: true,\n\n  // Auto-clear alarms when sensors report normal.\n  // Recommended false (manual silence) to avoid accidental clears from flaky/late reports.\n  autoClearFlood: false,\n  autoClearSmoke: false,\n\n  // Heat alarm: any listed temp sensor >= threshold\n  autoClearHeat: false,\n  heatThresholdC: 45,\n  heatRepeatSeconds: 180,\n  heatSensors: [\n      {\n          \"baseTopic\": \"tasmota_g1\",\n          \"name\": \"T3 - W5 Laser\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g2\",\n          \"name\": \"T4 - Patryk GĂłra\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g3\",\n          \"name\": \"T1 Korytarz Warszt\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g3\",\n          \"name\": \"T6 pompownia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g4\",\n          \"name\": \"T20 W3\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g4\",\n          \"name\": \"T7 KotĹ‚ownia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g5\",\n          \"name\": \"T2 W4\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g6\",\n          \"name\": \"T15 Malarnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T12 - GaraĹĽ\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T19 - Piwnica\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T20 - Pralnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g8\",\n          \"name\": \"T10 Rodzice Dol\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g9\",\n          \"name\": \"T15 Salon Patryk\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g9\",\n          \"name\": \"T9 - Patryk Hall\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"T5 Bartek\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"T8 Dostawka\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"TO2 - Suszarnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g11\",\n          \"name\": \"T17 - Galeria\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g11\",\n          \"name\": \"TO1 - Kimla\"\n      }\n  ],\n\n  // Home Assistant API (used for push notifications + optional HA switch.turn_off)\n  // - HA add-on Node-RED: SUPERVISOR_TOKEN should exist; base URL http://supervisor/core\n  // - External Node-RED: set HA_BASE_URL + HA_TOKEN env vars\n  haBaseUrl: env.get(\"HA_BASE_URL\") || \"http://supervisor/core\",\n  haToken: env.get(\"SUPERVISOR_TOKEN\") || env.get(\"HA_TOKEN\") || \"\",\n\n  // Push notify service (Home Assistant)\n  // Examples:\n  // - Push to all: notify.notify\n  // - Push to specific phone: notify.mobile_app_<device>\n  notifyPushService: \"notify.notify\",\n\n  // Email recipients (used by the Node-RED `e-mail` node)\n  emailTo: [\"zajdel@viktor-art.pl\"],\n\n  // Pump outlets to turn OFF on flood\n  // - Preferred: Z2M MQTT direct (doesn't depend on HA entities)\n  // Pump restore guard (used on silence triple-press)\n  pumpRestoreDryMinutes: 5,\n  pumpRestoreDryReportMinutes: 10,\n\n  pumpOutletsZ2M: [\n    { baseTopic: \"tasmota_g3\", name: \"P1 Pompownia\" },\n    { baseTopic: \"tasmota_g4\", name: \"P2 Kotlownia\" },\n  ],\n\n  // - Optional: HA switch entities (turn_off)\n  pumpSwitchEntities: [\n    // \"switch.pump_1\",\n    // \"switch.pump_2\"\n  ],\n\n  // Z2M network classification (for smoke beep count)\n  workshopBaseTopics: [\"tasmota_g1\",\"tasmota_g3\",\"tasmota_g4\",\"tasmota_g5\",\"tasmota_g6\",\"tasmota_g10\"],\n  homeBaseTopics: [\"tasmota_g2\",\"tasmota_g7\",\"tasmota_g8\",\"tasmota_g9\",\"tasmota_g12\"],\n\n  // Devices (from this repo's Z2M inventory)\n  floodSensors: [\n    { baseTopic: \"tasmota_g3\", name: \"F1 Zalanie Pompownia\" },\n    { baseTopic: \"tasmota_g4\", name: \"F2 Kotlownia\" }\n  ],\n  smokeSensors: [\n    { baseTopic: \"tasmota_g2\", name: \"S1 - Patryk Biuro\" },\n    { baseTopic: \"tasmota_g9\", name: \"S2 Patryk Dom Korytarz\" },\n    { baseTopic: \"tasmota_g7\", name: \"S3 Garaz\" },\n    { baseTopic: \"tasmota_g6\", name: \"S4 Malarnia Smoke\" },\n    { baseTopic: \"tasmota_g6\", name: \"S5 Warsztat schody gora\" },\n    { baseTopic: \"tasmota_g3\", name: \"S6 Korytarz Warsztat\" },\n    { baseTopic: \"tasmota_g5\", name: \"S7 W4 6AX\" },\n    { baseTopic: \"tasmota_g10\", name: \"S8 Bartek\" },\n    { baseTopic: \"tasmota_g12\", name: \"S9 - Rodzice Gora\" }\n  ],\n  silenceButtons: [\n    { baseTopic: \"tasmota_g3\", name: \"B1 Korytarz warsztat\" },\n    { baseTopic: \"tasmota_g6\", name: \"B2 Malarnia\" }\n  ],\n\n  // Sirens (Z2M)\n  sirens: [\n    { baseTopic: \"tasmota_g12\", name: \"A1 - Rodzice\" },\n    { baseTopic: \"tasmota_g3\", name: \"A2 - Kopiarka\" },\n    { baseTopic: \"tasmota_g11\", name: \"S3 Galeria\" }\n  ],\n  // Siren payload templates (Z2M sirens vary; adjust if needed)\n  // Most Zigbee sirens use the `warning` cluster.\n  sirenTemplates: {\n    flood: { warning: { mode: \"emergency\", level: \"low\",  strobe: false, duration: 2 } },\n    smoke: { warning: { mode: \"emergency\", level: \"high\", strobe: true,  duration: 2 } },\n    heat:  { warning: { mode: \"emergency\", level: \"high\", strobe: false, duration: 2 } },\n    stop:  { warning: { mode: \"stop\" } }\n  },\n\n  // Repeat intervals\n  floodRepeatSeconds: 150,\n  smokeRepeatSeconds: 120,\n};\n\nflow.set(\"z2mSafetyCfg\", cfg);\nnode.status({fill:\"green\",shape:\"dot\",text:\"cfg loaded\"});\nreturn msg;\n",
+    "func": "// Edit these settings for your house/workshop\nconst cfg = {\n  // Silence duration after any B button press\n  silenceMinutes: 60,\n\n  // Optional: virtual HA dashboard button -> MQTT topic (see scripts.yaml)\n  virtualSilenceTopic: \"ha/z2m_safety/silence\",\n\n  // Treat smoke detector 'hush/test' button messages as silence input\n  smokeHushAsSilence: true,\n\n  // Auto-clear alarms when sensors report normal.\n  // Recommended false (manual silence) to avoid accidental clears from flaky/late reports.\n  autoClearFlood: false,\n  autoClearSmoke: false,\n\n  // Heat alarm: any listed temp sensor >= threshold\n  autoClearHeat: false,\n  heatThresholdC: 45,\n  heatRepeatSeconds: 180,\n  heatSensors: [\n      {\n          \"baseTopic\": \"tasmota_g1\",\n          \"name\": \"T3 - W5 Laser\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g2\",\n          \"name\": \"T4 - Patryk GĂłra\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g3\",\n          \"name\": \"T1 Korytarz Warszt\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g3\",\n          \"name\": \"T6 pompownia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g4\",\n          \"name\": \"T20 W3\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g4\",\n          \"name\": \"T7 KotĹ‚ownia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g5\",\n          \"name\": \"T2 W4\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g6\",\n          \"name\": \"T15 Malarnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T12 - GaraĹĽ\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T19 - Piwnica\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T20 - Pralnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g8\",\n          \"name\": \"T10 Rodzice Dol\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g9\",\n          \"name\": \"T15 Salon Patryk\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g9\",\n          \"name\": \"T9 - Patryk Hall\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"T5 Bartek\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"T8 Dostawka\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"TO2 - Suszarnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g11\",\n          \"name\": \"T17 - Galeria\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g11\",\n          \"name\": \"TO1 - Kimla\"\n      }\n  ],\n\n  // Home Assistant API (used for push notifications + optional HA switch.turn_off)\n  // - HA add-on Node-RED: SUPERVISOR_TOKEN should exist; base URL http://supervisor/core\n  // - External Node-RED: set HA_BASE_URL + HA_TOKEN env vars\n  haBaseUrl: env.get(\"HA_BASE_URL\") || \"http://supervisor/core\",\n  haToken: env.get(\"SUPERVISOR_TOKEN\") || env.get(\"HA_TOKEN\") || \"\",\n\n  // Push notify service (Home Assistant)\n  // Examples:\n  // - Push to all: notify.notify\n  // - Push to specific phone: notify.mobile_app_<device>\n  notifyPushService: \"notify.notify\",\n\n  // Email recipients (used by the Node-RED `e-mail` node)\n  emailTo: [\"zajdel@viktor-art.pl\"],\n\n  // Pump outlets to turn OFF on flood\n  // - Preferred: Z2M MQTT direct (doesn't depend on HA entities)\n  // Pump restore guard (used on silence triple-press)\n  pumpRestoreDryMinutes: 5,\n  pumpRestoreDryReportMinutes: 10,\n\n  pumpOutletsZ2M: [\n    { baseTopic: \"tasmota_g3\", name: \"P1 Pompownia\" },\n    { baseTopic: \"tasmota_g4\", name: \"P2 Kotlownia\" },\n  ],\n\n  // - Optional: HA switch entities (turn_off)\n  pumpSwitchEntities: [\n    // \"switch.pump_1\",\n    // \"switch.pump_2\"\n  ],\n\n  // Z2M network classification (for smoke beep count)\n  workshopBaseTopics: [\"tasmota_g1\",\"tasmota_g3\",\"tasmota_g4\",\"tasmota_g5\",\"tasmota_g6\",\"tasmota_g10\"],\n  homeBaseTopics: [\"tasmota_g2\",\"tasmota_g7\",\"tasmota_g8\",\"tasmota_g9\",\"tasmota_g12\"],\n\n  // Devices (from this repo's Z2M inventory)\n  floodSensors: [\n    { baseTopic: \"tasmota_g3\", name: \"F1 Zalanie Pompownia\" },\n    { baseTopic: \"tasmota_g4\", name: \"F2 Kotlownia\" }\n  ],\n  smokeSensors: [\n    { baseTopic: \"tasmota_g2\", name: \"S1 - Patryk Biuro\" },\n    { baseTopic: \"tasmota_g9\", name: \"S2 Patryk Dom Korytarz\" },\n    { baseTopic: \"tasmota_g7\", name: \"S3 Garaz\" },\n    { baseTopic: \"tasmota_g6\", name: \"S4 Malarnia Smoke\" },\n    { baseTopic: \"tasmota_g6\", name: \"S5 Warsztat schody gora\" },\n    { baseTopic: \"tasmota_g3\", name: \"S6 Korytarz Warsztat\" },\n    { baseTopic: \"tasmota_g5\", name: \"S7 W4 6AX\" },\n    { baseTopic: \"tasmota_g10\", name: \"S8 Bartek\" },\n    { baseTopic: \"tasmota_g12\", name: \"S9 - Rodzice Gora\" }\n  ],\n  silenceButtons: [\n    { baseTopic: \"tasmota_g3\", name: \"B1 Korytarz warsztat\" },\n    { baseTopic: \"tasmota_g6\", name: \"B2 Malarnia\" }\n  ],\n\n  // Sirens (Z2M)\n  sirens: [\n    { baseTopic: \"tasmota_g12\", name: \"A1 - Rodzice\" },\n    { baseTopic: \"tasmota_g3\", name: \"A2 - Kopiarka\" },\n    { baseTopic: \"tasmota_g11\", name: \"S3 Galeria\" }\n  ],\n  // Siren payload templates (Z2M sirens vary; adjust if needed)\n  // Most Zigbee sirens use the `warning` cluster.\n  sirenTemplates: {\n    flood: { warning: { mode: \"emergency\", level: \"low\",  strobe: false, duration: 2 } },\n    smoke: { warning: { mode: \"emergency\", level: \"high\", strobe: true,  duration: 2 } },\n    heat:  { warning: { mode: \"emergency\", level: \"high\", strobe: false, duration: 2 } },\n    stop:  { warning: { mode: \"stop\" } }\n  },\n\n  // Repeat intervals (escalate: each repeat halves the pause until repeatMinSeconds)\n  repeatMinSeconds: 10,\n  floodRepeatSeconds: 150,\n  smokeRepeatSeconds: 120,\n};\n\nflow.set(\"z2mSafetyCfg\", cfg);\nnode.status({fill:\"green\",shape:\"dot\",text:\"cfg loaded\"});\nreturn msg;\n",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
@@ -472,7 +472,7 @@
     "y": 300,
     "wires": [
       [
-        "trg_flood_loop"
+        "fn_repeat_flood"
       ],
       [
         "fn_stop_flood_loop"
@@ -505,7 +505,7 @@
     "y": 360,
     "wires": [
       [
-        "trg_smoke_loop"
+        "fn_repeat_smoke"
       ],
       [
         "fn_stop_smoke_loop"
@@ -695,7 +695,7 @@
     "y": 260,
     "wires": [
       [
-        "trg_flood_loop"
+        "fn_repeat_flood"
       ]
     ]
   },
@@ -714,7 +714,7 @@
     "y": 420,
     "wires": [
       [
-        "trg_smoke_loop"
+        "fn_repeat_smoke"
       ]
     ]
   },
@@ -1094,7 +1094,7 @@
     "y": 480,
     "wires": [
       [
-        "trg_heat_loop"
+        "fn_repeat_heat"
       ],
       [
         "fn_stop_heat_loop"
@@ -1141,7 +1141,7 @@
     "y": 540,
     "wires": [
       [
-        "trg_heat_loop"
+        "fn_repeat_heat"
       ]
     ]
   },
@@ -2167,6 +2167,144 @@
         "fn_stop_flood_loop",
         "fn_stop_smoke_loop",
         "fn_stop_heat_loop"
+      ]
+    ]
+  },
+  {
+    "id": "fn_repeat_flood",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Repeat flood (escalate)",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\n// Reset cancels pending delayed ticks via generation bump\nconst genKey = 'floodRepeatGen';\nlet gen = flow.get(genKey) || 0;\n\nif (msg.reset === true) {\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Only repeat when there is an active alarm of this kind\nconst activeMap = flow.get('floodActive') || {};\nif (Object.keys(activeMap).length === 0) {\n  // no active alarms -> stop loop\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Initialize gen on first start\nif (msg._gen === undefined) {\n  gen += 1;\n  flow.set(genKey, gen);\n  msg._gen = gen;\n} else if (msg._gen != gen) {\n  // stale tick\n  return null;\n}\n\n// Current interval seconds\nconst minSec = Number(cfg.repeatMinSeconds || 0) || 10;\nlet intervalSec = (typeof msg._intervalSec === 'number') ? msg._intervalSec : Number(msg._intervalSec);\nif (!Number.isFinite(intervalSec) || intervalSec <= 0) {\n  intervalSec = Number(cfg.floodRepeatSeconds || 0) || 150;\n}\n\n// Output 1: siren pattern right now\nconst outNow = {\n  payload: { pattern: 'flood', beeps: 1 },\n  topic: msg.topic,\n  _gen: msg._gen,\n};\n\n// Next interval halves until minSec\nconst nextIntervalSec = Math.max(minSec, intervalSec / 2);\n\n// Output 2: schedule next tick\nconst outNext = {\n  _gen: msg._gen,\n  _intervalSec: nextIntervalSec,\n  delay: Math.max(minSec * 1000, Math.round(intervalSec * 1000)),\n};\n\nreturn [[outNow],[outNext]];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2000,
+    "y": 300,
+    "wires": [
+      [
+        "fn_gate_silence"
+      ],
+      [
+        "dly_repeat_flood"
+      ]
+    ]
+  },
+  {
+    "id": "dly_repeat_flood",
+    "type": "delay",
+    "z": "tab_z2m_safety",
+    "name": "Delay flood by msg.delay",
+    "pauseType": "delay",
+    "timeout": "0",
+    "timeoutUnits": "milliseconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "0",
+    "randomLast": "0",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "x": 2250,
+    "y": 340,
+    "wires": [
+      [
+        "fn_repeat_flood"
+      ]
+    ]
+  },
+  {
+    "id": "fn_repeat_smoke",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Repeat smoke (escalate)",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\n// Reset cancels pending delayed ticks via generation bump\nconst genKey = 'smokeRepeatGen';\nlet gen = flow.get(genKey) || 0;\n\nif (msg.reset === true) {\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Only repeat when there is an active alarm of this kind\nconst activeMap = flow.get('smokeActive') || {};\nif (Object.keys(activeMap).length === 0) {\n  // no active alarms -> stop loop\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Initialize gen on first start\nif (msg._gen === undefined) {\n  gen += 1;\n  flow.set(genKey, gen);\n  msg._gen = gen;\n} else if (msg._gen != gen) {\n  // stale tick\n  return null;\n}\n\n// Current interval seconds\nconst minSec = Number(cfg.repeatMinSeconds || 0) || 10;\nlet intervalSec = (typeof msg._intervalSec === 'number') ? msg._intervalSec : Number(msg._intervalSec);\nif (!Number.isFinite(intervalSec) || intervalSec <= 0) {\n  intervalSec = Number(cfg.smokeRepeatSeconds || 0) || 120;\n}\n\n// Output 1: siren pattern right now\nconst outNow = {\n  payload: { pattern: 'smoke', beeps: 1 },\n  topic: msg.topic,\n  _gen: msg._gen,\n};\n\n// Next interval halves until minSec\nconst nextIntervalSec = Math.max(minSec, intervalSec / 2);\n\n// Output 2: schedule next tick\nconst outNext = {\n  _gen: msg._gen,\n  _intervalSec: nextIntervalSec,\n  delay: Math.max(minSec * 1000, Math.round(intervalSec * 1000)),\n};\n\nreturn [[outNow],[outNext]];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2000,
+    "y": 360,
+    "wires": [
+      [
+        "fn_gate_silence"
+      ],
+      [
+        "dly_repeat_smoke"
+      ]
+    ]
+  },
+  {
+    "id": "dly_repeat_smoke",
+    "type": "delay",
+    "z": "tab_z2m_safety",
+    "name": "Delay smoke by msg.delay",
+    "pauseType": "delay",
+    "timeout": "0",
+    "timeoutUnits": "milliseconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "0",
+    "randomLast": "0",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "x": 2250,
+    "y": 400,
+    "wires": [
+      [
+        "fn_repeat_smoke"
+      ]
+    ]
+  },
+  {
+    "id": "fn_repeat_heat",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Repeat heat (escalate)",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\n// Reset cancels pending delayed ticks via generation bump\nconst genKey = 'heatRepeatGen';\nlet gen = flow.get(genKey) || 0;\n\nif (msg.reset === true) {\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Only repeat when there is an active alarm of this kind\nconst activeMap = flow.get('heatActive') || {};\nif (Object.keys(activeMap).length === 0) {\n  // no active alarms -> stop loop\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Initialize gen on first start\nif (msg._gen === undefined) {\n  gen += 1;\n  flow.set(genKey, gen);\n  msg._gen = gen;\n} else if (msg._gen != gen) {\n  // stale tick\n  return null;\n}\n\n// Current interval seconds\nconst minSec = Number(cfg.repeatMinSeconds || 0) || 10;\nlet intervalSec = (typeof msg._intervalSec === 'number') ? msg._intervalSec : Number(msg._intervalSec);\nif (!Number.isFinite(intervalSec) || intervalSec <= 0) {\n  intervalSec = Number(cfg.heatRepeatSeconds || 0) || 180;\n}\n\n// Output 1: siren pattern right now\nconst outNow = {\n  payload: { pattern: 'heat', beeps: 1 },\n  topic: msg.topic,\n  _gen: msg._gen,\n};\n\n// Next interval halves until minSec\nconst nextIntervalSec = Math.max(minSec, intervalSec / 2);\n\n// Output 2: schedule next tick\nconst outNext = {\n  _gen: msg._gen,\n  _intervalSec: nextIntervalSec,\n  delay: Math.max(minSec * 1000, Math.round(intervalSec * 1000)),\n};\n\nreturn [[outNow],[outNext]];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2000,
+    "y": 420,
+    "wires": [
+      [
+        "fn_gate_silence"
+      ],
+      [
+        "dly_repeat_heat"
+      ]
+    ]
+  },
+  {
+    "id": "dly_repeat_heat",
+    "type": "delay",
+    "z": "tab_z2m_safety",
+    "name": "Delay heat by msg.delay",
+    "pauseType": "delay",
+    "timeout": "0",
+    "timeoutUnits": "milliseconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "0",
+    "randomLast": "0",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "x": 2250,
+    "y": 460,
+    "wires": [
+      [
+        "fn_repeat_heat"
       ]
     ]
   }

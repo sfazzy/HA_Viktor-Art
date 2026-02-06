@@ -292,8 +292,9 @@ def main():
         ("silenceMinutes", "60", "Wyciszenie beepów po 1×."),
         ("pumpRestoreDryMinutes", "5", "Brak WET przez X minut przed restore."),
         ("pumpRestoreDryReportMinutes", "10", "Wymóg świeżego DRY raportu z czujników."),
-        ("floodRepeatSeconds", "150", "Powtarzanie beepa dla zalania."),
-        ("smokeRepeatSeconds", "120", "Powtarzanie beepa dla dymu."),
+        ("repeatMinSeconds", "10", "Minimalna przerwa między powtórzeniami (eskalacja do tej wartości)."),
+        ("floodRepeatSeconds", "150", "Startowa przerwa powtórzeń dla zalania (każde powtórzenie dzieli przez 2 aż do minimum)."),
+        ("smokeRepeatSeconds", "120", "Startowa przerwa powtórzeń dla dymu (każde powtórzenie dzieli przez 2 aż do minimum)."),
         ("heatThresholdC", "45°C", "Próg alarmu temperatury."),
     ]:
         r = t.add_row().cells
@@ -308,4 +309,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
