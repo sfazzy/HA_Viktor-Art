@@ -158,6 +158,7 @@ def main():
     _bullet(doc, "Warstwa 1: Zigbee2MQTT — zbiera zdarzenia z wielu niezależnych sieci Zigbee.")
     _bullet(doc, "Warstwa 2: Node‑RED — logika alarmów, eskalacja, wzorce syren, sterowanie pompami.")
     _bullet(doc, "Warstwa 3: Home Assistant — powiadomienia push/email + nadzór (supervision) i dashboard.")
+    _bullet(doc, "Email wysyłany jest przez Home Assistant (integracja `email_notifier`). Dzięki temu w Node‑RED nie trzymamy haseł SMTP w flow.")
     _bullet(doc, "Dodatkowo: przypomnienia push eskalują razem z alarmem (email nie eskaluje), ale są dławione minimalnym odstępem aby uniknąć spamu.")
 
     _note(
