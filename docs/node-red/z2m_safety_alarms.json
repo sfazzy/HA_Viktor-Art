@@ -111,7 +111,7 @@
     ],
     "repeat": "",
     "crontab": "",
-    "once": true,
+    "once": false,
     "onceDelay": "0.8",
     "topic": "",
     "payload": "false",

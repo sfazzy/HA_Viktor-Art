@@ -95,3 +95,14 @@
         title: "Zigbee2MQTT devices OFFLINE"
         message: >-
           {{ trigger.to_state.name }} reports {{ trigger.to_state.state }} offline device(s) ({{ trigger.entity_id }}) since {{ trigger.to_state.last_changed }}.
+
+- id: z2m_safety_production_mode_on_start
+  alias: "Z2M Safety - Production mode on start"
+  description: "Automatically enable sirens after HA restart. Use Test mode script for safe testing."
+  mode: single
+  trigger:
+    - platform: homeassistant
+      event: start
+  action:
+    - delay: "00:00:30"
+    - service: script.z2m_safety_production_mode

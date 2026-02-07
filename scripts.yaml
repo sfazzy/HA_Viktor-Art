@@ -23,7 +23,7 @@ z2m_safety_test_mode:
         topic: ha/z2m_safety/sirens
         payload: '{"enabled":false,"source":"ha_script"}'
         qos: 0
-        retain: false
+        retain: true
 
 z2m_safety_production_mode:
   alias: Z2M Safety - Production mode (sirens on)
@@ -38,4 +38,4 @@ z2m_safety_production_mode:
         topic: ha/z2m_safety/sirens
         payload: '{"enabled":true,"source":"ha_script"}'
         qos: 0
-        retain: false
+        retain: true
