@@ -25,6 +25,9 @@ This repo contains a Home Assistant configuration with multiple Zigbee2MQTT inst
 - Push reminder escalation (no email escalation):
   - While alarm is still active, the repeat ticks also send push reminders via `notifyPushService`
   - Throttled by `pushRepeatMinSeconds` (default 60s) to avoid notification spam when siren repeat reaches 10s
+- Pump shutdown robustness:
+  - On flood start, pumps are commanded OFF immediately
+  - While flood remains active, a throttled retry sends pump OFF again every `pumpOffRepeatMinSeconds` (default 60s) in case the first command was missed during load
 
 ## Zigbee2MQTT layout
 

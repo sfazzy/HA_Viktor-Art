@@ -294,6 +294,7 @@ def main():
     for k, v, d in [
         ("silenceMinutes", "60", "Wyciszenie beepów po 1×."),
         ("pushRepeatMinSeconds", "60", "Minimalny odstęp dla przypomnień push (nie eskaluje do 10 s jak syreny, żeby nie spamować)."),
+        ("pumpOffRepeatMinSeconds", "60", "Minimalny odstęp ponawiania komendy OFF dla pomp podczas aktywnego zalania (jeśli pierwsza komenda zginęła w obciążeniu)."),
         ("pumpRestoreDryMinutes", "5", "Brak WET przez X minut przed restore."),
         ("pumpRestoreDryReportMinutes", "10", "Wymóg świeżego DRY raportu z czujników."),
         ("repeatMinSeconds", "10", "Minimalna przerwa między powtórzeniami (eskalacja do tej wartości)."),
