@@ -18,6 +18,131 @@ input_boolean:
     name: Safety - Sirens enabled
     icon: mdi:alarm
 
+input_button:
+  g03_water_billing_reset_z1:
+    name: G03 Z1 reset billing counter
+    icon: mdi:counter
+  g03_water_billing_reset_z2:
+    name: G03 Z2 reset billing counter
+    icon: mdi:counter
+  g03_water_billing_reset_all:
+    name: G03 reset all billing counters
+    icon: mdi:counter
+
+input_number:
+  g03_z1_dom_water_billing_baseline_l:
+    name: G03 Z1 billing baseline (L)
+    min: 0
+    max: 100000000
+    step: 0.1
+    mode: box
+    icon: mdi:water
+  g03_z2_firma_water_billing_baseline_l:
+    name: G03 Z2 billing baseline (L)
+    min: 0
+    max: 100000000
+    step: 0.1
+    mode: box
+    icon: mdi:water
+
+template:
+  - trigger:
+      - platform: mqtt
+        topic: tasmota_g3/Z1 Dom
+    sensor:
+      - name: G03 Z1 Dom water total L
+        unique_id: g03_z1_dom_water_total_l
+        unit_of_measurement: "L"
+        device_class: water
+        state_class: total_increasing
+        state: >-
+          {% set p = trigger.payload | from_json(default={}) %}
+          {% set raw = p.water_consumed | float(0) %}
+          {% set prev_total = states(this.entity_id) | float(0) %}
+          {% set prev_raw = state_attr(this.entity_id, 'last_raw') | float(raw) %}
+          {% if raw >= prev_raw %}
+            {{ (prev_total + (raw - prev_raw)) | round(2) }}
+          {% else %}
+            {{ (prev_total + raw) | round(2) }}
+          {% endif %}
+        attributes:
+          last_raw: >-
+            {% set p = trigger.payload | from_json(default={}) %}
+            {{ p.water_consumed | float(0) }}
+      - name: G03 Z1 Dom water billing L
+        unique_id: g03_z1_dom_water_billing_l
+        unit_of_measurement: "L"
+        device_class: water
+        state: >-
+          {% set total = states('sensor.g03_z1_dom_water_total_l') | float(0) %}
+          {% set base = states('input_number.g03_z1_dom_water_billing_baseline_l') | float(0) %}
+          {{ ([total - base, 0] | max) | round(2) }}
+  - trigger:
+      - platform: mqtt
+        topic: tasmota_g3/Z2 Firma
+    sensor:
+      - name: G03 Z2 Firma water total L
+        unique_id: g03_z2_firma_water_total_l
+        unit_of_measurement: "L"
+        device_class: water
+        state_class: total_increasing
+        state: >-
+          {% set p = trigger.payload | from_json(default={}) %}
+          {% set raw = p.water_consumed | float(0) %}
+          {% set prev_total = states(this.entity_id) | float(0) %}
+          {% set prev_raw = state_attr(this.entity_id, 'last_raw') | float(raw) %}
+          {% if raw >= prev_raw %}
+            {{ (prev_total + (raw - prev_raw)) | round(2) }}
+          {% else %}
+            {{ (prev_total + raw) | round(2) }}
+          {% endif %}
+        attributes:
+          last_raw: >-
+            {% set p = trigger.payload | from_json(default={}) %}
+            {{ p.water_consumed | float(0) }}
+      - name: G03 Z2 Firma water billing L
+        unique_id: g03_z2_firma_water_billing_l
+        unit_of_measurement: "L"
+        device_class: water
+        state: >-
+          {% set total = states('sensor.g03_z2_firma_water_total_l') | float(0) %}
+          {% set base = states('input_number.g03_z2_firma_water_billing_baseline_l') | float(0) %}
+          {{ ([total - base, 0] | max) | round(2) }}
+  - sensor:
+      - name: G03 water total combined L
+        unique_id: g03_water_total_combined_l
+        unit_of_measurement: "L"
+        device_class: water
+        state_class: total_increasing
+        state: >-
+          {{ (states('sensor.g03_z1_dom_water_total_l') | float(0) + states('sensor.g03_z2_firma_water_total_l') | float(0)) | round(2) }}
+      - name: G03 water billing combined L
+        unique_id: g03_water_billing_combined_l
+        unit_of_measurement: "L"
+        device_class: water
+        state: >-
+          {{ (states('sensor.g03_z1_dom_water_billing_l') | float(0) + states('sensor.g03_z2_firma_water_billing_l') | float(0)) | round(2) }}
+
+utility_meter:
+  g03_z1_dom_water_daily_l:
+    source: sensor.g03_z1_dom_water_total_l
+    cycle: daily
+  g03_z1_dom_water_monthly_l:
+    source: sensor.g03_z1_dom_water_total_l
+    cycle: monthly
+  g03_z2_firma_water_daily_l:
+    source: sensor.g03_z2_firma_water_total_l
+    cycle: daily
+  g03_z2_firma_water_monthly_l:
+    source: sensor.g03_z2_firma_water_total_l
+    cycle: monthly
+  g03_water_combined_daily_l:
+    source: sensor.g03_water_total_combined_l
+    cycle: daily
+  g03_water_combined_monthly_l:
+    source: sensor.g03_water_total_combined_l
+    cycle: monthly
+
 binary_sensor:
   - platform: template
     sensors:

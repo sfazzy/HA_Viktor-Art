@@ -106,3 +106,50 @@
   action:
     - delay: "00:00:30"
     - service: script.z2m_safety_production_mode
+
+- id: g03_water_billing_reset_z1
+  alias: "G03 Water - Reset billing Z1"
+  description: "Sets Z1 billing baseline to current cumulative total."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_button.g03_water_billing_reset_z1
+  action:
+    - service: input_number.set_value
+      target:
+        entity_id: input_number.g03_z1_dom_water_billing_baseline_l
+      data:
+        value: "{{ states('sensor.g03_z1_dom_water_total_l') | float(0) }}"
+
+- id: g03_water_billing_reset_z2
+  alias: "G03 Water - Reset billing Z2"
+  description: "Sets Z2 billing baseline to current cumulative total."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_button.g03_water_billing_reset_z2
+  action:
+    - service: input_number.set_value
+      target:
+        entity_id: input_number.g03_z2_firma_water_billing_baseline_l
+      data:
+        value: "{{ states('sensor.g03_z2_firma_water_total_l') | float(0) }}"
+
+- id: g03_water_billing_reset_all
+  alias: "G03 Water - Reset billing all"
+  description: "Sets both billing baselines to current cumulative totals."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_button.g03_water_billing_reset_all
+  action:
+    - service: input_number.set_value
+      target:
+        entity_id: input_number.g03_z1_dom_water_billing_baseline_l
+      data:
+        value: "{{ states('sensor.g03_z1_dom_water_total_l') | float(0) }}"
+    - service: input_number.set_value
+      target:
+        entity_id: input_number.g03_z2_firma_water_billing_baseline_l
+      data:
+        value: "{{ states('sensor.g03_z2_firma_water_total_l') | float(0) }}"
