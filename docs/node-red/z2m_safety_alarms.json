@@ -2,7 +2,7 @@
   {
     "id": "tab_z2m_safety",
     "type": "tab",
-    "label": "Z2M Safety (Flood + Smoke)",
+    "label": "Z2M Safety (Simple v2)",
     "disabled": false,
     "info": ""
   },
@@ -11,9 +11,9 @@
     "type": "comment",
     "z": "tab_z2m_safety",
     "name": "Overview",
-    "info": "Flood: leak sensors -> HA notify + email + pump outlets off + repeating short siren beep.\nSmoke: smoke sensors -> HA notify + email + repeating siren beeps (2 for workshop, 3 for home).\nSilence: B buttons stop repeating alarms and send acknowledgement.\n\nThis flow uses only standard nodes (MQTT + HTTP) and calls HA REST API with SUPERVISOR_TOKEN (add-on) or HA_TOKEN (external).",
-    "x": 170,
-    "y": 60,
+    "info": "Simple safety flow: flood/smoke/heat -> notify/email/siren loops, flood -> pumps OFF, auto restore pumps after 5 min DRY.",
+    "x": 180,
+    "y": 40,
     "wires": []
   },
   {
@@ -22,34 +22,32 @@
     "name": "core-mosquitto",
     "broker": "core-mosquitto",
     "port": "1883",
-    "clientid": "nodered-z2m-safety",
+    "clientid": "nodered-z2m-safety-simple",
     "autoConnect": true,
     "usetls": false,
     "protocolVersion": "4",
     "keepalive": "60",
     "cleansession": true,
-    "autoUnsubscribe": true,
     "birthTopic": "",
     "birthQos": "0",
     "birthRetain": "false",
     "birthPayload": "",
-    "birthMsg": {},
     "closeTopic": "",
     "closeQos": "0",
     "closeRetain": "false",
     "closePayload": "",
-    "closeMsg": {},
     "willTopic": "",
     "willQos": "0",
     "willRetain": "false",
     "willPayload": "",
-    "willMsg": {}
+    "userProps": "",
+    "sessionExpiry": ""
   },
   {
-    "id": "inj_config",
+    "id": "inj_start",
     "type": "inject",
     "z": "tab_z2m_safety",
-    "name": "Init/Reload config",
+    "name": "Init config",
     "props": [
       {
         "p": "payload"
@@ -60,10 +58,10 @@
     "once": true,
     "onceDelay": "0.5",
     "topic": "",
-    "payload": "init",
-    "payloadType": "str",
-    "x": 180,
-    "y": 120,
+    "payload": "{}",
+    "payloadType": "json",
+    "x": 110,
+    "y": 100,
     "wires": [
       [
         "fn_config"
@@ -75,52 +73,17 @@
     "type": "function",
     "z": "tab_z2m_safety",
     "name": "CONFIG",
-    "func": "// Edit these settings for your house/workshop\nconst cfg = {\n  // Silence duration after any B button press\n  silenceMinutes: 60,\n\n  // After a single SILENCE/HUSH press: if sensors report normal for this long, auto-reset alarms (and restore pumps if applicable)\n  autoResetAfterSilenceMinutes: 15,\n\n  // Optional: virtual HA dashboard button -> MQTT topic (see scripts.yaml)\n  virtualSilenceTopic: \"ha/z2m_safety/silence\",\n\n  // Treat smoke detector 'hush/test' button messages as silence input\n  smokeHushAsSilence: true,\n\n  // Auto-clear alarms when sensors report normal.\n  // Enabled: loops auto-stop when sensors return to normal values.\n  autoClearFlood: true,\n  autoClearSmoke: true,\n\n  // Heat alarm: any listed temp sensor >= threshold\n  autoClearHeat: true,\n  heatThresholdC: 45,\n  heatRepeatSeconds: 180,\n  heatSensors: [\n      {\n          \"baseTopic\": \"tasmota_g1\",\n          \"name\": \"T3 - W5 Laser\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g2\",\n          \"name\": \"T4 - Patryk GĂłra\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g3\",\n          \"name\": \"T1 Korytarz Warszt\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g3\",\n          \"name\": \"T6 pompownia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g4\",\n          \"name\": \"T20 W3\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g4\",\n          \"name\": \"T7 KotĹ‚ownia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g5\",\n          \"name\": \"T2 W4\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g6\",\n          \"name\": \"T15 Malarnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T12 - GaraĹĽ\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T19 - Piwnica\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g7\",\n          \"name\": \"T20 - Pralnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g8\",\n          \"name\": \"T10 Rodzice Dol\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g9\",\n          \"name\": \"T15 Salon Patryk\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g9\",\n          \"name\": \"T9 - Patryk Hall\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"T5 Bartek\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"T8 Dostawka\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g10\",\n          \"name\": \"TO2 - Suszarnia\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g11\",\n          \"name\": \"T17 - Galeria\"\n      },\n      {\n          \"baseTopic\": \"tasmota_g11\",\n          \"name\": \"TO1 - Kimla\"\n      }\n  ],\n\n  // Home Assistant API (used for push notifications + optional HA switch.turn_off)\n  // - HA add-on Node-RED: SUPERVISOR_TOKEN should exist; base URL http://supervisor/core\n  // - External Node-RED: set HA_BASE_URL + HA_TOKEN env vars\n  haBaseUrl: env.get(\"HA_BASE_URL\") || \"http://supervisor/core\",\n  haToken: env.get(\"SUPERVISOR_TOKEN\") || env.get(\"HA_TOKEN\") || \"\",\n\n  // Push notify service (Home Assistant)\n  // Examples:\n  // - Push to all: notify.notify\n  // - Push to specific phone: notify.mobile_app_<device>\n  notifyPushService: \"notify.notify\",\n\n  // Escalating push reminders while alarm stays active (email does NOT escalate)\n  pushRepeatEnabled: true,\n  // Minimum spacing for reminder pushes (prevents 10s spam); set lower if you really want\n  pushRepeatMinSeconds: 60,\n\n  // Email recipients (used by the Node-RED e-mail node). SMTP server/user are prefilled in the flow; password is stored in Node-RED credentials.\n  emailTo: [\"zajdel@viktor-art.pl\"],\n  // Pump outlets to turn OFF on flood\n  // - Preferred: Z2M MQTT direct (doesn't depend on HA entities)\n  // Pump restore guard (used on silence triple-press)\n  pumpRestoreDryMinutes: 5,\n  pumpRestoreDryReportMinutes: 10,\n\n  // Flood -> pump OFF retry while flood remains active.\n  // Disabled by default so manual ON is not forced back to OFF during the same alarm.\n  pumpOffRepeatEnabled: false,\n  pumpOffRepeatMinSeconds: 60,\n\n  pumpOutletsZ2M: [\n    { baseTopic: \"tasmota_g3\", name: \"P1 Pompownia\" },\n    { baseTopic: \"tasmota_g4\", name: \"P2 Kotlownia\" },\n  ],\n\n  // - Optional: HA switch entities (turn_off)\n  pumpSwitchEntities: [\n    // \"switch.pump_1\",\n    // \"switch.pump_2\"\n  ],\n\n  // Z2M network classification (for smoke beep count)\n  workshopBaseTopics: [\"tasmota_g1\",\"tasmota_g3\",\"tasmota_g4\",\"tasmota_g5\",\"tasmota_g6\",\"tasmota_g10\"],\n  homeBaseTopics: [\"tasmota_g2\",\"tasmota_g7\",\"tasmota_g8\",\"tasmota_g9\",\"tasmota_g12\"],\n\n  // Devices (from this repo's Z2M inventory)\n  floodSensors: [\n    { baseTopic: \"tasmota_g3\", name: \"F1 Zalanie Pompownia\" },\n    { baseTopic: \"tasmota_g4\", name: \"F2 Kotlownia\" }\n  ],\n  smokeSensors: [\n    { baseTopic: \"tasmota_g2\", name: \"S1 - Patryk Biuro\" },\n    { baseTopic: \"tasmota_g9\", name: \"S2 Patryk Dom Korytarz\" },\n    { baseTopic: \"tasmota_g7\", name: \"S3 Garaz\" },\n    { baseTopic: \"tasmota_g6\", name: \"S4 Malarnia Smoke\" },\n    { baseTopic: \"tasmota_g6\", name: \"S5 Warsztat schody gora\" },\n    { baseTopic: \"tasmota_g3\", name: \"S6 Korytarz Warsztat\" },\n    { baseTopic: \"tasmota_g5\", name: \"S7 W4 6AX\" },\n    { baseTopic: \"tasmota_g10\", name: \"S8 Bartek\" },\n    { baseTopic: \"tasmota_g12\", name: \"S9 - Rodzice Gora\" }\n  ],\n  silenceButtons: [\n    { baseTopic: \"tasmota_g3\", name: \"B1 Korytarz warsztat\" },\n    { baseTopic: \"tasmota_g6\", name: \"B2 Malarnia\" }\n  ],\n\n  // Sirens (Z2M)\n  sirens: [\n    { baseTopic: \"tasmota_g12\", name: \"A1 - Rodzice\" },\n    { baseTopic: \"tasmota_g3\", name: \"A2 - Kopiarka\" },\n    { baseTopic: \"tasmota_g11\", name: \"S3 Galeria\" }\n  ],\n  // Siren payload templates (Z2M sirens vary; adjust if needed)\n  // Most Zigbee sirens use the `warning` cluster.\n  sirenTemplates: {\n    flood: { warning: { mode: \"emergency\", level: \"low\",  strobe: false, duration: 2 } },\n    smoke: { warning: { mode: \"emergency\", level: \"high\", strobe: true,  duration: 2 } },\n    heat:  { warning: { mode: \"emergency\", level: \"high\", strobe: false, duration: 2 } },\n    stop:  { warning: { mode: \"stop\" } }\n  },\n\n  // Repeat intervals (escalate: each repeat halves the pause until repeatMinSeconds)\n  repeatMinSeconds: 10,\n  floodRepeatSeconds: 150,\n  smokeRepeatSeconds: 120,\n};\n\nflow.set(\"z2mSafetyCfg\", cfg);\nnode.status({fill:\"green\",shape:\"dot\",text:\"cfg loaded\"});\nreturn msg;\n",
+    "func": "const cfg = {\n  silenceMinutes: 60,\n  resetPressWindowSec: 5,\n  resetPressCount: 3,\n  floodDryMinutes: 5,\n  heatThresholdC: 45,\n  floodRepeatSeconds: 150,\n  smokeRepeatSeconds: 120,\n  heatRepeatSeconds: 180,\n\n  haBaseUrl: env.get('HA_BASE_URL') || 'http://supervisor/core',\n  haToken: env.get('SUPERVISOR_TOKEN') || env.get('HA_TOKEN') || '',\n  notifyPushService: 'notify.notify',\n  emailTo: ['zajdel@viktor-art.pl'],\n\n  floodSensors: [\n    { baseTopic: 'tasmota_g3', name: 'F1 Zalanie Pompownia' },\n    { baseTopic: 'tasmota_g4', name: 'F2 Kotlownia' },\n  ],\n  smokeSensors: [\n    { baseTopic: 'tasmota_g2', name: 'S1 - Patryk Biuro' },\n    { baseTopic: 'tasmota_g9', name: 'S2 Patryk Dom Korytarz' },\n    { baseTopic: 'tasmota_g7', name: 'S3 Garaz' },\n    { baseTopic: 'tasmota_g6', name: 'S4 Malarnia Smoke' },\n    { baseTopic: 'tasmota_g6', name: 'S5 Warsztat schody gora' },\n    { baseTopic: 'tasmota_g3', name: 'S6 Korytarz Warsztat' },\n    { baseTopic: 'tasmota_g5', name: 'S7 W4 6AX' },\n    { baseTopic: 'tasmota_g10', name: 'S8 Bartek' },\n    { baseTopic: 'tasmota_g12', name: 'S9 - Rodzice Gora' },\n  ],\n  heatSensors: [\n    { baseTopic: 'tasmota_g3', name: 'T1 Korytarz Warszt' },\n    { baseTopic: 'tasmota_g3', name: 'T6 pompownia' },\n    { baseTopic: 'tasmota_g4', name: 'T7 Kotlownia' },\n    { baseTopic: 'tasmota_g5', name: 'T2 W4' },\n  ],\n  silenceButtons: [\n    { baseTopic: 'tasmota_g3', name: 'B1 Korytarz warsztat' },\n    { baseTopic: 'tasmota_g6', name: 'B2 Malarnia' },\n  ],\n  sirens: [\n    { baseTopic: 'tasmota_g12', name: 'A1 - Rodzice' },\n    { baseTopic: 'tasmota_g3', name: 'A2 - Kopiarka' },\n    { baseTopic: 'tasmota_g11', name: 'S3 Galeria' },\n  ],\n  pumpOutletsZ2M: [\n    { baseTopic: 'tasmota_g3', name: 'P1 Pompownia' },\n    { baseTopic: 'tasmota_g4', name: 'P2 Kotlownia' },\n  ],\n  workshopBaseTopics: ['tasmota_g1','tasmota_g3','tasmota_g4','tasmota_g5','tasmota_g6','tasmota_g10'],\n  homeBaseTopics: ['tasmota_g2','tasmota_g7','tasmota_g8','tasmota_g9','tasmota_g12'],\n\n  sirenTemplates: {\n    flood: { warning: { mode: 'emergency', level: 'low', strobe: false, duration: 2 } },\n    smoke: { warning: { mode: 'emergency', level: 'high', strobe: true, duration: 2 } },\n    heat:  { warning: { mode: 'emergency', level: 'high', strobe: false, duration: 2 } },\n    stop:  { warning: { mode: 'stop' } },\n  },\n};\n\nflow.set('z2mSafetyCfg', cfg);\nif (flow.get('sirensEnabled') === undefined) flow.set('sirensEnabled', true);\nnode.status({fill:'green',shape:'dot',text:'cfg loaded'});\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 420,
-    "y": 120,
+    "x": 290,
+    "y": 100,
     "wires": [
       [
-        "cmt_cfg_loaded"
-      ]
-    ]
-  },
-  {
-    "id": "cmt_cfg_loaded",
-    "type": "comment",
-    "z": "tab_z2m_safety",
-    "name": "Config loaded",
-    "info": "Edit CONFIG node to set:\n- pumpSwitchEntities\n- notifyPushService / notifyEmailService\n- workshop/home topic lists\n- siren templates",
-    "x": 670,
-    "y": 120,
-    "wires": []
-  },
-  {
-    "id": "inj_sirens_off",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "Sirens OFF (test mode)",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.8",
-    "topic": "",
-    "payload": "false",
-    "payloadType": "bool",
-    "x": 180,
-    "y": 160,
-    "wires": [
-      [
-        "fn_set_sirens_enabled"
+        "dbg_status"
       ]
     ]
   },
@@ -128,7 +91,7 @@
     "id": "inj_sirens_on",
     "type": "inject",
     "z": "tab_z2m_safety",
-    "name": "Sirens ON",
+    "name": "Sirens ON startup",
     "props": [
       {
         "p": "payload"
@@ -136,38 +99,119 @@
     ],
     "repeat": "",
     "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
+    "once": true,
+    "onceDelay": "1",
     "topic": "",
     "payload": "true",
     "payloadType": "bool",
-    "x": 180,
-    "y": 200,
+    "x": 130,
+    "y": 160,
     "wires": [
       [
-        "fn_set_sirens_enabled"
+        "fn_sirens_mode"
       ]
     ]
   },
   {
-    "id": "fn_set_sirens_enabled",
+    "id": "mqtt_sirens_ctrl",
+    "type": "mqtt in",
+    "z": "tab_z2m_safety",
+    "name": "Sirens mode topic",
+    "topic": "ha/z2m_safety/sirens",
+    "qos": "0",
+    "datatype": "auto",
+    "broker": "mqtt_broker_core",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 120,
+    "y": 200,
+    "wires": [
+      [
+        "fn_sirens_mode"
+      ]
+    ]
+  },
+  {
+    "id": "fn_sirens_mode",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Set sirens enabled",
-    "func": "const enabled = msg.payload === true;\nflow.set('sirensEnabled', enabled);\nnode.status({ fill: enabled ? 'green' : 'yellow', shape: 'dot', text: enabled ? 'sirens ON' : 'sirens OFF (test mode)' });\n\n// If disabling, stop sirens and reset loops immediately\nif (!enabled) {\n  return [null, { payload: { stop: true } }];\n}\n\nreturn [msg, null];\n",
+    "name": "Set sirens mode",
+    "func": "function toBool(v){\n if (v===true || v===false) return v;\n if (typeof v === 'number') return v !== 0;\n if (typeof v === 'string'){\n  const s=v.trim().toLowerCase();\n  if(['on','true','1','yes','enabled','production'].includes(s)) return true;\n  if(['off','false','0','no','disabled','test'].includes(s)) return false;\n }\n if (v && typeof v === 'object'){\n  if (v.enabled !== undefined) return toBool(v.enabled);\n  if (v.state !== undefined) return toBool(v.state);\n }\n return null;\n}\nconst enabled = toBool(msg.payload);\nif (enabled === null) return null;\nflow.set('sirensEnabled', enabled);\nnode.status({fill: enabled?'green':'yellow', shape:'dot', text: enabled?'sirens ON':'sirens OFF'});\nif (!enabled) return [null, {payload:{stop:true}}];\nreturn [msg, null];",
     "outputs": 2,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 430,
-    "y": 180,
+    "x": 350,
+    "y": 190,
     "wires": [
       [],
       [
         "fn_stop_all_sirens",
-        "fn_stop_flood_loop",
-        "fn_stop_smoke_loop"
+        "fn_reset_all_loops"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt_all",
+    "type": "mqtt in",
+    "z": "tab_z2m_safety",
+    "name": "Z2M messages",
+    "topic": "tasmota_+/+",
+    "qos": "0",
+    "datatype": "auto",
+    "broker": "mqtt_broker_core",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 110,
+    "y": 280,
+    "wires": [
+      [
+        "json_parse"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt_virtual_silence",
+    "type": "mqtt in",
+    "z": "tab_z2m_safety",
+    "name": "Virtual silence",
+    "topic": "ha/z2m_safety/silence",
+    "qos": "0",
+    "datatype": "auto",
+    "broker": "mqtt_broker_core",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 100,
+    "y": 320,
+    "wires": [
+      [
+        "fn_virtual_silence"
+      ]
+    ]
+  },
+  {
+    "id": "fn_virtual_silence",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Build virtual silence event",
+    "func": "msg.event = { type:'silence', baseTopic:'ha', device:'virtual', action:'press', ts: Date.now() };\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 350,
+    "y": 320,
+    "wires": [
+      [
+        "fn_silence"
       ]
     ]
   },
@@ -179,8 +223,8 @@
     "property": "payload",
     "action": "",
     "pretty": false,
-    "x": 420,
-    "y": 240,
+    "x": 300,
+    "y": 280,
     "wires": [
       [
         "fn_classify"
@@ -192,22 +236,22 @@
     "type": "function",
     "z": "tab_z2m_safety",
     "name": "Classify event",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\nfunction topicParts(topic) {\n  const parts = (topic || \"\").split('/');\n  return { base: parts[0] || \"\", name: parts[1] || \"\" };\n}\n\nconst { base, name } = topicParts(msg.topic);\nconst payload = msg.payload || {};\n\n// Virtual silence (HA dashboard button via mqtt.publish)\nif (cfg.virtualSilenceTopic && msg.topic === cfg.virtualSilenceTopic) {\n  const action = (payload && typeof payload === 'object' ? payload.action : payload) || 'press';\n  msg.event = {\n    type: 'silence',\n    baseTopic: 'ha',\n    device: 'virtual',\n    action,\n    ts: Date.now(),\n  };\n  return msg;\n}\n\n// Button silence: any message with `action` from configured B buttons\nconst isButton = (cfg.silenceButtons || []).some(b => b.baseTopic === base && b.name === name);\nif (isButton && payload.action) {\n  msg.event = {\n    type: 'silence',\n    baseTopic: base,\n    device: name,\n    action: payload.action,\n    ts: Date.now(),\n  };\n  return msg;\n}\n\n// Siren button as silence: treat physical siren button like B button (same multi-press logic)\nconst isSirenBtn = (cfg.sirens || []).some(s => s.baseTopic === base && s.name === name);\nif (isSirenBtn && payload.action) {\n  msg.event = {\n    type: 'silence',\n    baseTopic: base,\n    device: name,\n    action: payload.action,\n    ts: Date.now(),\n  };\n  return msg;\n}\n\n\n// Smoke detector hush/test button as silence\n// Only act when there is an active alarm in the system OR the detector reports smoke/alarm.\nconst isSmoke = (cfg.smokeSensors || []).some(s => s.baseTopic === base && s.name === name);\nif (cfg.smokeHushAsSilence && isSmoke) {\n  const anyAlarmActive = Object.keys(flow.get('floodActive') || {}).length > 0 ||\n    Object.keys(flow.get('smokeActive') || {}).length > 0 ||\n    Object.keys(flow.get('heatActive') || {}).length > 0;\n\n  const detectorAlarm = payload.smoke === true || payload.alarm === true || payload.linkage_alarm_state === true || payload.buzzer_manual_alarm === true;\n  const hushPressed = payload.buzzer_manual_mute === true || payload.hush === true;\n  const testPressed = payload.test === true || payload.selftest === true;\n\n  if ((hushPressed || testPressed) && (anyAlarmActive || detectorAlarm)) {\n    msg.event = {\n      type: 'silence',\n      baseTopic: base,\n      device: name,\n      action: hushPressed ? 'hush' : 'test',\n      ts: Date.now(),\n    };\n    return msg;\n  }\n}\n\n// Flood: look for common keys\nconst isFloodSensor = (cfg.floodSensors || []).some(s => s.baseTopic === base && s.name === name);\nif (isFloodSensor) {\n  const flooded = payload.water_leak === true || payload.water_leak === 1 || payload.leak === true || payload.flood === true;\n  msg.event = {\n    type: 'flood',\n    active: !!flooded,\n    baseTopic: base,\n    device: name,\n    ts: Date.now(),\n    raw: payload,\n  };\n  return msg;\n}\n\n// Smoke: look for common keys\nconst isSmokeSensor = (cfg.smokeSensors || []).some(s => s.baseTopic === base && s.name === name);\nif (isSmokeSensor) {\n  const smoke = payload.smoke === true || payload.smoke === 1 || payload.alarm === true || payload.alarm === 1 || payload.smoke_alarm === true || payload.fire === true;\n  const area = (cfg.workshopBaseTopics || []).includes(base) ? 'workshop' : ((cfg.homeBaseTopics || []).includes(base) ? 'home' : 'unknown');\n  msg.event = {\n    type: 'smoke',\n    active: !!smoke,\n    baseTopic: base,\n    device: name,\n    area,\n    ts: Date.now(),\n    raw: payload,\n  };\n  return msg;\n}\n\n\n// Heat: temperature sensors above threshold\nconst isHeatSensor = (cfg.heatSensors || []).some(s => s.baseTopic === base && s.name === name);\nif (isHeatSensor) {\n  const rawT = (payload.temperature !== undefined ? payload.temperature : (payload.temp !== undefined ? payload.temp : payload.device_temperature));\n  const t = (typeof rawT === 'number') ? rawT : Number(rawT);\n  const thr = Number(cfg.heatThresholdC !== undefined ? cfg.heatThresholdC : 45);\n  const hot = Number.isFinite(t) && t >= thr;\n  msg.event = {\n    type: 'heat',\n    active: !!hot,\n    baseTopic: base,\n    device: name,\n    temperature: t,\n    threshold: thr,\n    ts: Date.now(),\n    raw: payload,\n  };\n  return msg;\n}\n\nreturn null;",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst payload = msg.payload || {};\nconst p = String(msg.topic || '').split('/');\nconst base = p[0] || '';\nconst dev = p[1] || '';\n\nfunction inList(list){ return (list || []).some(i => i.baseTopic === base && i.name === dev); }\n\nif ((inList(cfg.silenceButtons) || inList(cfg.sirens)) && payload.action) {\n  msg.event = { type:'silence', baseTopic: base, device: dev, action: String(payload.action), ts: Date.now() };\n  return msg;\n}\n\nif (cfg.smokeHushAsSilence && inList(cfg.smokeSensors)) {\n  if (payload.buzzer_manual_mute === true || payload.hush === true || payload.test === true || payload.selftest === true) {\n    msg.event = { type:'silence', baseTopic: base, device: dev, action:'hush', ts: Date.now() };\n    return msg;\n  }\n}\n\nif (inList(cfg.floodSensors)) {\n  const active = payload.water_leak === true || payload.water_leak === 1 || payload.leak === true || payload.flood === true;\n  msg.event = { type:'flood', active: !!active, baseTopic: base, device: dev, ts: Date.now() };\n  return msg;\n}\n\nif (inList(cfg.smokeSensors)) {\n  const active = payload.smoke === true || payload.smoke === 1 || payload.alarm === true || payload.alarm === 1 || payload.smoke_alarm === true || payload.fire === true;\n  const area = (cfg.workshopBaseTopics || []).includes(base) ? 'workshop' : ((cfg.homeBaseTopics || []).includes(base) ? 'home' : 'unknown');\n  msg.event = { type:'smoke', active: !!active, area, baseTopic: base, device: dev, ts: Date.now() };\n  return msg;\n}\n\nif (inList(cfg.heatSensors)) {\n  const raw = payload.temperature !== undefined ? payload.temperature : (payload.temp !== undefined ? payload.temp : payload.device_temperature);\n  const t = Number(raw);\n  const thr = Number(cfg.heatThresholdC || 45);\n  msg.event = { type:'heat', active: Number.isFinite(t) && t >= thr, temperature:t, threshold:thr, baseTopic:base, device:dev, ts: Date.now() };\n  return msg;\n}\n\nreturn null;",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 640,
-    "y": 240,
+    "x": 500,
+    "y": 280,
     "wires": [
       [
-        "sw_event_type"
+        "sw_event"
       ]
     ]
   },
   {
-    "id": "sw_event_type",
+    "id": "sw_event",
     "type": "switch",
     "z": "tab_z2m_safety",
     "name": "Route event",
@@ -238,8 +282,8 @@
     "checkall": "true",
     "repair": false,
     "outputs": 4,
-    "x": 850,
-    "y": 240,
+    "x": 700,
+    "y": 280,
     "wires": [
       [
         "fn_flood_state"
@@ -256,38 +300,23 @@
     ]
   },
   {
-    "id": "fn_is_silenced",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Is silenced?",
-    "func": "const until = flow.get('silencedUntil') || 0;\nmsg.silenced = Date.now() < until;\nreturn msg;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 1070,
-    "y": 320,
-    "wires": [
-      []
-    ]
-  },
-  {
     "id": "fn_flood_state",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Flood state machine",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst ev = msg.event;\nconst key = `${ev.baseTopic}/${ev.device}`;\n\n// Track last state + last alarm source (for notifications)\nconst stMap = flow.get('lastState_flood') || {};\nstMap[key] = { active: !!ev.active, water_leak: !!ev.active, ts: ev.ts };\nflow.set('lastState_flood', stMap);\nif (ev.active) flow.set('lastAlarmSource_flood', { key, ts: ev.ts });\n\nconst active = flow.get('floodActive') || {};\n\n// Track last wet/dry timestamps for pump restore decisions\nconst wet = flow.get('floodLastWetTs') || {};\nconst dry = flow.get('floodLastDryTs') || {};\nif (ev.active) {\n  wet[key] = ev.ts;\n  flow.set('floodLastWetTs', wet);\n} else {\n  dry[key] = ev.ts;\n  flow.set('floodLastDryTs', dry);\n}\n\n// Test mode: always emit without shutting down pumps\nif (ev.test && ev.active) {\n  const keyT = `TEST/${ev.device}`;\n  msg.alarm = { kind: 'flood', action: 'start', source: keyT, ts: ev.ts, test: true };\n  msg.title = `TEST FLOOD`;\n  msg.message = `TEST: Flood alarm triggered (no pumps will be turned off).`;\n  msg.shutdownPumps = !!ev.testPumps;\n  node.status({fill:'yellow',shape:'dot',text:'TEST flood triggered'});\n  return msg;\n}\n\nif (ev.active) {\n  if (active[key]) return null;\n  active[key] = true;\n  flow.set('floodActive', active);\n\n  // Remember the set of sensors that triggered the pump shutdown for this incident.\n  flow.set('pumpsForcedOff', true);\n  flow.set('pumpsForcedOffByFloodKeys', Object.keys(active));\n  flow.set('pumpsForcedOffTs', ev.ts);\n\n  msg.alarm = { kind: 'flood', action: 'start', source: key, ts: ev.ts };\n  msg.title = `FLOOD detected: ${ev.device}`;\n  msg.message = `Water leak detected on ${ev.baseTopic}/${ev.device}. Pumps will be turned OFF and siren will beep periodically until silenced.`;\n  msg.shutdownPumps = true;\n  node.status({fill:'red',shape:'dot',text:`FLOOD ${ev.device}`});\n  return msg;\n}\n\n// Optional auto-clear when sensor reports normal\nif (cfg.autoClearFlood && active[key]) {\n  delete active[key];\n  flow.set('floodActive', active);\n\n  msg.alarm = { kind: 'flood', action: 'cleared', source: key, ts: ev.ts };\n  msg.title = `FLOOD cleared: ${ev.device}`;\n  msg.message = `Water leak cleared on ${ev.baseTopic}/${ev.device}.`;\n  msg.shutdownPumps = false;\n\n  // When the last active flood sensor clears, try restoring pumps.\n  // Safety checks (including 5min DRY guard) are enforced in Common actions.\n  if (Object.keys(active).length === 0) {\n    msg.restorePumpsRequested = true;\n    msg.immediateRestoreIfDry = false;\n  }\n\n  return msg;\n}\n\nreturn null;\n",
+    "name": "Flood state",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst ev = msg.event;\nconst key = `${ev.baseTopic}/${ev.device}`;\nconst active = flow.get('floodActive') || {};\nconst wet = flow.get('floodLastWetTs') || {};\nconst dry = flow.get('floodLastDryTs') || {};\n\nif (ev.active) {\n  wet[key] = ev.ts;\n  flow.set('floodLastWetTs', wet);\n  if (active[key]) return null;\n  active[key] = true;\n  flow.set('floodActive', active);\n  flow.set('pumpsForcedOff', true);\n\n  msg.alarm = { kind:'flood', action:'start', source:key, ts:ev.ts };\n  msg.title = `FLOOD detected: ${ev.device}`;\n  msg.message = `Water leak detected on ${key}.`;\n  msg.shutdownPumps = true;\n  return msg;\n}\n\ndry[key] = ev.ts;\nflow.set('floodLastDryTs', dry);\nif (!active[key]) return null;\ndelete active[key];\nflow.set('floodActive', active);\n\nmsg.alarm = { kind:'flood', action:'cleared', source:key, ts:ev.ts };\nmsg.title = `FLOOD cleared: ${ev.device}`;\nmsg.message = `Water leak cleared on ${key}.`;\nmsg.shutdownPumps = false;\nmsg.restoreDelayCheck = Object.keys(active).length === 0;\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1080,
-    "y": 200,
+    "x": 890,
+    "y": 240,
     "wires": [
       [
-        "fn_alarm_common"
+        "fn_alarm_common",
+        "sw_flood_action",
+        "sw_restore_delay"
       ]
     ]
   },
@@ -295,18 +324,41 @@
     "id": "fn_smoke_state",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Smoke state machine",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst ev = msg.event;\nconst key = `${ev.baseTopic}/${ev.device}`;\n\n// Track last state + last alarm source (for notifications)\nconst stMap = flow.get('lastState_smoke') || {};\nstMap[key] = { active: !!ev.active, smoke: !!ev.active, area: ev.area, ts: ev.ts };\nflow.set('lastState_smoke', stMap);\nif (ev.active) flow.set('lastAlarmSource_smoke', { key, ts: ev.ts });\n\nconst active = flow.get('smokeActive') || {};\n\n// Track last active/clear timestamps for reset decisions\nconst lastA = flow.get('smokeLastActiveTs') || {};\nconst lastC = flow.get('smokeLastClearTs') || {};\nif (ev.active) { lastA[key] = ev.ts; flow.set('smokeLastActiveTs', lastA); } else { lastC[key] = ev.ts; flow.set('smokeLastClearTs', lastC); }\n\n// Test mode: always emit\nif (ev.test && ev.active) {\n  const beepCount = ev.area === 'workshop' ? 2 : 3;\n  flow.set('smokeBeepCount', beepCount);\n  msg.alarm = { kind: 'smoke', action: 'start', source: `TEST/${ev.device}`, area: ev.area, beeps: beepCount, ts: ev.ts, test: true };\n  msg.title = `TEST SMOKE (${ev.area})`;\n  msg.message = `TEST: Smoke alarm triggered for area=${ev.area}.`;\n  msg.shutdownPumps = false;\n  node.status({fill:'yellow',shape:'dot',text:`TEST smoke ${ev.area}`} );\n  return msg;\n}\n\nif (ev.active) {\n  if (active[key]) return null;\n  active[key] = true;\n  flow.set('smokeActive', active);\n\n  const beepCount = ev.area === 'workshop' ? 2 : 3;\n  flow.set('smokeBeepCount', beepCount);\n\n  msg.alarm = { kind: 'smoke', action: 'start', source: key, area: ev.area, beeps: beepCount, ts: ev.ts };\n  msg.title = `SMOKE detected: ${ev.device}`;\n  msg.message = `Smoke alarm from ${ev.area.toUpperCase()} (${ev.baseTopic}/${ev.device}). Sirens will beep (${beepCount} beeps) periodically until silenced.`;\n  msg.shutdownPumps = false;\n  node.status({fill:'red',shape:'dot',text:`SMOKE ${ev.device}`});\n  return msg;\n}\n\nif (cfg.autoClearSmoke && active[key]) {\n  delete active[key];\n  flow.set('smokeActive', active);\n\n  msg.alarm = { kind: 'smoke', action: 'cleared', source: key, area: ev.area, ts: ev.ts };\n  msg.title = `SMOKE cleared: ${ev.device}`;\n  msg.message = `Smoke alarm cleared from ${ev.area.toUpperCase()} (${ev.baseTopic}/${ev.device}).`;\n  msg.shutdownPumps = false;\n  node.status({fill:'red',shape:'dot',text:`SMOKE ${ev.device}`});\n  return msg;\n}\n\nreturn null;",
+    "name": "Smoke state",
+    "func": "const ev = msg.event;\nconst key = `${ev.baseTopic}/${ev.device}`;\nconst active = flow.get('smokeActive') || {};\nif (ev.active) {\n  if (active[key]) return null;\n  active[key] = true;\n  flow.set('smokeActive', active);\n  const beeps = ev.area === 'workshop' ? 2 : 3;\n  flow.set('smokeBeepCount', beeps);\n  msg.alarm = { kind:'smoke', action:'start', source:key, area:ev.area, beeps, ts:ev.ts };\n  msg.title = `SMOKE detected: ${ev.device}`;\n  msg.message = `Smoke alarm from ${key} (${ev.area}).`;\n  msg.shutdownPumps = false;\n  return msg;\n}\nif (!active[key]) return null;\ndelete active[key];\nflow.set('smokeActive', active);\nmsg.alarm = { kind:'smoke', action:'cleared', source:key, area:ev.area, ts:ev.ts };\nmsg.title = `SMOKE cleared: ${ev.device}`;\nmsg.message = `Smoke cleared on ${key}.`;\nmsg.shutdownPumps = false;\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1080,
-    "y": 260,
+    "x": 890,
+    "y": 280,
     "wires": [
       [
-        "fn_alarm_common"
+        "fn_alarm_common",
+        "sw_smoke_action",
+        "fn_check_all_clear"
+      ]
+    ]
+  },
+  {
+    "id": "fn_heat_state",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Heat state",
+    "func": "const ev = msg.event;\nconst key = `${ev.baseTopic}/${ev.device}`;\nconst active = flow.get('heatActive') || {};\nif (ev.active) {\n  if (active[key]) return null;\n  active[key] = true;\n  flow.set('heatActive', active);\n  msg.alarm = { kind:'heat', action:'start', source:key, temperature:ev.temperature, threshold:ev.threshold, ts:ev.ts };\n  msg.title = `HEAT detected: ${ev.device}`;\n  msg.message = `High temperature on ${key}: ${ev.temperature}C >= ${ev.threshold}C.`;\n  msg.shutdownPumps = false;\n  return msg;\n}\nif (!active[key]) return null;\ndelete active[key];\nflow.set('heatActive', active);\nmsg.alarm = { kind:'heat', action:'cleared', source:key, temperature:ev.temperature, threshold:ev.threshold, ts:ev.ts };\nmsg.title = `HEAT cleared: ${ev.device}`;\nmsg.message = `Temperature normalized on ${key}.`;\nmsg.shutdownPumps = false;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 890,
+    "y": 320,
+    "wires": [
+      [
+        "fn_alarm_common",
+        "sw_heat_action",
+        "fn_check_all_clear"
       ]
     ]
   },
@@ -314,20 +366,133 @@
     "id": "fn_silence",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Silence (B button)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst ev = msg.event;\n\n// Multi-press logic:\n// - 1 press: silence for silenceMinutes\n// - 3 presses within 5 seconds: request reset (stop repeats; restore pumps only if DRY-confirmed)\nconst windowMs = 5000;\nconst source = `${ev.baseTopic}/${ev.device}`;\nconst now = Date.now();\n\nconst state = flow.get('silencePress') || {};\nconst prev = state[source] || { count: 0, last: 0 };\n\nconst within = (now - (prev.last || 0)) <= windowMs;\nconst count = within ? (prev.count + 1) : 1;\nstate[source] = { count, last: now };\nflow.set('silencePress', state);\n\nconst until = now + (cfg.silenceMinutes || 60) * 60 * 1000;\nflow.set('silencedUntil', until);\n\nmsg.shutdownPumps = false;\nmsg.stopSirens = true;\n\nconst anyActive = Object.keys(flow.get('floodActive') || {}).length > 0 ||\n  Object.keys(flow.get('smokeActive') || {}).length > 0 ||\n  Object.keys(flow.get('heatActive') || {}).length > 0;\n\nif (count >= 3) {\n  msg.resetLoops = true;\n  msg.restorePumpsRequested = true;\n  msg.immediateRestoreIfDry = true;\n  msg.deferPush = true;\n\n  // IMPORTANT:\n  // Do NOT clear the silence window here. If reset cannot complete (e.g. flood still wet),\n  // clearing silence would re-enable the repeat beeps immediately and cause chaos.\n  // Silence is cleared only after a successful reset.\n\n  msg.alarm = { kind: 'silence', action: 'reset', source, presses: count, ts: now };\n  msg.title = `Alarms reset requested`;\n  msg.message = `Reset requested via ${source} (${count} presses within ${windowMs/1000}s). Sirens stopped and repeating loops reset. Pumps will restore only after DRY confirmation.`;\n  node.status({fill:'yellow',shape:'dot',text:`reset via ${ev.device}`});\n\n  // reset counter so another triple-press is possible\n  state[source] = { count: 0, last: 0 };\n  flow.set('silencePress', state);\n  return msg;\n}\n\n// Single press: silence only\nif (!anyActive) {\n  // No active alarms; don't spam notifications for casual presses\n  node.status({fill:'grey',shape:'ring',text:`silence (no active alarm) via ${ev.device}`});\n  return null;\n}\n\nmsg.resetLoops = false;\nmsg.restorePumpsRequested = false;\nmsg.scheduleAutoReset = true;\nmsg.alarm = { kind: 'silence', action: 'pressed', source, presses: count, ts: now };\nmsg.title = `Alarms silenced`;\nmsg.message = `Silence pressed: ${source} (${count} press). Sirens stopped; beeps suppressed for ${cfg.silenceMinutes || 60} minutes. Press 3x within ${windowMs/1000}s to reset repeating loops.`;\nnode.status({fill:'yellow',shape:'ring',text:`silenced via ${ev.device}`});\nreturn msg;\n",
+    "name": "Silence button",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst ev = msg.event;\nconst now = Date.now();\nconst src = `${ev.baseTopic}/${ev.device}`;\nconst state = flow.get('silencePress') || {};\nconst prev = state[src] || {count:0,last:0};\nconst win = Number(cfg.resetPressWindowSec || 5) * 1000;\nconst count = (now - prev.last) <= win ? prev.count + 1 : 1;\nstate[src] = {count,last:now};\nflow.set('silencePress', state);\nflow.set('silencedUntil', now + Number(cfg.silenceMinutes || 60) * 60 * 1000);\n\nmsg.alarm = { kind:'silence', action:'pressed', source:src, presses:count, ts:now };\nmsg.title = 'Alarms silenced';\nmsg.message = `Silenced by ${src}.`;\nmsg.stopSirens = true;\nmsg.resetLoops = false;\n\nif (count >= Number(cfg.resetPressCount || 3)) {\n  state[src] = {count:0,last:0};\n  flow.set('silencePress', state);\n  msg.alarm = { kind:'silence', action:'reset', source:src, presses:count, ts:now };\n  msg.title = 'Alarms reset requested';\n  msg.message = `Reset requested by ${src}.`;\n  msg.resetLoops = true;\n  msg.restorePumpsRequested = true;\n  msg.immediateRestoreIfDry = true;\n}\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1070,
-    "y": 380,
+    "x": 890,
+    "y": 360,
     "wires": [
       [
         "fn_alarm_common",
+        "fn_stop_all_sirens",
+        "sw_reset_loops"
+      ]
+    ]
+  },
+  {
+    "id": "sw_restore_delay",
+    "type": "switch",
+    "z": "tab_z2m_safety",
+    "name": "Need delayed restore check",
+    "property": "restoreDelayCheck",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "true"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 1,
+    "x": 1140,
+    "y": 220,
+    "wires": [
+      [
+        "dly_restore_check"
+      ]
+    ]
+  },
+  {
+    "id": "dly_restore_check",
+    "type": "delay",
+    "z": "tab_z2m_safety",
+    "name": "Wait 5 min",
+    "pauseType": "delay",
+    "timeout": "5",
+    "timeoutUnits": "minutes",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "0",
+    "randomLast": "0",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "x": 1320,
+    "y": 220,
+    "wires": [
+      [
+        "fn_restore_check"
+      ]
+    ]
+  },
+  {
+    "id": "fn_restore_check",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Restore check",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst now = Date.now();\nconst minMs = Number(cfg.floodDryMinutes || 5) * 60 * 1000;\nconst active = flow.get('floodActive') || {};\nconst dry = flow.get('floodLastDryTs') || {};\nconst list = cfg.floodSensors || [];\n\nif (flow.get('pumpsForcedOff') !== true) return null;\nconst allInactive = list.every(s => !active[`${s.baseTopic}/${s.name}`]);\nconst allDry = list.every(s => {\n  const k = `${s.baseTopic}/${s.name}`;\n  return typeof dry[k] === 'number' && (now - dry[k]) >= minMs;\n});\nif (!(allInactive && allDry)) return null;\n\nmsg.restorePumpsRequested = true;\nmsg.immediateRestoreIfDry = false;\nmsg.alarm = { kind:'flood', action:'restored', source:'auto', ts: now };\nmsg.title = 'Flood reset complete';\nmsg.message = 'All flood sensors dry for 5 minutes. Pumps will be restored.';\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1500,
+    "y": 220,
+    "wires": [
+      [
+        "fn_alarm_common",
+        "fn_check_all_clear"
+      ]
+    ]
+  },
+  {
+    "id": "fn_check_all_clear",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "All clear?",
+    "func": "const fa = Object.keys(flow.get('floodActive') || {}).length;\nconst sa = Object.keys(flow.get('smokeActive') || {}).length;\nconst ha = Object.keys(flow.get('heatActive') || {}).length;\nif (fa || sa || ha) return null;\nmsg.resetLoops = true;\nmsg.alarm = { kind:'system', action:'all_clear', ts: Date.now() };\nmsg.title = 'All alarms cleared';\nmsg.message = 'All monitored sensors returned to normal.';\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1140,
+    "y": 400,
+    "wires": [
+      [
         "sw_reset_loops",
-        "fn_schedule_auto_reset"
+        "fn_stop_all_sirens",
+        "fn_alarm_common"
+      ]
+    ]
+  },
+  {
+    "id": "fn_alarm_common",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Common actions",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\nfunction parseService(s) {\n  const p = String(s || '').split('.');\n  return { domain: p[0] || '', service: p.slice(1).join('.') || '' };\n}\nfunction haCall(domain, service, data) {\n  return {\n    method: 'POST',\n    url: `${cfg.haBaseUrl || 'http://supervisor/core'}/api/services/${domain}/${service}`,\n    headers: { Authorization: `Bearer ${cfg.haToken || ''}`, 'Content-Type': 'application/json' },\n    payload: data,\n  };\n}\n\nconst haCalls = [];\n\nif (msg.shutdownPumps === true) {\n  flow.set('pumpsForcedOff', true);\n  msg.pumpMqtt = (cfg.pumpOutletsZ2M || []).map(p => ({ topic: `${p.baseTopic}/${p.name}/set`, payload: { state: 'OFF' } }));\n}\n\nif (msg.restorePumpsRequested === true) {\n  const now = Date.now();\n  const minMs = Number(cfg.floodDryMinutes || 5) * 60 * 1000;\n  const active = flow.get('floodActive') || {};\n  const dry = flow.get('floodLastDryTs') || {};\n  const list = cfg.floodSensors || [];\n  const allInactive = list.every(s => !active[`${s.baseTopic}/${s.name}`]);\n  const allDry = list.every(s => {\n    const k = `${s.baseTopic}/${s.name}`;\n    return typeof dry[k] === 'number' && (now - dry[k]) >= minMs;\n  });\n\n  if (flow.get('pumpsForcedOff') === true && allInactive && allDry) {\n    msg.pumpMqtt = (cfg.pumpOutletsZ2M || []).map(p => ({ topic: `${p.baseTopic}/${p.name}/set`, payload: { state: 'ON' } }));\n    flow.set('pumpsForcedOff', false);\n    flow.set('silencedUntil', 0);\n  }\n}\n\nif (msg.alarm && msg.alarm.kind) {\n  msg._siren = { kind: msg.alarm.kind, action: msg.alarm.action, beeps: msg.alarm.beeps || 1 };\n}\n\nif (msg.title && msg.message) {\n  const svc = parseService(cfg.notifyPushService || 'notify.notify');\n  if (svc.domain && svc.service) haCalls.push(haCall(svc.domain, svc.service, { title: msg.title, message: msg.message }));\n}\n\nmsg.haCalls = haCalls;\nreturn [msg, msg];",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1090,
+    "y": 280,
+    "wires": [
+      [
+        "fn_emit_ha_calls",
+        "fn_email_prepare",
+        "sw_siren_kind",
+        "dbg_alarm"
+      ],
+      [
+        "fn_emit_pump_mqtt"
       ]
     ]
   },
@@ -335,15 +500,15 @@
     "id": "fn_emit_ha_calls",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Emit HA API calls",
-    "func": "const calls = msg.haCalls || [];\nif (!calls.length) return null;\nreturn [ calls.map(c => ({ method: c.method, url: c.url, headers: c.headers, payload: c.payload })) ];",
+    "name": "Emit HA calls",
+    "func": "const calls = msg.haCalls || [];\nif (!calls.length) return null;\nreturn [calls.map(c => ({ method:c.method, url:c.url, headers:c.headers, payload:c.payload }))];",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1580,
-    "y": 220,
+    "x": 1280,
+    "y": 500,
     "wires": [
       [
         "http_ha"
@@ -354,7 +519,7 @@
     "id": "http_ha",
     "type": "http request",
     "z": "tab_z2m_safety",
-    "name": "HA REST API",
+    "name": "HA REST",
     "method": "use",
     "ret": "txt",
     "paytoqs": "ignore",
@@ -365,8 +530,8 @@
     "authType": "",
     "senderr": false,
     "headers": [],
-    "x": 1760,
-    "y": 220,
+    "x": 1450,
+    "y": 500,
     "wires": [
       [
         "dbg_ha"
@@ -374,11 +539,51 @@
     ]
   },
   {
-    "id": "sw_siren_control",
+    "id": "fn_email_prepare",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Prepare email",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst to = (cfg.emailTo || []).filter(Boolean);\nif (!to.length || !msg.title || !msg.message) return null;\nmsg.to = to.join(',');\nmsg.topic = msg.title;\nmsg.payload = msg.message;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1270,
+    "y": 540,
+    "wires": [
+      [
+        "email_smtp_out"
+      ]
+    ]
+  },
+  {
+    "id": "email_smtp_out",
+    "type": "e-mail",
+    "z": "tab_z2m_safety",
+    "server": "s62.cyber-folks.pl",
+    "port": "465",
+    "secure": true,
+    "tls": true,
+    "name": "Aystend Domowy",
+    "dname": "",
+    "x": 1450,
+    "y": 540,
+    "wires": [
+      [
+        "dbg_email"
+      ]
+    ],
+    "to": "zajdel@viktor-art.pl",
+    "authtype": "BASIC",
+    "userid": "alarm@powiadomienia.viktor-art.pl"
+  },
+  {
+    "id": "sw_siren_kind",
     "type": "switch",
     "z": "tab_z2m_safety",
-    "name": "Siren control",
-    "property": "alarm.kind",
+    "name": "Siren kind",
+    "property": "_siren.kind",
     "propertyType": "msg",
     "rules": [
       {
@@ -400,12 +605,17 @@
         "t": "eq",
         "v": "silence",
         "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "system",
+        "vt": "str"
       }
     ],
     "checkall": "true",
     "repair": false,
-    "outputs": 4,
-    "x": 1560,
+    "outputs": 5,
+    "x": 1270,
     "y": 320,
     "wires": [
       [
@@ -419,6 +629,9 @@
       ],
       [
         "fn_stop_all_sirens"
+      ],
+      [
+        "fn_stop_all_sirens"
       ]
     ]
   },
@@ -426,8 +639,8 @@
     "id": "sw_flood_action",
     "type": "switch",
     "z": "tab_z2m_safety",
-    "name": "Flood start/clear",
-    "property": "alarm.action",
+    "name": "Flood action",
+    "property": "_siren.action",
     "propertyType": "msg",
     "rules": [
       {
@@ -436,16 +649,16 @@
         "vt": "str"
       },
       {
-        "t": "eq",
-        "v": "cleared",
+        "t": "neq",
+        "v": "start",
         "vt": "str"
       }
     ],
     "checkall": "true",
     "repair": false,
     "outputs": 2,
-    "x": 1760,
-    "y": 300,
+    "x": 1460,
+    "y": 280,
     "wires": [
       [
         "fn_repeat_flood"
@@ -459,8 +672,8 @@
     "id": "sw_smoke_action",
     "type": "switch",
     "z": "tab_z2m_safety",
-    "name": "Smoke start/clear",
-    "property": "alarm.action",
+    "name": "Smoke action",
+    "property": "_siren.action",
     "propertyType": "msg",
     "rules": [
       {
@@ -469,16 +682,16 @@
         "vt": "str"
       },
       {
-        "t": "eq",
-        "v": "cleared",
+        "t": "neq",
+        "v": "start",
         "vt": "str"
       }
     ],
     "checkall": "true",
     "repair": false,
     "outputs": 2,
-    "x": 1760,
-    "y": 360,
+    "x": 1460,
+    "y": 320,
     "wires": [
       [
         "fn_repeat_smoke"
@@ -489,117 +702,109 @@
     ]
   },
   {
-    "id": "trg_flood_loop",
-    "type": "trigger",
+    "id": "sw_heat_action",
+    "type": "switch",
     "z": "tab_z2m_safety",
-    "name": "Flood siren loop (150s)",
-    "op1": "{\"pattern\":\"flood\",\"beeps\":1}",
-    "op2": "{\"pattern\":\"flood\",\"beeps\":1}",
-    "op1type": "json",
-    "op2type": "json",
-    "duration": "150",
-    "extend": false,
-    "overrideDelay": false,
-    "units": "s",
-    "reset": "reset",
-    "bytopic": "all",
-    "topic": "topic",
-    "outputs": 1,
-    "x": 1990,
-    "y": 300,
-    "wires": [
-      [
-        "fn_gate_silence"
-      ]
-    ]
-  },
-  {
-    "id": "trg_smoke_loop",
-    "type": "trigger",
-    "z": "tab_z2m_safety",
-    "name": "Smoke siren loop (120s)",
-    "op1": "{\"pattern\":\"smoke\",\"beeps\":3}",
-    "op2": "{\"pattern\":\"smoke\",\"beeps\":3}",
-    "op1type": "json",
-    "op2type": "json",
-    "duration": "120",
-    "extend": false,
-    "overrideDelay": false,
-    "units": "s",
-    "reset": "reset",
-    "bytopic": "all",
-    "topic": "topic",
-    "outputs": 1,
-    "x": 1990,
+    "name": "Heat action",
+    "property": "_siren.action",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "eq",
+        "v": "start",
+        "vt": "str"
+      },
+      {
+        "t": "neq",
+        "v": "start",
+        "vt": "str"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 2,
+    "x": 1450,
     "y": 360,
     "wires": [
       [
-        "fn_gate_silence"
+        "fn_repeat_heat"
+      ],
+      [
+        "fn_stop_heat_loop"
       ]
     ]
   },
   {
-    "id": "fn_gate_silence",
+    "id": "fn_repeat_flood",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Skip siren if silenced",
-    "func": "const until = flow.get('silencedUntil') || 0;\nif (Date.now() < until) return null;\nreturn msg;",
-    "outputs": 1,
+    "name": "Repeat flood",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nif (msg.reset === true) return null;\nconst active = flow.get('floodActive') || {};\nif (Object.keys(active).length === 0) return null;\nconst outNow = { payload: { pattern:'flood', beeps:1 } };\nconst outNext = { delay: Number(cfg.floodRepeatSeconds || 150) * 1000 };\nreturn [[outNow],[outNext]];",
+    "outputs": 2,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 2220,
-    "y": 260,
+    "x": 1620,
+    "y": 280,
     "wires": [
       [
-        "fn_gate_sirens_enabled"
+        "fn_gate_siren"
+      ],
+      [
+        "dly_repeat_flood"
       ]
     ]
   },
   {
-    "id": "fn_gate_sirens_enabled",
+    "id": "fn_repeat_smoke",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Skip siren if disabled",
-    "func": "const enabled = flow.get('sirensEnabled');\nif (enabled !== true) return null;\nreturn msg;",
-    "outputs": 1,
+    "name": "Repeat smoke",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nif (msg.reset === true) return null;\nconst active = flow.get('smokeActive') || {};\nif (Object.keys(active).length === 0) return null;\nconst outNow = { payload: { pattern:'smoke', beeps:1 } };\nconst outNext = { delay: Number(cfg.smokeRepeatSeconds || 120) * 1000 };\nreturn [[outNow],[outNext]];",
+    "outputs": 2,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 2220,
-    "y": 300,
+    "x": 1620,
+    "y": 320,
     "wires": [
       [
-        "fn_build_siren_msgs"
+        "fn_gate_siren"
+      ],
+      [
+        "dly_repeat_smoke"
       ]
     ]
   },
   {
-    "id": "fn_build_siren_msgs",
+    "id": "fn_repeat_heat",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Build siren MQTT messages",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst sirens = cfg.sirens || [];\nconst templates = cfg.sirenTemplates || {};\n\nconst pattern = (msg.payload && msg.payload.pattern) || msg.pattern || 'flood';\nlet beeps = (msg.payload && msg.payload.beeps) || msg.beeps || 1;\n\n// Use the most recent smoke beep count (set at smoke start)\nif (pattern === 'smoke') {\n  const stored = flow.get('smokeBeepCount');\n  if (stored && Number.isFinite(stored)) beeps = stored;\n}\n\nconst tpl = pattern === 'smoke' ? templates.smoke : (pattern === 'heat' ? (templates.heat || templates.smoke || templates.flood) : templates.flood);\n\n// Build a beep sequence by sending `beeps` short alarm commands spaced ~700ms.\nconst outMsgs = [];\nlet delay = 0;\nfor (let i = 0; i < beeps; i++) {\n  for (const s of sirens) {\n    outMsgs.push({\n      topic: `${s.baseTopic}/${s.name}/set`,\n      payload: tpl,\n      delay\n    });\n  }\n  delay += 700;\n}\n\nreturn [ outMsgs ];",
-    "outputs": 1,
+    "name": "Repeat heat",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nif (msg.reset === true) return null;\nconst active = flow.get('heatActive') || {};\nif (Object.keys(active).length === 0) return null;\nconst outNow = { payload: { pattern:'heat', beeps:1 } };\nconst outNext = { delay: Number(cfg.heatRepeatSeconds || 180) * 1000 };\nreturn [[outNow],[outNext]];",
+    "outputs": 2,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 2230,
-    "y": 340,
+    "x": 1610,
+    "y": 360,
     "wires": [
       [
-        "dly_siren_seq"
+        "fn_gate_siren"
+      ],
+      [
+        "dly_repeat_heat"
       ]
     ]
   },
   {
-    "id": "dly_siren_seq",
+    "id": "dly_repeat_flood",
     "type": "delay",
     "z": "tab_z2m_safety",
-    "name": "Delay by msg.delay (ms)",
+    "name": "Delay flood",
     "pauseType": "delayv",
     "timeout": "1",
     "timeoutUnits": "milliseconds",
@@ -611,48 +816,59 @@
     "randomUnits": "seconds",
     "drop": false,
     "allowrate": false,
-    "x": 2480,
-    "y": 340,
+    "x": 1780,
+    "y": 280,
     "wires": [
       [
-        "mqtt_out_siren"
+        "fn_repeat_flood"
       ]
     ]
   },
   {
-    "id": "mqtt_out_siren",
-    "type": "mqtt out",
+    "id": "dly_repeat_smoke",
+    "type": "delay",
     "z": "tab_z2m_safety",
-    "name": "Siren -> Z2M",
-    "topic": "",
-    "qos": "",
-    "retain": "",
-    "respTopic": "",
-    "contentType": "",
-    "userProps": "",
-    "correl": "",
-    "expiry": "",
-    "broker": "mqtt_broker_core",
-    "x": 2670,
-    "y": 340,
-    "wires": []
-  },
-  {
-    "id": "fn_stop_all_sirens",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Stop sirens + reset loops",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst sirens = cfg.sirens || [];\nconst stop = (cfg.sirenTemplates || {}).stop || { warning: { mode: \"stop\" } };\n\n// Reset both trigger loops\nflow.set('smokeBeepCount', 3);\n\n// NOTE: loops are reset by sending {reset:true} into each Trigger node via the two Reset-* nodes.\n\nconst msgs = [];\nfor (const s of sirens) {\n  msgs.push({ topic: `${s.baseTopic}/${s.name}/set`, payload: stop, delay: 0 });\n}\n\nreturn [ msgs ];",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 1790,
-    "y": 420,
+    "name": "Delay smoke",
+    "pauseType": "delayv",
+    "timeout": "1",
+    "timeoutUnits": "milliseconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "0",
+    "randomLast": "0",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "x": 1780,
+    "y": 320,
     "wires": [
       [
-        "mqtt_out_siren"
+        "fn_repeat_smoke"
+      ]
+    ]
+  },
+  {
+    "id": "dly_repeat_heat",
+    "type": "delay",
+    "z": "tab_z2m_safety",
+    "name": "Delay heat",
+    "pauseType": "delayv",
+    "timeout": "1",
+    "timeoutUnits": "milliseconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "0",
+    "randomLast": "0",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "x": 1770,
+    "y": 360,
+    "wires": [
+      [
+        "fn_repeat_heat"
       ]
     ]
   },
@@ -660,15 +876,15 @@
     "id": "fn_stop_flood_loop",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Reset flood loop",
-    "func": "return { reset: true };",
+    "name": "Stop flood loop",
+    "func": "return { reset:true };",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1990,
-    "y": 260,
+    "x": 1630,
+    "y": 420,
     "wires": [
       [
         "fn_repeat_flood"
@@ -679,15 +895,15 @@
     "id": "fn_stop_smoke_loop",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Reset smoke loop",
-    "func": "return { reset: true };",
+    "name": "Stop smoke loop",
+    "func": "return { reset:true };",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1990,
-    "y": 420,
+    "x": 1630,
+    "y": 450,
     "wires": [
       [
         "fn_repeat_smoke"
@@ -695,1344 +911,21 @@
     ]
   },
   {
-    "id": "mqtt_flood_f1",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Flood F1 (tasmota_g3)",
-    "topic": "tasmota_g3/F1 Zalanie Pompownia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 200,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_flood_f2",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Flood F2 (tasmota_g4)",
-    "topic": "tasmota_g4/F2 Kotlownia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 240,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s1",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S1 (tasmota_g2)",
-    "topic": "tasmota_g2/S1 - Patryk Biuro",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 180,
-    "y": 300,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s2",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S2 (tasmota_g9)",
-    "topic": "tasmota_g9/S2 Patryk Dom Korytarz",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 180,
-    "y": 340,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s3",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S3 (tasmota_g7)",
-    "topic": "tasmota_g7/S3 Garaz",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 180,
-    "y": 380,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s4",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S4 (tasmota_g6)",
-    "topic": "tasmota_g6/S4 Malarnia Smoke",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s5",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S5 (tasmota_g6)",
-    "topic": "tasmota_g6/S5 Warsztat schody gora",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 200,
-    "y": 460,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s6",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S6 (tasmota_g3)",
-    "topic": "tasmota_g3/S6 Korytarz Warsztat",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 500,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s7",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S7 (tasmota_g5)",
-    "topic": "tasmota_g5/S7 W4 6AX",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 180,
-    "y": 540,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s8",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S8 (tasmota_g10)",
-    "topic": "tasmota_g10/S8 Bartek",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 580,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_smoke_s9",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Smoke S9 (tasmota_g12)",
-    "topic": "tasmota_g12/S9 - Rodzice Gora",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 200,
-    "y": 620,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_btn_b1",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Silence B1 (tasmota_g3)",
-    "topic": "tasmota_g3/B1 Korytarz warsztat",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 200,
-    "y": 680,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_btn_b2",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Silence B2 (tasmota_g6)",
-    "topic": "tasmota_g6/B2 Malarnia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 200,
-    "y": 720,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_silence_virtual",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Silence (virtual HA button)",
-    "topic": "ha/z2m_safety/silence",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 210,
-    "y": 760,
-    "wires": [
-      [
-        "fn_classify"
-      ]
-    ]
-  },
-  {
-    "id": "fn_emit_pump_mqtt",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Emit pump MQTT",
-    "func": "const list = msg.pumpMqtt || [];\nif (!Array.isArray(list) || list.length === 0) return null;\nreturn [list];",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 1560,
-    "y": 120,
-    "wires": [
-      [
-        "mqtt_out_pumps"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_out_pumps",
-    "type": "mqtt out",
-    "z": "tab_z2m_safety",
-    "name": "Pumps -> Z2M",
-    "topic": "",
-    "qos": "",
-    "retain": "",
-    "respTopic": "",
-    "contentType": "",
-    "userProps": "",
-    "correl": "",
-    "expiry": "",
-    "broker": "mqtt_broker_core",
-    "x": 1760,
-    "y": 120,
-    "wires": []
-  },
-  {
-    "id": "fn_heat_state",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Heat state machine",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst ev = msg.event;\nconst key = `${ev.baseTopic}/${ev.device}`;\n\n// Track last state + last alarm source (for notifications)\nconst stMap = flow.get('lastState_heat') || {};\nstMap[key] = { active: !!ev.active, temperature: ev.temperature, threshold: ev.threshold, ts: ev.ts };\nflow.set('lastState_heat', stMap);\nif (ev.active) flow.set('lastAlarmSource_heat', { key, ts: ev.ts });\n\nconst active = flow.get('heatActive') || {};\n\n// Track last active/clear timestamps for reset decisions\nconst lastA = flow.get('heatLastActiveTs') || {};\nconst lastC = flow.get('heatLastClearTs') || {};\nif (ev.active) { lastA[key] = ev.ts; flow.set('heatLastActiveTs', lastA); } else { lastC[key] = ev.ts; flow.set('heatLastClearTs', lastC); }\n\n// Test mode: always emit\nif (ev.test && ev.active) {\n  msg.alarm = { kind: 'heat', action: 'start', source: `TEST/${ev.device}`, temperature: ev.temperature, threshold: ev.threshold, ts: ev.ts, test: true };\n  msg.title = `TEST HEAT`;\n  msg.message = `TEST: Heat alarm triggered (${ev.temperature}?C >= ${ev.threshold}?C).`;\n  msg.shutdownPumps = false;\n  node.status({fill:'yellow',shape:'dot',text:'TEST heat triggered'});\n  return msg;\n}\n\nif (ev.active) {\n  if (active[key]) return null;\n  active[key] = true;\n  flow.set('heatActive', active);\n\n  const t = ev.temperature;\n  const thr = ev.threshold;\n  msg.alarm = { kind: 'heat', action: 'start', source: key, temperature: t, threshold: thr, ts: ev.ts };\n  msg.title = `HEAT detected: ${ev.device}`;\n  msg.message = `High temperature on ${ev.baseTopic}/${ev.device}: ${t}?C (threshold ${thr}?C). Sirens will beep periodically until silenced.`;\n  msg.shutdownPumps = false;\n  node.status({fill:'red',shape:'dot',text:`HEAT ${ev.device}`} );\n  return msg;\n}\n\nif (cfg.autoClearHeat && active[key]) {\n  delete active[key];\n  flow.set('heatActive', active);\n\n  const t = ev.temperature;\n  const thr = ev.threshold;\n  msg.alarm = { kind: 'heat', action: 'cleared', source: key, temperature: t, threshold: thr, ts: ev.ts };\n  msg.title = `HEAT cleared: ${ev.device}`;\n  msg.message = `Temperature back to normal on ${ev.baseTopic}/${ev.device}: ${t}?C (threshold ${thr}?C).`;\n  msg.shutdownPumps = false;\n  node.status({fill:'red',shape:'dot',text:`HEAT ${ev.device}`} );\n  return msg;\n}\n\nreturn null;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 1080,
-    "y": 320,
-    "wires": [
-      [
-        "fn_alarm_common"
-      ]
-    ]
-  },
-  {
-    "id": "sw_heat_action",
-    "type": "switch",
-    "z": "tab_z2m_safety",
-    "name": "Heat start/clear",
-    "property": "alarm.action",
-    "propertyType": "msg",
-    "rules": [
-      {
-        "t": "eq",
-        "v": "start",
-        "vt": "str"
-      },
-      {
-        "t": "eq",
-        "v": "cleared",
-        "vt": "str"
-      }
-    ],
-    "checkall": "true",
-    "repair": false,
-    "outputs": 2,
-    "x": 1760,
-    "y": 480,
-    "wires": [
-      [
-        "fn_repeat_heat"
-      ],
-      [
-        "fn_stop_heat_loop"
-      ]
-    ]
-  },
-  {
-    "id": "trg_heat_loop",
-    "type": "trigger",
-    "z": "tab_z2m_safety",
-    "name": "Heat siren loop (180s)",
-    "op1": "{\"pattern\":\"heat\",\"beeps\":2}",
-    "op2": "{\"pattern\":\"heat\",\"beeps\":2}",
-    "op1type": "json",
-    "op2type": "json",
-    "duration": "180",
-    "extend": false,
-    "overrideDelay": false,
-    "units": "s",
-    "reset": "reset",
-    "bytopic": "all",
-    "topic": "topic",
-    "outputs": 1,
-    "x": 1990,
-    "y": 480,
-    "wires": [
-      [
-        "fn_gate_silence"
-      ]
-    ]
-  },
-  {
     "id": "fn_stop_heat_loop",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Reset heat loop",
-    "func": "return { reset: true };",
+    "name": "Stop heat loop",
+    "func": "return { reset:true };",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1990,
-    "y": 540,
+    "x": 1620,
+    "y": 480,
     "wires": [
       [
         "fn_repeat_heat"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_flood",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Flood",
-    "props": [
-      {
-        "p": "event",
-        "v": "{\"type\": \"flood\", \"active\": true, \"baseTopic\": \"test\", \"device\": \"TEST Flood\", \"test\": true}",
-        "vt": "json"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 180,
-    "y": 820,
-    "wires": [
-      [
-        "fn_test_stamp"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_smoke",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Smoke (workshop)",
-    "props": [
-      {
-        "p": "event",
-        "v": "{\"type\": \"smoke\", \"active\": true, \"baseTopic\": \"test\", \"device\": \"TEST Smoke (workshop)\", \"area\": \"workshop\", \"test\": true}",
-        "vt": "json"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 180,
-    "y": 840,
-    "wires": [
-      [
-        "fn_test_stamp"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_heat",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Heat (>=45?C)",
-    "props": [
-      {
-        "p": "event",
-        "v": "{\"type\": \"heat\", \"active\": true, \"baseTopic\": \"test\", \"device\": \"TEST Heat\", \"temperature\": 46, \"threshold\": 45, \"test\": true}",
-        "vt": "json"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 180,
-    "y": 860,
-    "wires": [
-      [
-        "fn_test_stamp"
-      ]
-    ]
-  },
-  {
-    "id": "fn_test_stamp",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Stamp test ts",
-    "func": "if (msg.event && !msg.event.ts) msg.event.ts = Date.now();\nreturn msg;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 430,
-    "y": 860,
-    "wires": [
-      [
-        "sw_event_type",
-        "dbg_events"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_reset",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Reset/clear alarms",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "payload": "reset",
-    "payloadType": "str",
-    "x": 190,
-    "y": 900,
-    "wires": [
-      [
-        "fn_test_reset"
-      ]
-    ]
-  },
-  {
-    "id": "fn_test_reset",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Reset test state",
-    "func": "flow.set('floodActive', {});\nflow.set('smokeActive', {});\nflow.set('heatActive', {});\nflow.set('silencedUntil', 0);\nreturn msg;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 430,
-    "y": 900,
-    "wires": [
-      [
-        "fn_stop_all_sirens",
-        "fn_stop_flood_loop",
-        "fn_stop_smoke_loop",
-        "fn_stop_heat_loop"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_smoke_home",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Smoke (home)",
-    "props": [
-      {
-        "p": "event",
-        "v": "{\"type\": \"smoke\", \"active\": true, \"baseTopic\": \"test\", \"device\": \"TEST Smoke (home)\", \"area\": \"home\", \"test\": true}",
-        "vt": "json"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 180,
-    "y": 860,
-    "wires": [
-      [
-        "fn_test_stamp"
-      ]
-    ]
-  },
-  {
-    "id": "dbg_events",
-    "type": "debug",
-    "z": "tab_z2m_safety",
-    "name": "DEBUG events",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "event",
-    "targetType": "msg",
-    "statusVal": "",
-    "statusType": "auto",
-    "x": 650,
-    "y": 820,
-    "wires": []
-  },
-  {
-    "id": "dbg_alarm",
-    "type": "debug",
-    "z": "tab_z2m_safety",
-    "name": "DEBUG alarm/title",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": true,
-    "complete": "alarm",
-    "targetType": "msg",
-    "statusVal": "title",
-    "statusType": "msg",
-    "x": 1680,
-    "y": 180,
-    "wires": []
-  },
-  {
-    "id": "dbg_ha",
-    "type": "debug",
-    "z": "tab_z2m_safety",
-    "name": "DEBUG HA response",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "true",
-    "targetType": "full",
-    "x": 1960,
-    "y": 220,
-    "wires": []
-  },
-  {
-    "id": "catch_all",
-    "type": "catch",
-    "z": "tab_z2m_safety",
-    "name": "CATCH errors",
-    "scope": [
-      "http_ha",
-      "mqtt_out_siren",
-      "mqtt_out_pumps"
-    ],
-    "uncaught": false,
-    "x": 1560,
-    "y": 80,
-    "wires": [
-      [
-        "dbg_catch"
-      ]
-    ]
-  },
-  {
-    "id": "dbg_catch",
-    "type": "debug",
-    "z": "tab_z2m_safety",
-    "name": "DEBUG errors",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": true,
-    "complete": "true",
-    "targetType": "full",
-    "statusVal": "error.message",
-    "statusType": "msg",
-    "x": 1750,
-    "y": 80,
-    "wires": []
-  },
-  {
-    "id": "status_nodes",
-    "type": "status",
-    "z": "tab_z2m_safety",
-    "name": "STATUS http/mqtt",
-    "scope": [
-      "http_ha",
-      "mqtt_out_siren",
-      "mqtt_out_pumps"
-    ],
-    "x": 1560,
-    "y": 120,
-    "wires": [
-      [
-        "dbg_status"
-      ]
-    ]
-  },
-  {
-    "id": "dbg_status",
-    "type": "debug",
-    "z": "tab_z2m_safety",
-    "name": "DEBUG status",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "status",
-    "targetType": "msg",
-    "x": 1750,
-    "y": 120,
-    "wires": []
-  },
-  {
-    "id": "mqtt_sirens_ctrl",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Sirens mode (HA button)",
-    "topic": "ha/z2m_safety/sirens",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 200,
-    "y": 240,
-    "wires": [
-      [
-        "fn_sirens_ctrl_to_bool"
-      ]
-    ]
-  },
-  {
-    "id": "json_sirens_ctrl",
-    "type": "json",
-    "z": "tab_z2m_safety",
-    "name": "Parse JSON (sirens ctrl)",
-    "property": "payload",
-    "action": "",
-    "pretty": false,
-    "x": 450,
-    "y": 240,
-    "wires": [
-      [
-        "fn_sirens_ctrl_to_bool"
-      ]
-    ]
-  },
-  {
-    "id": "fn_sirens_ctrl_to_bool",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Sirens ctrl -> bool",
-    "func": "// Accept many payload formats from HA/mqtt.publish:\n// - true/false\n// - \"ON\"/\"OFF\", \"true\"/\"false\", 1/0\n// - {enabled:true/false}, {state:\"ON\"}, {mode:\"production\"/\"test\"}\nfunction toBool(v) {\n  if (v === null || v === undefined) return null;\n  if (v === true || v === false) return v;\n  if (typeof v === 'number') return v !== 0;\n  if (typeof v === 'string') {\n    const s = v.trim().toLowerCase();\n    if (['on','true','1','yes','y','enable','enabled','production','prod'].includes(s)) return true;\n    if (['off','false','0','no','n','disable','disabled','test','testing'].includes(s)) return false;\n  }\n  if (v && typeof v === 'object') {\n    if (v.enabled !== undefined) return toBool(v.enabled);\n    if (v.state !== undefined) return toBool(v.state);\n    if (v.mode !== undefined) return toBool(v.mode);\n    if (v.production !== undefined) return toBool(v.production);\n    if (v.test !== undefined) return !toBool(v.test);\n    if (v.payload !== undefined) return toBool(v.payload);\n  }\n  return null;\n}\n\nconst enabled = toBool(msg.payload);\nif (enabled === null) {\n  node.warn(`Unrecognized sirens ctrl payload: ${JSON.stringify(msg.payload)}`);\n  return null;\n}\n\nmsg.payload = enabled;\nreturn msg;\n",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 690,
-    "y": 240,
-    "wires": [
-      [
-        "fn_set_sirens_enabled"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_outputs_all",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Outputs (ALL)",
-    "props": [
-      {
-        "p": "test",
-        "v": "all",
-        "vt": "str"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 170,
-    "y": 980,
-    "wires": [
-      [
-        "fn_test_outputs_dispatch"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_output_push",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Output - Push",
-    "props": [
-      {
-        "p": "test",
-        "v": "push",
-        "vt": "str"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 170,
-    "y": 1020,
-    "wires": [
-      [
-        "fn_test_outputs_dispatch"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_output_email",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Output - Email",
-    "props": [
-      {
-        "p": "test",
-        "v": "email",
-        "vt": "str"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 170,
-    "y": 1060,
-    "wires": [
-      [
-        "fn_test_outputs_dispatch"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_output_siren",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Output - Sirens (1 beep)",
-    "props": [
-      {
-        "p": "test",
-        "v": "siren",
-        "vt": "str"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 200,
-    "y": 1100,
-    "wires": [
-      [
-        "fn_test_outputs_dispatch"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_output_pumps_mqtt",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Output - Pumps OFF (Z2M)",
-    "props": [
-      {
-        "p": "test",
-        "v": "pumps_mqtt",
-        "vt": "str"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 205,
-    "y": 1140,
-    "wires": [
-      [
-        "fn_test_outputs_dispatch"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_output_pumps_ha",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Output - Pumps OFF (HA switches)",
-    "props": [
-      {
-        "p": "test",
-        "v": "pumps_ha",
-        "vt": "str"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 220,
-    "y": 1180,
-    "wires": [
-      [
-        "fn_test_outputs_dispatch"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g1_t3_w5_laser",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T3 - W5 Laser (tasmota_g1)",
-    "topic": "tasmota_g1/T3 - W5 Laser",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g2_t4_patryk_g_ra",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T4 - Patryk GĂłra (tasmota_g2)",
-    "topic": "tasmota_g2/T4 - Patryk GĂłra",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g3_t1_korytarz_warszt",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T1 Korytarz Warszt (tasmota_g3)",
-    "topic": "tasmota_g3/T1 Korytarz Warszt",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g3_t6_pompownia",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T6 pompownia (tasmota_g3)",
-    "topic": "tasmota_g3/T6 pompownia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g4_t20_w3",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T20 W3 (tasmota_g4)",
-    "topic": "tasmota_g4/T20 W3",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g4_t7_kot_ownia",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T7 KotĹ‚ownia (tasmota_g4)",
-    "topic": "tasmota_g4/T7 KotĹ‚ownia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g5_t2_w4",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T2 W4 (tasmota_g5)",
-    "topic": "tasmota_g5/T2 W4",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g6_t15_malarnia",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T15 Malarnia (tasmota_g6)",
-    "topic": "tasmota_g6/T15 Malarnia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g7_t12_gara",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T12 - GaraĹĽ (tasmota_g7)",
-    "topic": "tasmota_g7/T12 - GaraĹĽ",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g7_t19_piwnica",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T19 - Piwnica (tasmota_g7)",
-    "topic": "tasmota_g7/T19 - Piwnica",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g7_t20_pralnia",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T20 - Pralnia (tasmota_g7)",
-    "topic": "tasmota_g7/T20 - Pralnia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g8_t10_rodzice_dol",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T10 Rodzice Dol (tasmota_g8)",
-    "topic": "tasmota_g8/T10 Rodzice Dol",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g9_t15_salon_patryk",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T15 Salon Patryk (tasmota_g9)",
-    "topic": "tasmota_g9/T15 Salon Patryk",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g9_t9_patryk_hall",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T9 - Patryk Hall (tasmota_g9)",
-    "topic": "tasmota_g9/T9 - Patryk Hall",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g10_t5_bartek",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T5 Bartek (tasmota_g10)",
-    "topic": "tasmota_g10/T5 Bartek",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g10_t8_dostawka",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T8 Dostawka (tasmota_g10)",
-    "topic": "tasmota_g10/T8 Dostawka",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g10_to2_suszarnia",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp TO2 - Suszarnia (tasmota_g10)",
-    "topic": "tasmota_g10/TO2 - Suszarnia",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g11_t17_galeria",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp T17 - Galeria (tasmota_g11)",
-    "topic": "tasmota_g11/T17 - Galeria",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "mqtt_temp_tasmota_g11_to1_kimla",
-    "type": "mqtt in",
-    "z": "tab_z2m_safety",
-    "name": "Temp TO1 - Kimla (tasmota_g11)",
-    "topic": "tasmota_g11/TO1 - Kimla",
-    "qos": "0",
-    "datatype": "auto",
-    "broker": "mqtt_broker_core",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 190,
-    "y": 420,
-    "wires": [
-      [
-        "json_parse"
-      ]
-    ]
-  },
-  {
-    "id": "inj_test_flood_pumps",
-    "type": "inject",
-    "z": "tab_z2m_safety",
-    "name": "TEST: Flood (pumps off)",
-    "props": [
-      {
-        "p": "event",
-        "v": "{\"type\": \"flood\", \"active\": true, \"baseTopic\": \"test\", \"device\": \"TEST Flood (pumps)\", \"test\": true, \"testPumps\": true}",
-        "vt": "json"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": false,
-    "onceDelay": "0.1",
-    "topic": "",
-    "x": 180,
-    "y": 840,
-    "wires": [
-      [
-        "fn_test_stamp"
       ]
     ]
   },
@@ -2051,241 +944,228 @@
     "checkall": "true",
     "repair": false,
     "outputs": 1,
-    "x": 1280,
-    "y": 420,
-    "wires": [
-      [
-        "fn_stop_flood_loop",
-        "fn_stop_smoke_loop",
-        "fn_stop_heat_loop"
-      ]
-    ]
-  },
-  {
-    "id": "fn_repeat_flood",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Repeat flood (escalate)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\n// Reset cancels pending delayed ticks via generation bump\nconst genKey = 'floodRepeatGen';\nlet gen = flow.get(genKey) || 0;\n\n// Circuit breaker: detect runaway loops (e.g. delay misconfig)\nconst guardKey = 'repeatGuard_flood';\nconst guardNow = Date.now();\nlet guard = flow.get(guardKey) || { ts: 0, hits: 0 };\nif ((guardNow - (guard.ts || 0)) < 200) guard.hits = (guard.hits || 0) + 1; else guard.hits = 0;\nguard.ts = guardNow;\nflow.set(guardKey, guard);\nif (guard.hits > 20) {\n  flow.set('sirensEnabled', false);\n  gen += 1;\n  flow.set(genKey, gen);\n  node.error('RUNAWAY LOOP detected for flood: sirens disabled, loop cancelled', msg);\n  return null;\n}\n\nif (msg.reset === true) {\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Only repeat when there is an active alarm of this kind\nconst activeMap = flow.get('floodActive') || {};\nif (Object.keys(activeMap).length === 0) {\n  // no active alarms -> stop loop\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Initialize gen on first start\nif (msg._gen === undefined) {\n  gen += 1;\n  flow.set(genKey, gen);\n  msg._gen = gen;\n} else if (msg._gen != gen) {\n  // stale tick\n  return null;\n}\n\n// Current interval seconds\nconst minSec = Number(cfg.repeatMinSeconds || 0) || 10;\nlet intervalSec = (typeof msg._intervalSec === 'number') ? msg._intervalSec : Number(msg._intervalSec);\nif (!Number.isFinite(intervalSec) || intervalSec <= 0) {\n  intervalSec = Number(cfg.floodRepeatSeconds || 0) || 150;\n}\n\n// Output 1: siren pattern right now\nconst outNow = {\n  repeatAfterSec: intervalSec,\n  payload: { pattern: 'flood', beeps: 1 },\n  topic: msg.topic,\n  _gen: msg._gen,\n};\n\n// Next interval halves until minSec\nconst nextIntervalSec = Math.max(minSec, intervalSec / 2);\n\n// Output 2: schedule next tick\nconst outNext = {\n  _gen: msg._gen,\n  _intervalSec: nextIntervalSec,\n  delay: Math.max(minSec * 1000, Math.round(intervalSec * 1000)),\n};\n\nreturn [[outNow],[outNext]];\n",
-    "outputs": 2,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 2000,
-    "y": 300,
-    "wires": [
-      [
-        "fn_gate_silence",
-        "fn_push_repeat",
-        "fn_flood_pump_off_retry"
-      ],
-      [
-        "dly_repeat_flood"
-      ]
-    ]
-  },
-  {
-    "id": "dly_repeat_flood",
-    "type": "delay",
-    "z": "tab_z2m_safety",
-    "name": "Delay flood by msg.delay",
-    "pauseType": "delayv",
-    "timeout": "1",
-    "timeoutUnits": "milliseconds",
-    "rate": "1",
-    "nbRateUnits": "1",
-    "rateUnits": "second",
-    "randomFirst": "0",
-    "randomLast": "0",
-    "randomUnits": "seconds",
-    "drop": false,
-    "allowrate": false,
-    "x": 2250,
-    "y": 340,
-    "wires": [
-      [
-        "fn_repeat_flood"
-      ]
-    ]
-  },
-  {
-    "id": "fn_repeat_smoke",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Repeat smoke (escalate)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\n// Reset cancels pending delayed ticks via generation bump\nconst genKey = 'smokeRepeatGen';\nlet gen = flow.get(genKey) || 0;\n\n// Circuit breaker: detect runaway loops (e.g. delay misconfig)\nconst guardKey = 'repeatGuard_smoke';\nconst guardNow = Date.now();\nlet guard = flow.get(guardKey) || { ts: 0, hits: 0 };\nif ((guardNow - (guard.ts || 0)) < 200) guard.hits = (guard.hits || 0) + 1; else guard.hits = 0;\nguard.ts = guardNow;\nflow.set(guardKey, guard);\nif (guard.hits > 20) {\n  flow.set('sirensEnabled', false);\n  gen += 1;\n  flow.set(genKey, gen);\n  node.error('RUNAWAY LOOP detected for smoke: sirens disabled, loop cancelled', msg);\n  return null;\n}\n\nif (msg.reset === true) {\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Only repeat when there is an active alarm of this kind\nconst activeMap = flow.get('smokeActive') || {};\nif (Object.keys(activeMap).length === 0) {\n  // no active alarms -> stop loop\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Initialize gen on first start\nif (msg._gen === undefined) {\n  gen += 1;\n  flow.set(genKey, gen);\n  msg._gen = gen;\n} else if (msg._gen != gen) {\n  // stale tick\n  return null;\n}\n\n// Current interval seconds\nconst minSec = Number(cfg.repeatMinSeconds || 0) || 10;\nlet intervalSec = (typeof msg._intervalSec === 'number') ? msg._intervalSec : Number(msg._intervalSec);\nif (!Number.isFinite(intervalSec) || intervalSec <= 0) {\n  intervalSec = Number(cfg.smokeRepeatSeconds || 0) || 120;\n}\n\n// Output 1: siren pattern right now\nconst outNow = {\n  repeatAfterSec: intervalSec,\n  payload: { pattern: 'smoke', beeps: 1 },\n  topic: msg.topic,\n  _gen: msg._gen,\n};\n\n// Next interval halves until minSec\nconst nextIntervalSec = Math.max(minSec, intervalSec / 2);\n\n// Output 2: schedule next tick\nconst outNext = {\n  _gen: msg._gen,\n  _intervalSec: nextIntervalSec,\n  delay: Math.max(minSec * 1000, Math.round(intervalSec * 1000)),\n};\n\nreturn [[outNow],[outNext]];\n",
-    "outputs": 2,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 2000,
+    "x": 1100,
     "y": 360,
     "wires": [
       [
-        "fn_gate_silence",
-        "fn_push_repeat"
-      ],
-      [
-        "dly_repeat_smoke"
+        "fn_reset_all_loops"
       ]
     ]
   },
   {
-    "id": "dly_repeat_smoke",
-    "type": "delay",
-    "z": "tab_z2m_safety",
-    "name": "Delay smoke by msg.delay",
-    "pauseType": "delayv",
-    "timeout": "1",
-    "timeoutUnits": "milliseconds",
-    "rate": "1",
-    "nbRateUnits": "1",
-    "rateUnits": "second",
-    "randomFirst": "0",
-    "randomLast": "0",
-    "randomUnits": "seconds",
-    "drop": false,
-    "allowrate": false,
-    "x": 2250,
-    "y": 400,
-    "wires": [
-      [
-        "fn_repeat_smoke"
-      ]
-    ]
-  },
-  {
-    "id": "fn_repeat_heat",
+    "id": "fn_reset_all_loops",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Repeat heat (escalate)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\n// Reset cancels pending delayed ticks via generation bump\nconst genKey = 'heatRepeatGen';\nlet gen = flow.get(genKey) || 0;\n\n// Circuit breaker: detect runaway loops (e.g. delay misconfig)\nconst guardKey = 'repeatGuard_heat';\nconst guardNow = Date.now();\nlet guard = flow.get(guardKey) || { ts: 0, hits: 0 };\nif ((guardNow - (guard.ts || 0)) < 200) guard.hits = (guard.hits || 0) + 1; else guard.hits = 0;\nguard.ts = guardNow;\nflow.set(guardKey, guard);\nif (guard.hits > 20) {\n  flow.set('sirensEnabled', false);\n  gen += 1;\n  flow.set(genKey, gen);\n  node.error('RUNAWAY LOOP detected for heat: sirens disabled, loop cancelled', msg);\n  return null;\n}\n\nif (msg.reset === true) {\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Only repeat when there is an active alarm of this kind\nconst activeMap = flow.get('heatActive') || {};\nif (Object.keys(activeMap).length === 0) {\n  // no active alarms -> stop loop\n  gen += 1;\n  flow.set(genKey, gen);\n  return null;\n}\n\n// Initialize gen on first start\nif (msg._gen === undefined) {\n  gen += 1;\n  flow.set(genKey, gen);\n  msg._gen = gen;\n} else if (msg._gen != gen) {\n  // stale tick\n  return null;\n}\n\n// Current interval seconds\nconst minSec = Number(cfg.repeatMinSeconds || 0) || 10;\nlet intervalSec = (typeof msg._intervalSec === 'number') ? msg._intervalSec : Number(msg._intervalSec);\nif (!Number.isFinite(intervalSec) || intervalSec <= 0) {\n  intervalSec = Number(cfg.heatRepeatSeconds || 0) || 180;\n}\n\n// Output 1: siren pattern right now\nconst outNow = {\n  repeatAfterSec: intervalSec,\n  payload: { pattern: 'heat', beeps: 1 },\n  topic: msg.topic,\n  _gen: msg._gen,\n};\n\n// Next interval halves until minSec\nconst nextIntervalSec = Math.max(minSec, intervalSec / 2);\n\n// Output 2: schedule next tick\nconst outNext = {\n  _gen: msg._gen,\n  _intervalSec: nextIntervalSec,\n  delay: Math.max(minSec * 1000, Math.round(intervalSec * 1000)),\n};\n\nreturn [[outNow],[outNext]];\n",
-    "outputs": 2,
+    "name": "Reset all loops",
+    "func": "return [ {reset:true}, {reset:true}, {reset:true} ];",
+    "outputs": 3,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 2000,
-    "y": 420,
+    "x": 1280,
+    "y": 380,
     "wires": [
       [
-        "fn_gate_silence",
-        "fn_push_repeat"
+        "fn_repeat_flood"
       ],
       [
-        "dly_repeat_heat"
-      ]
-    ]
-  },
-  {
-    "id": "dly_repeat_heat",
-    "type": "delay",
-    "z": "tab_z2m_safety",
-    "name": "Delay heat by msg.delay",
-    "pauseType": "delayv",
-    "timeout": "1",
-    "timeoutUnits": "milliseconds",
-    "rate": "1",
-    "nbRateUnits": "1",
-    "rateUnits": "second",
-    "randomFirst": "0",
-    "randomLast": "0",
-    "randomUnits": "seconds",
-    "drop": false,
-    "allowrate": false,
-    "x": 2250,
-    "y": 460,
-    "wires": [
+        "fn_repeat_smoke"
+      ],
       [
         "fn_repeat_heat"
       ]
     ]
   },
   {
-    "id": "fn_push_repeat",
+    "id": "fn_gate_siren",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Push reminder (repeat / throttled)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nif (cfg.pushRepeatEnabled !== true) return null;\n\nconst kind = (msg.payload && msg.payload.pattern) || msg.pattern;\nif (!kind) return null;\n\nconst mapName = kind === 'flood' ? 'floodActive' : (kind === 'smoke' ? 'smokeActive' : (kind === 'heat' ? 'heatActive' : null));\nif (!mapName) return null;\nconst activeMap = flow.get(mapName) || {};\nconst keys = Object.keys(activeMap);\nif (keys.length === 0) return null;\n\nconst minSec = Number(cfg.pushRepeatMinSeconds !== undefined ? cfg.pushRepeatMinSeconds : 60);\nconst minMs = (Number.isFinite(minSec) ? minSec : 60) * 1000;\nconst now = Date.now();\nconst last = flow.get('pushRepeatLastTs') || {};\nif (typeof last[kind] === 'number' && (now - last[kind]) < minMs) return null;\nlast[kind] = now;\nflow.set('pushRepeatLastTs', last);\n\nconst svc = String(cfg.notifyPushService || 'notify.notify');\nconst parts = svc.split('.');\nconst domain = parts[0] || '';\nconst service = parts.slice(1).join('.') || '';\nif (!domain || !service) return null;\n\nconst base = cfg.haBaseUrl || 'http://supervisor/core';\nconst token = cfg.haToken || '';\nif (!token) { node.warn('No HA token available (SUPERVISOR_TOKEN/HA_TOKEN).'); return null; }\n\nfunction haCall(d, s, data) {\n  return {\n    method: 'POST',\n    url: `${base}/api/services/${d}/${s}`,\n    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },\n    payload: data,\n  };\n}\n\nconst title = kind === 'flood' ? 'ALARM: ZALANIE (wci?? aktywne)' : (kind === 'smoke' ? 'ALARM: DYM (wci?? aktywne)' : 'ALARM: TEMPERATURA (wci?? aktywne)');\nconst sample = keys.slice(0, 3).join(', ');\nconst more = keys.length > 3 ? ` (+${keys.length - 3})` : '';\nconst repeatAfterSec = msg.repeatAfterSec;\nconst msgLine = (repeatAfterSec && Number.isFinite(Number(repeatAfterSec))) ? `\nNast?pne przypomnienie/sygna? za ~${Math.round(Number(repeatAfterSec))}s.` : '';\nconst message = `Aktywne ?r?d?a: ${keys.length}: ${sample}${more}.${msgLine}`;\n\nmsg.haCalls = [haCall(domain, service, { title, message })];\nreturn msg;\n",
+    "name": "Gate sirens",
+    "func": "if (flow.get('sirensEnabled') !== true) return null;\nconst until = flow.get('silencedUntil') || 0;\nif (Date.now() < until) return null;\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 2230,
-    "y": 220,
+    "x": 1940,
+    "y": 320,
     "wires": [
       [
-        "fn_emit_ha_calls"
+        "fn_build_siren_msgs"
       ]
     ]
   },
   {
-    "id": "fn_alarm_common",
+    "id": "fn_build_siren_msgs",
     "type": "function",
     "z": "tab_z2m_safety",
-    "name": "Common actions (notify/pumps/sirens)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\nfunction parseService(s) {\n  const parts = (s || '').split('.');\n  return { domain: parts[0] || '', service: parts.slice(1).join('.') || '' };\n}\n\nfunction haCall(domain, service, data) {\n  const base = cfg.haBaseUrl || 'http://supervisor/core';\n  const token = cfg.haToken || '';\n  if (!token) {\n    node.warn('No HA token available (SUPERVISOR_TOKEN/HA_TOKEN). HA push notifications and HA switch calls will not run.');\n  }\n  return {\n    method: 'POST',\n    url: `${base}/api/services/${domain}/${service}`,\n    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },\n    payload: data,\n  };\n}\n\nconst out = [];\n\n// Track that pumps were forced OFF by this flow (so we never accidentally turn them ON).\nif (msg.shutdownPumps === true) {\n  flow.set('pumpsForcedOff', true);\n  flow.set('pumpsForcedOffTs', Date.now());\n}\n\n// Pumps restore on reset (guarded by DRY confirmation from the flood sensors that triggered the incident)\nif (msg.restorePumpsRequested) {\n  const now = Date.now();\n  const dryMinutes = Number(cfg.pumpRestoreDryMinutes !== undefined ? cfg.pumpRestoreDryMinutes : 5);\n  const dryForMs = (Number.isFinite(dryMinutes) ? dryMinutes : 5) * 60 * 1000;\n\n  const pumpsForcedOff = flow.get('pumpsForcedOff') === true;\n\n  const wet = flow.get('floodLastWetTs') || {};\n  const dry = flow.get('floodLastDryTs') || {};\n\n  const targets = flow.get('pumpsForcedOffByFloodKeys') || [];\n  const targetKeys = Array.isArray(targets) ? targets.filter(k => typeof k === 'string' && k) : [];\n\n  if (!pumpsForcedOff) {\n    msg.title = msg.title || 'Pumps unchanged';\n    msg.message = (msg.message || '') + `\n\nPumps not restored: this flow did not force pumps OFF (nothing to restore).`;\n  } else if (targetKeys.length === 0) {\n    msg.title = msg.title || 'Pumps NOT restored';\n    msg.message = (msg.message || '') + `\n\nPumps NOT restored: missing flood incident context (no triggering sensor list).`;\n  } else {\n    const reasons = [];\n    let allOk = true;\n    for (const k of targetKeys) {\n      const wetTs = wet[k];\n      const dryTs = dry[k];\n      if (typeof wetTs !== 'number') {\n        allOk = false;\n        reasons.push(`- ${k}: no WET timestamp recorded`);\n        continue;\n      }\n      if ((now - wetTs) < dryForMs) {\n        allOk = false;\n        reasons.push(`- ${k}: last WET was ${Math.round((now - wetTs)/1000)}s ago (< ${dryMinutes*60}s)`);\n      }\n      if (typeof dryTs !== 'number') {\n        allOk = false;\n        reasons.push(`- ${k}: no DRY report yet`);\n        continue;\n      }\n      if ((now - dryTs) < dryForMs) {\n        allOk = false;\n        reasons.push(`- ${k}: last DRY was ${Math.round((now - dryTs)/1000)}s ago (< ${dryMinutes*60}s)`);\n      }\n      if (dryTs <= wetTs) {\n        allOk = false;\n        reasons.push(`- ${k}: DRY is not after WET`);\n      }\n    }\n\n    if (allOk) {\n      // Clear flood incident state and allow future alarms to sound\n      flow.set('floodActive', {});\n      flow.set('pumpsForcedOff', false);\n      flow.set('pumpsForcedOffByFloodKeys', []);\n\n      // Restore pumps (ON)\n      if ((cfg.pumpSwitchEntities || []).length > 0) {\n        out.push(haCall('switch', 'turn_on', { entity_id: cfg.pumpSwitchEntities }));\n      }\n      if ((cfg.pumpOutletsZ2M || []).length > 0) {\n        msg.pumpMqtt = (cfg.pumpOutletsZ2M || []).map(p => ({\n          topic: `${p.baseTopic}/${p.name}/set`,\n          payload: { state: 'ON' },\n        }));\n      }\n\n      msg.title = msg.title || 'Reset flood: OK';\n      msg.message = (msg.message || '') + `\n\nFlood reset OK: all triggering flood sensors reported DRY and last WET is older than ${dryMinutes} minutes. Pumps restored (ON).`;\n    } else {\n      msg.title = msg.title || 'Reset flood: waiting';\n      msg.message = (msg.message || '') + `\n\nFlood reset blocked: waiting for DRY confirmation / dry-for-${dryMinutes}min condition.\n${reasons.join('\n')}`;\n    }\n  }\n}\n\n// Pumps off on flood (optional HA switch entities)\nif (msg.shutdownPumps && (cfg.pumpSwitchEntities || []).length > 0) {\n  out.push(haCall('switch', 'turn_off', { entity_id: cfg.pumpSwitchEntities }));\n}\n\n// Pumps off on flood (preferred Z2M MQTT)\nif (msg.shutdownPumps && (cfg.pumpOutletsZ2M || []).length > 0) {\n  msg.pumpMqtt = (cfg.pumpOutletsZ2M || []).map(p => ({\n    topic: `${p.baseTopic}/${p.name}/set`,\n    payload: { state: 'OFF' },\n  }));\n}\n\n// Control siren loops\nmsg._siren = { kind: msg.alarm.kind, action: msg.alarm.action, beeps: msg.alarm.beeps || 1 };\n\n// If this was a reset attempt (triple-press), evaluate whether system returned to normal\nif (msg.deferPush === true) {\n  const floods = flow.get('floodActive') || {};\n  const smokes = flow.get('smokeActive') || {};\n  const heats = flow.get('heatActive') || {};\n\n  // For smoke/heat, allow clearing only if the sensor(s) have since reported normal (active=false)\n  function canClearFromLast(kindActive, lastAKey, lastCKey) {\n    const activeKeys = Object.keys(kindActive || {});\n    if (activeKeys.length === 0) return { ok: true, cleared: false };\n    const lastA = flow.get(lastAKey) || {};\n    const lastC = flow.get(lastCKey) || {};\n    const ok = activeKeys.every(k => typeof lastC[k] === 'number' && (typeof lastA[k] !== 'number' || lastC[k] > lastA[k]));\n    return { ok, cleared: ok };\n  }\n\n  const smokeOk = canClearFromLast(smokes, 'smokeLastActiveTs', 'smokeLastClearTs');\n  if (smokeOk.cleared) flow.set('smokeActive', {});\n  const heatOk = canClearFromLast(heats, 'heatLastActiveTs', 'heatLastClearTs');\n  if (heatOk.cleared) flow.set('heatActive', {});\n\n  const floodsAfter = flow.get('floodActive') || {};\n  const smokesAfter = flow.get('smokeActive') || {};\n  const heatsAfter = flow.get('heatActive') || {};\n  const resetSucceeded = Object.keys(floodsAfter).length === 0 && Object.keys(smokesAfter).length === 0 && Object.keys(heatsAfter).length === 0;\n\n  msg.resetSucceeded = resetSucceeded;\n\n  if (resetSucceeded) {\n    // Only now clear silence window, so beeps don't resume on a failed reset.\n    flow.set('silencedUntil', 0);\n\n    msg.title = msg.title || 'Reset alarmow: OK';\n    msg.message = msg.message ? (msg.message.includes('System wrocil do normy.') ? msg.message : (msg.message + '\n\nSystem wrocil do normy.')) : 'Reset alarmow. System wrocil do normy.';\n  } else {\n    msg.title = msg.title || 'Reset alarmow: oczekuje';\n    msg.message = (msg.message || '') + '\n\nReset nie jest jeszcze zakonczony: czesc czujnikow nadal raportuje alarm lub brak potwierdzenia stanu normalnego.';\n  }\n}\n\n// Push notification (Home Assistant)\nconst push = parseService(cfg.notifyPushService);\nif (msg.deferPush === true && msg.resetSucceeded !== true) {\n  // Only notify when reset is actually successful (system back to normal)\n} else {\n  out.push(haCall(push.domain, push.service, { title: msg.title, message: msg.message }));\n}\n\n\n// Debug snapshot for troubleshooting (visible in DEBUG alarm/title)\ntry {\n  const until = flow.get('silencedUntil') || 0;\n  const floods = flow.get('floodActive') || {};\n  const smokes = flow.get('smokeActive') || {};\n  const heats = flow.get('heatActive') || {};\n  const wet = flow.get('floodLastWetTs') || {};\n  const dry = flow.get('floodLastDryTs') || {};\n  const targetKeys = Array.isArray(flow.get('pumpsForcedOffByFloodKeys')) ? flow.get('pumpsForcedOffByFloodKeys') : [];\n\n  msg.debugState = {\n    ts: new Date().toISOString(),\n    sirensEnabled: flow.get('sirensEnabled') === true,\n    silencedUntil,\n    silenced: Date.now() < until,\n    floodActiveCount: Object.keys(floods).length,\n    floodActiveKeys: Object.keys(floods),\n    smokeActiveCount: Object.keys(smokes).length,\n    smokeActiveKeys: Object.keys(smokes),\n    heatActiveCount: Object.keys(heats).length,\n    heatActiveKeys: Object.keys(heats),\n    pumpsForcedOff: flow.get('pumpsForcedOff') === true,\n    pumpsForcedOffByFloodKeys: targetKeys,\n    pumpsForcedOffByFloodKeyTimestamps: targetKeys.map(k => ({\n      key: k,\n      wetTs: wet[k] || null,\n      dryTs: dry[k] || null,\n    })),\n  };\n} catch (e) {\n  // no-op\n}\n\n// Attach API calls list for HTTP node\nmsg.haCalls = out;\nreturn msg;\n",
-    "outputs": 2,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 1340,
-    "y": 260,
-    "wires": [
-      [
-        "dbg_alarm",
-        "fn_emit_ha_calls",
-        "sw_siren_control",
-        "fn_email_prepare"
-      ],
-      [
-        "fn_emit_pump_mqtt"
-      ]
-    ]
-  },
-  {
-    "id": "fn_email_prepare",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Prepare email (SMTP)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst to = (cfg.emailTo || []).filter(Boolean);\nif (!to.length) return null;\nmsg.to = to.join(',');\nmsg.topic = msg.title || 'Z2M Safety';\nmsg.payload = msg.message || '';\nreturn msg;\n",
+    "name": "Build siren MQTT",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst kind = (msg.payload && msg.payload.pattern) || 'flood';\nconst tpl = (cfg.sirenTemplates || {})[kind] || (cfg.sirenTemplates || {}).flood || { warning:{ mode:'emergency', duration:2 } };\nlet beeps = (msg.payload && msg.payload.beeps) || 1;\nif (kind === 'smoke') {\n  const s = flow.get('smokeBeepCount');\n  if (Number.isFinite(s)) beeps = s;\n}\nconst out = [];\nlet delay = 0;\nfor (let i=0; i<beeps; i++) {\n  for (const s of (cfg.sirens || [])) {\n    out.push({ topic: `${s.baseTopic}/${s.name}/set`, payload: tpl, delay });\n  }\n  delay += 700;\n}\nreturn [out];",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
     "finalize": "",
     "libs": [],
-    "x": 1580,
-    "y": 260,
+    "x": 2120,
+    "y": 320,
     "wires": [
       [
-        "email_smtp_out"
+        "dly_siren_seq"
       ]
     ]
   },
   {
-    "id": "email_smtp_out",
-    "type": "e-mail",
+    "id": "dly_siren_seq",
+    "type": "delay",
     "z": "tab_z2m_safety",
-    "server": "s62.cyber-folks.pl",
-    "port": "465",
-    "secure": true,
-    "tls": true,
-    "name": "Aystend Domowy",
-    "dname": "",
-    "x": 1780,
-    "y": 260,
+    "name": "Delay by msg.delay",
+    "pauseType": "delayv",
+    "timeout": "1",
+    "timeoutUnits": "milliseconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "0",
+    "randomLast": "0",
+    "randomUnits": "seconds",
+    "drop": false,
+    "allowrate": false,
+    "x": 2280,
+    "y": 320,
     "wires": [
       [
-        "dbg_email"
+        "split_siren"
       ]
-    ],
-    "to": "zajdel@viktor-art.pl",
-    "authtype": "BASIC",
-    "userid": "alarm@powiadomienia.viktor-art.pl"
+    ]
+  },
+  {
+    "id": "split_siren",
+    "type": "split",
+    "z": "tab_z2m_safety",
+    "name": "Split siren msgs",
+    "splt": "\n",
+    "spltType": "str",
+    "arraySplt": 1,
+    "arraySpltType": "len",
+    "stream": false,
+    "addname": "",
+    "x": 2450,
+    "y": 320,
+    "wires": [
+      [
+        "mqtt_out"
+      ]
+    ]
+  },
+  {
+    "id": "fn_stop_all_sirens",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Stop all sirens",
+    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst stop = ((cfg.sirenTemplates || {}).stop) || { warning:{ mode:'stop' } };\nconst out = (cfg.sirens || []).map(s => ({ topic: `${s.baseTopic}/${s.name}/set`, payload: stop }));\nreturn [out];",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1280,
+    "y": 440,
+    "wires": [
+      [
+        "split_siren"
+      ]
+    ]
+  },
+  {
+    "id": "fn_emit_pump_mqtt",
+    "type": "function",
+    "z": "tab_z2m_safety",
+    "name": "Emit pump MQTT",
+    "func": "const list = msg.pumpMqtt || [];\nif (!list.length) return null;\nreturn [list];",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1280,
+    "y": 580,
+    "wires": [
+      [
+        "split_pump"
+      ]
+    ]
+  },
+  {
+    "id": "split_pump",
+    "type": "split",
+    "z": "tab_z2m_safety",
+    "name": "Split pump msgs",
+    "splt": "\n",
+    "spltType": "str",
+    "arraySplt": 1,
+    "arraySpltType": "len",
+    "stream": false,
+    "addname": "",
+    "x": 1450,
+    "y": 580,
+    "wires": [
+      [
+        "mqtt_out"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt_out",
+    "type": "mqtt out",
+    "z": "tab_z2m_safety",
+    "name": "MQTT publish",
+    "topic": "",
+    "qos": "0",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "mqtt_broker_core",
+    "x": 2620,
+    "y": 420,
+    "wires": []
+  },
+  {
+    "id": "dbg_alarm",
+    "type": "debug",
+    "z": "tab_z2m_safety",
+    "name": "DEBUG alarm",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "alarm",
+    "targetType": "msg",
+    "statusVal": "title",
+    "statusType": "msg",
+    "x": 1290,
+    "y": 620,
+    "wires": []
+  },
+  {
+    "id": "dbg_ha",
+    "type": "debug",
+    "z": "tab_z2m_safety",
+    "name": "DEBUG HA",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1620,
+    "y": 500,
+    "wires": []
   },
   {
     "id": "dbg_email",
@@ -2295,127 +1175,30 @@
     "active": true,
     "tosidebar": true,
     "console": false,
-    "tostatus": true,
+    "tostatus": false,
     "complete": "true",
     "targetType": "full",
-    "statusVal": "payload",
-    "statusType": "msg",
-    "x": 1950,
-    "y": 260,
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1620,
+    "y": 540,
     "wires": []
   },
   {
-    "id": "fn_test_outputs_dispatch",
-    "type": "function",
+    "id": "dbg_status",
+    "type": "debug",
     "z": "tab_z2m_safety",
-    "name": "Test outputs dispatcher",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\n\nfunction parseService(s) {\n  const parts = (s || '').split('.');\n  return { domain: parts[0] || '', service: parts.slice(1).join('.') || '' };\n}\n\nfunction haCall(domain, service, data) {\n  const base = cfg.haBaseUrl || 'http://supervisor/core';\n  const token = cfg.haToken || '';\n  return {\n    method: 'POST',\n    url: `${base}/api/services/${domain}/${service}`,\n    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },\n    payload: data,\n  };\n}\n\nconst what = msg.test || 'all';\nconst now = new Date().toISOString();\n\nfunction want(k) { return what === 'all' || what === k; }\n\nlet pushMsg = null;\nlet emailMsg = null;\nlet sirenMsg = null;\nlet pumpsMqttMsg = null;\nlet pumpsHaMsg = null;\n\nif (want('push')) {\n  const push = parseService(cfg.notifyPushService);\n  pushMsg = {\n    title: 'TEST OUTPUT: Push',\n    message: `Node-RED push test @ ${now}`,\n    haCalls: [haCall(push.domain, push.service, { title: 'TEST OUTPUT: Push', message: `Node-RED push test @ ${now}` })]\n  };\n}\n\nif (want('email')) {\n  emailMsg = {\n    title: 'TEST OUTPUT: Email',\n    message: `Node-RED email test @ ${now}`,\n  };\n}\n\nif (want('siren')) {\n  sirenMsg = { payload: { pattern: 'flood', beeps: 1 } };\n}\n\nif (want('pumps_mqtt')) {\n  const list = (cfg.pumpOutletsZ2M || []).map(p => ({ topic: `${p.baseTopic}/${p.name}/set`, payload: { state: 'OFF' } }));\n  pumpsMqttMsg = { pumpMqtt: list };\n}\n\nif (want('pumps_ha')) {\n  if ((cfg.pumpSwitchEntities || []).length > 0) {\n    pumpsHaMsg = {\n      title: 'TEST OUTPUT: Pumps (HA)',\n      message: `Node-RED HA switch.turn_off test @ ${now}`,\n      haCalls: [haCall('switch', 'turn_off', { entity_id: cfg.pumpSwitchEntities })]\n    };\n  }\n}\n\nreturn [pushMsg, emailMsg, sirenMsg, pumpsMqttMsg, pumpsHaMsg];\n",
-    "outputs": 5,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 530,
-    "y": 1100,
-    "wires": [
-      [
-        "fn_emit_ha_calls"
-      ],
-      [
-        "fn_email_prepare"
-      ],
-      [
-        "fn_build_siren_msgs"
-      ],
-      [
-        "fn_emit_pump_mqtt"
-      ],
-      [
-        "fn_emit_ha_calls"
-      ]
-    ]
-  },
-  {
-    "id": "fn_flood_pump_off_retry",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Flood: pump OFF retry (throttled)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nif (cfg.pumpOffRepeatEnabled !== true) return null;\n\nconst activeMap = flow.get('floodActive') || {};\nif (Object.keys(activeMap).length === 0) return null;\n\nconst minSec = Number(cfg.pumpOffRepeatMinSeconds !== undefined ? cfg.pumpOffRepeatMinSeconds : 60);\nconst minMs = (Number.isFinite(minSec) ? minSec : 60) * 1000;\nconst now = Date.now();\nconst last = flow.get('pumpOffRepeatLastTs') || 0;\nif (typeof last === 'number' && (now - last) < minMs) return null;\nflow.set('pumpOffRepeatLastTs', now);\n\n// Preferred: Z2M MQTT outlets\nconst list = (cfg.pumpOutletsZ2M || []).map(p => ({ topic: `${p.baseTopic}/${p.name}/set`, payload: { state: 'OFF' } }));\nmsg.pumpMqtt = list;\n\n// Optional: HA switch entities (turn_off)\nif ((cfg.pumpSwitchEntities || []).length > 0) {\n  const base = cfg.haBaseUrl || 'http://supervisor/core';\n  const token = cfg.haToken || '';\n  if (token) {\n    msg.haCalls = [{\n      method: 'POST',\n      url: `${base}/api/services/switch/turn_off`,\n      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },\n      payload: { entity_id: cfg.pumpSwitchEntities },\n    }];\n  }\n}\n\nreturn msg;\n",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 2230,
-    "y": 260,
-    "wires": [
-      [
-        "fn_emit_pump_mqtt",
-        "fn_emit_ha_calls"
-      ]
-    ]
-  },
-  {
-    "id": "fn_schedule_auto_reset",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Schedule auto-reset after silence",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nif (msg.scheduleAutoReset !== true) return null;\nconst mins = Number(cfg.autoResetAfterSilenceMinutes || 0);\nif (!Number.isFinite(mins) || mins <= 0) return null;\n\nlet gen = flow.get('autoResetGen') || 0;\ngen += 1;\nflow.set('autoResetGen', gen);\n\nmsg._autoResetGen = gen;\nmsg.delay = Math.round(mins * 60 * 1000);\nmsg._autoResetAt = Date.now() + msg.delay;\nreturn msg;\n",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 1410,
-    "y": 520,
-    "wires": [
-      [
-        "dly_auto_reset_after_silence"
-      ]
-    ]
-  },
-  {
-    "id": "dly_auto_reset_after_silence",
-    "type": "delay",
-    "z": "tab_z2m_safety",
-    "name": "Delay auto-reset by msg.delay",
-    "pauseType": "delayv",
-    "timeout": "1",
-    "timeoutUnits": "milliseconds",
-    "rate": "1",
-    "nbRateUnits": "1",
-    "rateUnits": "second",
-    "randomFirst": "0",
-    "randomLast": "0",
-    "randomUnits": "seconds",
-    "drop": false,
-    "allowrate": false,
-    "x": 1670,
-    "y": 520,
-    "wires": [
-      [
-        "fn_auto_reset_check"
-      ]
-    ]
-  },
-  {
-    "id": "fn_auto_reset_check",
-    "type": "function",
-    "z": "tab_z2m_safety",
-    "name": "Auto-reset check (after silence)",
-    "func": "const cfg = flow.get('z2mSafetyCfg') || {};\nconst gen = flow.get('autoResetGen') || 0;\nif (msg._autoResetGen !== gen) return null; // stale\n\n// Clear alarms that have since reported normal\nlet changed = false;\n\nconst clearedDetails = [];\n\n// Flood: DRY after WET\nconst floods = flow.get('floodActive') || {};\nconst wet = flow.get('floodLastWetTs') || {};\nconst dry = flow.get('floodLastDryTs') || {};\nfor (const k of Object.keys(floods)) {\n  const w = wet[k];\n  const d = dry[k];\n  if (typeof d === 'number' && (typeof w !== 'number' || d > w)) {\n    const st = (flow.get('lastState_flood') || {})[k];\n    clearedDetails.push({ kind: 'flood', key: k, state: st });\n    delete floods[k];\n    changed = true;\n  }\n}\nflow.set('floodActive', floods);\n\n// Smoke: clearTs after activeTs\nconst smokes = flow.get('smokeActive') || {};\nconst sA = flow.get('smokeLastActiveTs') || {};\nconst sC = flow.get('smokeLastClearTs') || {};\nfor (const k of Object.keys(smokes)) {\n  const a = sA[k];\n  const c = sC[k];\n  if (typeof c === 'number' && (typeof a !== 'number' || c > a)) {\n    const st = (flow.get('lastState_smoke') || {})[k];\n    clearedDetails.push({ kind: 'smoke', key: k, state: st });\n    delete smokes[k];\n    changed = true;\n  }\n}\nflow.set('smokeActive', smokes);\n\n// Heat: clearTs after activeTs\nconst heats = flow.get('heatActive') || {};\nconst hA = flow.get('heatLastActiveTs') || {};\nconst hC = flow.get('heatLastClearTs') || {};\nfor (const k of Object.keys(heats)) {\n  const a = hA[k];\n  const c = hC[k];\n  if (typeof c === 'number' && (typeof a !== 'number' || c > a)) {\n    const st = (flow.get('lastState_heat') || {})[k];\n    clearedDetails.push({ kind: 'heat', key: k, state: st });\n    delete heats[k];\n    changed = true;\n  }\n}\nflow.set('heatActive', heats);\n\nconst resetSucceeded = Object.keys(floods).length === 0 && Object.keys(smokes).length === 0 && Object.keys(heats).length === 0;\nif (!changed || !resetSucceeded) return null;\n\n// Trigger reset actions + pump restore attempt\nmsg.deferPush = true;\nmsg.resetLoops = true;\nmsg.stopSirens = true;\nmsg.restorePumpsRequested = true;\nmsg.immediateRestoreIfDry = true;\nmsg.alarm = { kind: 'silence', action: 'auto_reset', source: 'auto', ts: Date.now() };\nconst lines = [];\nfor (const d of clearedDetails) {\n  if (d.kind === 'flood') {\n    lines.push(`- FLOOD: ${d.key} -> DRY (water_leak=false)`);\n  } else if (d.kind === 'smoke') {\n    const area = (d.state && d.state.area) ? d.state.area : 'unknown';\n    lines.push(`- SMOKE: ${d.key} [${area}] -> smoke=false`);\n  } else if (d.kind === 'heat') {\n    const t = d.state && d.state.temperature;\n    const thr = d.state && d.state.threshold;\n    lines.push(`- HEAT: ${d.key} -> temp=${t}C (thr ${thr}C)`);\n  }\n}\n\nmsg.title = 'Automatyczny reset alarmow: OK';\nconst srcLines = [];\nconst srcF = flow.get('lastAlarmSource_flood');\nconst srcS = flow.get('lastAlarmSource_smoke');\nconst srcH = flow.get('lastAlarmSource_heat');\nif (srcF && srcF.key) srcLines.push(`- FLOOD: ${srcF.key}`);\nif (srcS && srcS.key) srcLines.push(`- SMOKE: ${srcS.key}`);\nif (srcH && srcH.key) srcLines.push(`- HEAT: ${srcH.key}`);\n\nmsg.message = 'Automatyczny reset alarmow. System wrocil do normy.'+ (srcLines.length ? `\\n\\nZrodla alarmu:\\n${srcLines.join('\\n')}` : '')+ (lines.length ? `\\n\\nStan czujnikow, ktore wywolaly/uczestniczyly w alarmie:\\n${lines.join('\\n')}` : '');\nmsg.resetSummary = { type: 'auto', cleared: clearedDetails };\n\n\nreturn msg;\n",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 1930,
-    "y": 520,
-    "wires": [
-      [
-        "fn_alarm_common",
-        "sw_reset_loops"
-      ]
-    ]
+    "name": "DEBUG status",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 470,
+    "y": 100,
+    "wires": []
   }
 ]
